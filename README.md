@@ -36,12 +36,10 @@
   
   
   
-### Optimizations v1-3 on rendering 5 layers:
-| fdfdf | vvfd |
-| "---" | ---" |
-| fdf | fdf |
-Bitmap &emsp; 9.1 sec &emsp; 100%
+### Optimizations on rendering 5 layers:
 
-byte[] &emsp; 0.28 sec &emsp; 3.077%
-
-byte[] + parallel &emsp; 0.22 sec &emsp; 2.417%
+| Implamentation  | Time | Ratio |
+| ------------- | ------------- | ------------- |
+| Bitmap  | 9.1 sec  | 100%  |
+| byte[]  | 0.28 sec  | 3.077%  |
+| byte[] + parallel  | 0.22 sec  | 2.417%  |
