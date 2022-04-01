@@ -41,5 +41,6 @@
 | Implamentation  | Time | Ratio |
 | ------------- | ------------- | ------------- |
 | Bitmap  | 9.1 sec  | 100%  |
-| byte[]  | 0.28 sec  | 3.077%  |
-| byte[] + parallel  | 0.22 sec  | 2.417%  |
+| no switch in loop | 2.6 sec  | 28.57%  |
+| byte[]  | 0.28 sec  | 3.08%  |
+| byte[] + parallel  | 0.22 sec  | 2.42%  |
