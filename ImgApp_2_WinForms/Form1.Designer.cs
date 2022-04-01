@@ -340,14 +340,14 @@ namespace ImgApp_2_WinForms
             this.histogrammToolStripMenuItem.Checked = true;
             this.histogrammToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.histogrammToolStripMenuItem.Name = "histogrammToolStripMenuItem";
-            this.histogrammToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.histogrammToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.histogrammToolStripMenuItem.Text = "Histogram";
             this.histogrammToolStripMenuItem.Click += new System.EventHandler(this.histogrammToolStripMenuItem_Click);
             // 
             // autoHistogramToolStripMenuItem
             // 
             this.autoHistogramToolStripMenuItem.Name = "autoHistogramToolStripMenuItem";
-            this.autoHistogramToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.autoHistogramToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.autoHistogramToolStripMenuItem.Text = "Auto Histogram";
             this.autoHistogramToolStripMenuItem.Click += new System.EventHandler(this.autoHistogramToolStripMenuItem_Click);
             // 
@@ -356,7 +356,7 @@ namespace ImgApp_2_WinForms
             this.curveToolStripMenuItem.Checked = true;
             this.curveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.curveToolStripMenuItem.Name = "curveToolStripMenuItem";
-            this.curveToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.curveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.curveToolStripMenuItem.Text = "Curve";
             this.curveToolStripMenuItem.Click += new System.EventHandler(this.curveToolStripMenuItem_Click);
             // 
@@ -564,11 +564,11 @@ namespace ImgApp_2_WinForms
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button3.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(14, 464);
+            this.button3.Location = new System.Drawing.Point(12, 531);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(77, 23);
             this.button3.TabIndex = 21;
-            this.button3.Text = "Calc Histogram";
+            this.button3.Text = "Fast Histogram";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.histogramRender2);
             // 
@@ -621,7 +621,7 @@ namespace ImgApp_2_WinForms
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button1.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(14, 531);
+            this.button1.Location = new System.Drawing.Point(14, 464);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(77, 23);
             this.button1.TabIndex = 26;

@@ -85,7 +85,7 @@ namespace ImgApp_2_WinForms
 
                 if (autoHistogramToolStripMenuItem.Checked == true && histogrammToolStripMenuItem.Checked == true)
                 {
-                    histogramRender2(sender, e);
+                    histogramRender(sender, e);
                 }
             }
         }
@@ -188,461 +188,6 @@ namespace ImgApp_2_WinForms
             }
             else
                 MessageBox.Show("Needs at least 2 images in a project", "Error");
-        }
-
-        private void button2_Click(object sender, EventArgs e)//улучшенная отрисовка режимов наложения
-        {
-            if (LoadedImages.Count >= 2)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                int Index = 1;
-                var img1 = new Bitmap(LoadedImages[Index - 1]);
-                var img2 = new Bitmap(LoadedImages[Index]);
-                //for (; Index < LoadedImages.Count; ++Index)
-                //    if (LayerList.Items[Index].Checked)
-                //    {
-                //        img2 = new Bitmap(LoadedImages[Index]);
-                //        break;
-                //    }
-                int w = Math.Min(img1.Width, img2.Width);
-                int h = Math.Min(img1.Height, img2.Height);
-                int modeIndex = LoadedImages.Count - 1 - Index;
-                var indexedOpacity = Convert.ToInt32(opacityArray[modeIndex] * 2.55);
-
-                var img_out = new Bitmap(w, h);
-
-                for (int i = 0; i < h; ++i)
-                {
-                    for (int j = 0; j < w; ++j)
-                    {
-                        var pix1 = img1.GetPixel(j, i);
-                        var pix2 = img2.GetPixel(j, i);
-                        switch (mode[modeIndex])
-                        {
-                            case 0:
-                                {
-                                    int r = (pix2.R * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                    int g = (pix2.G * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                    int b = (pix2.B * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                    pix1 = Color.FromArgb(r, g, b);
-                                }
-                                break;
-
-                            case 1:
-                                {
-                                    int r = (int)Clamp(pix1.R + pix2.R, 0, 255);
-                                    int g = (int)Clamp(pix1.G + pix2.G, 0, 255);
-                                    int b = (int)Clamp(pix1.B + pix2.B, 0, 255);
-
-                                    r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                    g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                    b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                    pix1 = Color.FromArgb(r, g, b);
-                                }
-                                break;
-
-                            case 2:
-                                {
-                                    int r = Convert.ToInt32((float)pix1.R / 255 * pix2.R);
-                                    int g = Convert.ToInt32((float)pix1.G / 255 * pix2.G);
-                                    int b = Convert.ToInt32((float)pix1.B / 255 * pix2.B);
-
-                                    r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                    g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                    b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                    pix1 = Color.FromArgb(r, g, b);
-                                }
-                                break;
-
-                            case 3:
-                                {
-                                    int r  = (int)Clamp((pix1.R + pix2.R) / 2, 0, 255);
-                                    int g = (int)Clamp((pix1.G + pix2.G) / 2, 0, 255);
-                                    int b = (int)Clamp((pix1.B + pix2.B) / 2, 0, 255);
-
-                                    r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                    g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                    b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                    pix1 = Color.FromArgb(r, g, b);
-                                }
-                                break;
-
-                            case 4:
-                                {
-                                    int r = Math.Min(pix1.R, pix2.R);
-                                    int g = Math.Min(pix1.G, pix2.G);
-                                    int b = Math.Min(pix1.B, pix2.B);
-
-
-                                    r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                    g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                    b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                    pix1 = Color.FromArgb(r, g, b);
-                                }
-                                break;
-
-                            case 5:
-                                {
-                                    int r = Math.Max(pix1.R, pix2.R);
-                                    int g = Math.Max(pix1.G, pix2.G);
-                                    int b = Math.Max(pix1.B, pix2.B);
-
-                                    r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                    g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                    b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                    pix1 = Color.FromArgb(r, g, b);
-                                }
-                                break;
-
-                            case 6:
-                                {
-                                    var brightness = Color.FromArgb(pix2.R, pix2.G, pix2.B).GetBrightness();
-                                    int r = (int)Clamp(pix1.R * brightness, 0, 255);
-                                    int g = (int)Clamp(pix1.G * brightness, 0, 255);
-                                    int b = (int)Clamp(pix1.B * brightness, 0, 255);
-
-                                    r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                    g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                    b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                    pix1 = Color.FromArgb(r, g, b);
-                                }
-                                break;
-
-                            default:
-                                break;
-                        }
-                        img_out.SetPixel(j, i, pix1);
-                    }
-                }
-
-                for (; Index < LoadedImages.Count - 1; ++Index)
-                {
-                    img1 = new Bitmap(img_out);
-                    img2 = new Bitmap(LoadedImages[Index + 1]);
-                    w = Math.Min(img1.Width, img2.Width);
-                    h = Math.Min(img1.Height, img2.Height);
-                    modeIndex = LoadedImages.Count - 2 - Index;
-                    indexedOpacity = Convert.ToInt32(opacityArray[modeIndex] * 2.55);
-
-                    for (int i = 0; i < h; ++i)
-                    {
-                        for (int j = 0; j < w; ++j)
-                        {
-                            var pix1 = img1.GetPixel(j, i);
-                            var pix2 = img2.GetPixel(j, i);
-                            switch (mode[modeIndex])
-                            {
-                                case 0:
-                                    {
-                                        int r = (pix2.R * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                        int g = (pix2.G * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                        int b = (pix2.B * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                        pix1 = Color.FromArgb(r, g, b);
-                                    }
-                                    break;
-
-                                case 1:
-                                    {
-                                        int r = (int)Clamp(pix1.R + pix2.R, 0, 255);
-                                        int g = (int)Clamp(pix1.G + pix2.G, 0, 255);
-                                        int b = (int)Clamp(pix1.B + pix2.B, 0, 255);
-
-                                        r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                        g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                        b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                        pix1 = Color.FromArgb(r, g, b);
-                                    }
-                                    break;
-
-                                case 2:
-                                    {
-                                        int r = Convert.ToInt32((float)pix1.R / 255 * pix2.R);
-                                        int g = Convert.ToInt32((float)pix1.G / 255 * pix2.G);
-                                        int b = Convert.ToInt32((float)pix1.B / 255 * pix2.B);
-
-                                        r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                        g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                        b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                        pix1 = Color.FromArgb(r, g, b);
-                                    }
-                                    break;
-
-                                case 3:
-                                    {
-                                        int r = (int)Clamp((pix1.R + pix2.R) / 2, 0, 255);
-                                        int g = (int)Clamp((pix1.G + pix2.G) / 2, 0, 255);
-                                        int b = (int)Clamp((pix1.B + pix2.B) / 2, 0, 255);
-
-                                        r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                        g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                        b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                        pix1 = Color.FromArgb(r, g, b);
-                                    }
-                                    break;
-
-                                case 4:
-                                    {
-                                        int r = Math.Min(pix1.R, pix2.R);
-                                        int g = Math.Min(pix1.G, pix2.G);
-                                        int b = Math.Min(pix1.B, pix2.B);
-
-
-                                        r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                        g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                        b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                        pix1 = Color.FromArgb(r, g, b);
-                                    }
-                                    break;
-
-                                case 5:
-                                    {
-                                        int r = Math.Max(pix1.R, pix2.R);
-                                        int g = Math.Max(pix1.G, pix2.G);
-                                        int b = Math.Max(pix1.B, pix2.B);
-
-                                        r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                        g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                        b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                        pix1 = Color.FromArgb(r, g, b);
-                                    }
-                                    break;
-
-                                case 6:
-                                    {
-                                        var brightness = Color.FromArgb(pix2.R, pix2.G, pix2.B).GetBrightness();
-                                        int r = (int)Clamp(pix1.R * brightness, 0, 255);
-                                        int g = (int)Clamp(pix1.G * brightness, 0, 255);
-                                        int b = (int)Clamp(pix1.B * brightness, 0, 255);
-
-                                        r = (r * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                        g = (g * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                        b = (b * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                        pix1 = Color.FromArgb(r, g, b);
-                                    }
-                                    break;
-
-                                default:
-                                    break;
-                            }
-                            img_out.SetPixel(j, i, pix1);
-                        }
-                    }
-                }
-
-                img1.Dispose();
-                img2.Dispose();
-                ImageOutput.Image = img_out;
-                SavetoLayerList(img_out);
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-            }
-            else
-                MessageBox.Show("Needs at least 2 images in a project", "Error");
-        }
-
-        private void bRender_Click(object sender, EventArgs e)//отрисовка режимов наложения
-        {
-            if (LoadedImages.Count >= 2)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                int Index = 0;
-                var img1 = new Bitmap(LoadedImages[Index]);
-                var img2 = new Bitmap(LoadedImages[Index + 1]);
-                int modeIndex = LoadedImages.Count - 2 - Index;
-                var indexedOpacity = Convert.ToInt32(opacityArray[modeIndex] * 2.55);
-                int w = Math.Min(img1.Width, img2.Width); //int w = img1.Width;
-                int h = Math.Min(img1.Height, img2.Height); //int h = img1.Height;
-
-                var img_out = new Bitmap(w, h);
-
-                for (int i = 0; i < h; ++i)
-                {
-                    for (int j = 0; j < w; ++j)
-                    {
-                        var pix1 = img1.GetPixel(j, i);
-                        var pix2 = img2.GetPixel(j, i);
-                        int r = pix1.R;
-                        int g = pix1.G;
-                        int b = pix1.B;
-
-                        switch (mode[modeIndex])
-                        {
-                            case 0:
-                                {
-                                    r = (pix2.R * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                    g = (pix2.G * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                    b = (pix2.B * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                }
-                                break;
-
-                            case 1:
-                                {
-                                    r = (int)Clamp(r + pix2.R, 0, 255);
-                                    g = (int)Clamp(g + pix2.G, 0, 255);
-                                    b = (int)Clamp(b + pix2.B, 0, 255);
-                                }
-                                break;
-
-                            case 2:
-                                {
-                                    r = (int)Clamp(r * pix2.R, 0, 255);
-                                    g = (int)Clamp(g * pix2.G, 0, 255);
-                                    b = (int)Clamp(b * pix2.B, 0, 255);
-                                }
-                                break;
-
-                            case 3:
-                                {
-                                    r = (int)Clamp((r + pix2.R) / 2, 0, 255);
-                                    g = (int)Clamp((g + pix2.G) / 2, 0, 255);
-                                    b = (int)Clamp((b + pix2.B) / 2, 0, 255);
-                                }
-                                break;
-
-                            case 4:
-                                {
-                                    r = Math.Min(r, pix2.R);
-                                    g = Math.Min(g, pix2.G);
-                                    b = Math.Min(b, pix2.B);
-                                }
-                                break;
-
-                            case 5:
-                                {
-                                    r = Math.Max(r, pix2.R);
-                                    g = Math.Max(g, pix2.G);
-                                    b = Math.Max(b, pix2.B);
-                                }
-                                break;
-
-                            case 6:
-                                {
-                                    var brightness = Color.FromArgb(pix2.R, pix2.G, pix2.B).GetBrightness();
-                                    r = (int)Clamp(r * brightness, 0, 255);
-                                    g = (int)Clamp(g * brightness, 0, 255);
-                                    b = (int)Clamp(b * brightness, 0, 255);
-                                }
-                                break;
-
-                            default:
-                                break;
-                        }
-                        pix1 = Color.FromArgb(r, g, b);
-                        img_out.SetPixel(j, i, pix1);
-                    }
-                }
-
-                for (Index = 1; Index < LoadedImages.Count - 1; ++Index)
-                {
-                    img1 = new Bitmap(img_out);
-                    img2 = new Bitmap(LoadedImages[Index + 1]);
-                    modeIndex = LoadedImages.Count - 2 - Index;
-                    indexedOpacity = Convert.ToInt32(opacityArray[modeIndex] * 2.55);
-
-                    for (int i = 0; i < h; ++i)
-                    {
-                        for (int j = 0; j < w; ++j)
-                        {
-                            var pix1 = img1.GetPixel(j, i);
-                            var pix2 = img2.GetPixel(j, i);
-                            int r = pix1.R;
-                            int g = pix1.G;
-                            int b = pix1.B;
-                            switch (mode[modeIndex])
-                            { 
-                                case 0:
-                                    {
-                                        r = (pix2.R * indexedOpacity + pix1.R * (255 - indexedOpacity)) / 255;
-                                        g = (pix2.G * indexedOpacity + pix1.G * (255 - indexedOpacity)) / 255;
-                                        b = (pix2.B * indexedOpacity + pix1.B * (255 - indexedOpacity)) / 255;
-                                    }
-                                    break;
-
-                                case 1:
-                                    {
-                                        r = (int)Clamp(r + pix2.R, 0, 255);
-                                        g = (int)Clamp(g + pix2.G, 0, 255);
-                                        b = (int)Clamp(b + pix2.B, 0, 255);
-                                    }
-                                    break;
-
-                                case 2:
-                                    {
-                                        r = (int)Clamp(r * pix2.R, 0, 255);
-                                        g = (int)Clamp(g * pix2.G, 0, 255);
-                                        b = (int)Clamp(b * pix2.B, 0, 255);
-                                    }
-                                    break;
-
-                                case 3:
-                                    {
-                                        r = (int)Clamp((r + pix2.R) / 2, 0, 255);
-                                        g = (int)Clamp((g + pix2.G) / 2, 0, 255);
-                                        b = (int)Clamp((b + pix2.B) / 2, 0, 255);
-                                    }
-                                    break;
-
-                                case 4:
-                                    {
-                                        r = Math.Min(r, pix2.R);
-                                        g = Math.Min(g, pix2.G);
-                                        b = Math.Min(b, pix2.B);
-                                    }
-                                    break;
-
-                                case 5:
-                                    {
-                                        r = Math.Max(r, pix2.R);
-                                        g = Math.Max(g, pix2.G);
-                                        b = Math.Max(b, pix2.B);
-                                    }
-                                    break;
-
-                                case 6:
-                                    {
-                                        var brightness = Color.FromArgb(pix2.R, pix2.G, pix2.B).GetBrightness();
-
-                                        r = (int)Clamp(r * brightness, 0, 255);
-                                        g = (int)Clamp(g * brightness, 0, 255);
-                                        b = (int)Clamp(b * brightness, 0, 255);
-                                    }
-                                    break;
-
-                                default:
-                                    break;
-                            }
-                            pix1 = Color.FromArgb(r, g, b);
-                            img_out.SetPixel(j, i, pix1);
-                        }
-                    }
-                }
-
-                img1.Dispose();
-                img2.Dispose();
-                ImageOutput.Image = img_out;
-                SavetoLayerList(img_out);
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-            }
-            else
-                MessageBox.Show("Needs at least 2 images in a project", "Error");
-        }
-
-        public static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
-        {
-            if (val.CompareTo(min) < 0) return min;
-            else if (val.CompareTo(max) > 0) return max;
-            else return val;
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)//загрузка файлов в проект
@@ -842,378 +387,6 @@ namespace ImgApp_2_WinForms
             else
                 MessageBox.Show("Image is not selected", "Error");
         }
-        
-        private void histogramRender2(object sender, EventArgs e)//СОВСЕМ улучшенная отрисовка гистограммы
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                histogram.Series[0].Points.Clear();
-                histogram.Series.Clear();
-
-                int[] RpointsArray = new int[256];
-                int[] GpointsArray = new int[256];
-                int[] BpointsArray = new int[256];
-
-                int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
-                var img1 = new Bitmap(LoadedImages[index]);
-
-                byte[] img1_bytes = new byte[0];
-
-                using (Bitmap _tmp = new Bitmap(img1.Width, img1.Height, PixelFormat.Format24bppRgb))
-                {
-                    _tmp.SetResolution(img1.HorizontalResolution, img1.VerticalResolution); //устанавливаем DPI такой же как у исходного
-
-                    using (var g = Graphics.FromImage(_tmp)) //рисуем исходное изображение на временном, "типо-копируем"
-                    {
-                        g.DrawImageUnscaled(img1, 0, 0);
-                    }
-                    img1_bytes = getImgBytes(_tmp); //получаем байты изображения, см. описание ф-ции 
-                }
-
-                //Parallel.For(0, img1.Width * img1.Height * 3 - 2, i =>
-                // {
-                //     //if (i % 3 != 0)
-                //     //    return;
-                //     RpointsArray[img1_bytes[i + 2]]++;
-                //     GpointsArray[img1_bytes[i + 1]]++;
-                //     BpointsArray[img1_bytes[i]]++;
-                // });
-
-                for (int i = 0; i < img1.Width * img1.Height * 3 - 3; i += 3)
-                {
-                    int r = img1_bytes[i];
-                    int g = img1_bytes[i + 1];
-                    int b = img1_bytes[i + 2];
-
-                    RpointsArray[img1_bytes[i + 2]]++;
-                    GpointsArray[img1_bytes[i + 1]]++;
-                    BpointsArray[img1_bytes[i]]++;
-                }
-
-                img1.Dispose();
-
-                ChartArea areaR = new ChartArea();
-                histogram.ChartAreas.Add(areaR);
-
-                ChartArea areaG = new ChartArea();
-                histogram.ChartAreas.Add(areaG);
-
-                ChartArea areaB = new ChartArea();
-                histogram.ChartAreas.Add(areaB);
-
-                Series seriesR = new Series();
-                seriesR.ChartType = SeriesChartType.Column;
-                seriesR.Name = "seriesR";
-                seriesR.ChartArea = areaR.Name;
-                histogram.Series.Add(seriesR);
-
-                Series seriesG = new Series();
-                seriesG.ChartType = SeriesChartType.Column;
-                seriesG.Name = "seriesG";
-                seriesG.ChartArea = areaG.Name;
-                histogram.Series.Add(seriesG);
-
-                Series seriesB = new Series();
-                seriesB.ChartType = SeriesChartType.Column;
-                seriesB.Name = "seriesB";
-                seriesB.ChartArea = areaB.Name;
-                histogram.Series.Add(seriesB);
-
-                for (int i = 0; i <= 255; ++i)
-                {
-                    histogram.Series["seriesR"].Points.AddXY(i, RpointsArray[i]);
-                    histogram.Series["seriesG"].Points.AddXY(i, GpointsArray[i]);
-                    histogram.Series["seriesB"].Points.AddXY(i, BpointsArray[i]);
-                }
-
-                areaR.RecalculateAxesScale();
-                areaG.RecalculateAxesScale();
-                areaB.RecalculateAxesScale();
-
-                var max = areaR.AxisY.Maximum;
-                if (areaG.AxisY.Maximum > max)
-                    max = areaG.AxisY.Maximum;
-                if (areaB.AxisY.Maximum > max)
-                    max = areaB.AxisY.Maximum;
-
-                areaG.AxisY.Maximum = max;
-                areaG.AxisY.Maximum = max;
-                areaB.AxisY.Maximum = max;
-
-                histogram.ChartAreas[0].AxisX.Minimum = 0;
-                histogram.ChartAreas[0].AxisX.Maximum = 255;
-                histogram.ChartAreas[1].AxisX.Minimum = 0;
-                histogram.ChartAreas[1].AxisX.Maximum = 255;
-                histogram.ChartAreas[2].AxisX.Minimum = 0;
-                histogram.ChartAreas[2].AxisX.Maximum = 255;
-                histogram.Series[0]["PointWidth"] = "1";
-                histogram.Series[1]["PointWidth"] = "1";
-                histogram.Series[2]["PointWidth"] = "1";
-
-                areaR.Position = new ElementPosition(0, 0, 100, 100);
-                areaG.Position = new ElementPosition(0, 0, 100, 100);
-                areaB.Position = new ElementPosition(0, 0, 100, 100);
-
-                areaR.AxisX.IsMarginVisible = false;
-                areaG.AxisX.IsMarginVisible = false;
-                areaB.AxisX.IsMarginVisible = false;
-
-                seriesR.Color = Color.FromArgb(128, 255, 50, 30);
-                seriesG.Color = Color.FromArgb(128, 100, 255, 60);
-                seriesB.Color = Color.FromArgb(128, 40, 40, 255);
-
-                areaR.BackColor = Color.Transparent;
-                areaG.BackColor = Color.Transparent;
-                areaB.BackColor = Color.Transparent;
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-            }
-            else
-                MessageBox.Show("Image is not selected", "Error");
-
-        }
-
-        private void histogramRender(object sender, EventArgs e)//улучшенная отрисовка гистограммы
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                if (comboBox2.SelectedIndex == 0)
-                {
-                    Stopwatch timer = new Stopwatch();
-                    timer.Start();
-                    this.Cursor = Cursors.WaitCursor;
-
-                    histogram.Series[0].Points.Clear();
-                    histogram.Series.Clear();
-
-                    int[] RpointsArray = new int[256];
-                    int[] GpointsArray = new int[256];
-                    int[] BpointsArray = new int[256];
-
-                    int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
-                    var img = new Bitmap(LoadedImages[index]);
-                    for (int i = 0; i < img.Height; ++i)
-                        for (int j = 0; j < img.Width; ++j)
-                        {
-                            var pix = img.GetPixel(j, i);
-                            RpointsArray[pix.R]++;
-                            GpointsArray[pix.G]++;
-                            BpointsArray[pix.B]++;
-                        }
-                    img.Dispose();
-
-                    ChartArea areaR = new ChartArea();
-                    histogram.ChartAreas.Add(areaR);
-
-                    ChartArea areaG = new ChartArea();
-                    histogram.ChartAreas.Add(areaG);
-
-                    ChartArea areaB = new ChartArea();
-                    histogram.ChartAreas.Add(areaB);
-
-                    Series seriesR = new Series();
-                    seriesR.ChartType = SeriesChartType.Column;
-                    seriesR.Name = "seriesR";
-                    seriesR.ChartArea = areaR.Name;
-                    histogram.Series.Add(seriesR);
-
-                    Series seriesG = new Series();
-                    seriesG.ChartType = SeriesChartType.Column;
-                    seriesG.Name = "seriesG";
-                    seriesG.ChartArea = areaG.Name;
-                    histogram.Series.Add(seriesG);
-
-                    Series seriesB = new Series();
-                    seriesB.ChartType = SeriesChartType.Column;
-                    seriesB.Name = "seriesB";
-                    seriesB.ChartArea = areaB.Name;
-                    histogram.Series.Add(seriesB);
-
-                    for (int i = 0; i <= 255; ++i)
-                    {
-                        histogram.Series["seriesR"].Points.AddXY(i, RpointsArray[i]);
-                        histogram.Series["seriesG"].Points.AddXY(i, GpointsArray[i]);
-                        histogram.Series["seriesB"].Points.AddXY(i, BpointsArray[i]);
-                    }
-
-                    areaR.RecalculateAxesScale();
-                    areaG.RecalculateAxesScale();
-                    areaB.RecalculateAxesScale();
-
-                    var max = areaR.AxisY.Maximum;
-                    if (areaG.AxisY.Maximum > max)
-                        max = areaG.AxisY.Maximum;
-                    if (areaB.AxisY.Maximum > max)
-                        max = areaB.AxisY.Maximum;
-
-                    areaG.AxisY.Maximum = max;
-                    areaG.AxisY.Maximum = max;
-                    areaB.AxisY.Maximum = max;
-
-                    histogram.ChartAreas[0].AxisX.Minimum = 0;
-                    histogram.ChartAreas[0].AxisX.Maximum = 255;
-                    histogram.ChartAreas[1].AxisX.Minimum = 0;
-                    histogram.ChartAreas[1].AxisX.Maximum = 255;
-                    histogram.ChartAreas[2].AxisX.Minimum = 0;
-                    histogram.ChartAreas[2].AxisX.Maximum = 255;
-                    histogram.Series[0]["PointWidth"] = "1";
-                    histogram.Series[1]["PointWidth"] = "1";
-                    histogram.Series[2]["PointWidth"] = "1";
-
-                    areaR.Position = new ElementPosition(0, 0, 100, 100);
-                    areaG.Position = new ElementPosition(0, 0, 100, 100);
-                    areaB.Position = new ElementPosition(0, 0, 100, 100);
-
-                    areaR.AxisX.IsMarginVisible = false;
-                    areaG.AxisX.IsMarginVisible = false;
-                    areaB.AxisX.IsMarginVisible = false;
-
-                    seriesR.Color = Color.FromArgb(128, 255, 50, 30);
-                    seriesG.Color = Color.FromArgb(128, 100, 255, 60);
-                    seriesB.Color = Color.FromArgb(128, 40, 40, 255);
-
-                    areaR.BackColor = Color.Transparent;
-                    areaG.BackColor = Color.Transparent;
-                    areaB.BackColor = Color.Transparent;
-
-                    this.Cursor = Cursors.Default;
-                    timer.Stop();
-                    debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-                }
-                else
-                    button1_Click(sender, e);
-            }
-            else
-                MessageBox.Show("Image is not selected", "Error");
-        }
-
-        static byte[] getImgBytes(Bitmap img)
-        {
-            byte[] bytes = new byte[img.Width * img.Height * 3];  //выделяем память под массив байтов
-            var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
-                ImageLockMode.ReadOnly,
-                img.PixelFormat);
-            Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);  //копируем байты изображения в массив
-            img.UnlockBits(data);   //разблокируем изображение
-            return bytes; //возвращаем байты
-        }
-
-        static void writeImageBytes(Bitmap img, byte[] bytes)
-        {
-            var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
-                ImageLockMode.WriteOnly,
-                img.PixelFormat);
-            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length); //копируем байты массива в изображение
-
-            img.UnlockBits(data);  //разблокируем изображение
-        }
-
-        private void button1_Click(object sender, EventArgs e)//отрисовка гистограммы
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                histogram.Series[0].Points.Clear();
-                histogram.Series.Clear();
-
-                int[] pointsArray = new int[256];
-
-                var index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
-                var img = new Bitmap(LoadedImages[index]);
-                for (int i = 0; i < img.Height; ++i)
-                {
-                    for (int j = 0; j < img.Width; ++j)
-                    {
-                        var pix = img.GetPixel(j, i);
-                        switch (comboBox2.SelectedIndex)
-                        {
-                            case 1:
-                                pointsArray[pix.R]++;
-                                break;
-
-                            case 2:
-                                pointsArray[pix.G]++;
-                                break;
-
-                            case 3:
-                                pointsArray[pix.B]++;
-                                break;
-
-                            case 4:
-                                int brightness = (int)Math.Round(Color.FromArgb(pix.R, pix.G, pix.B).GetBrightness() * 255);
-                                pointsArray[brightness]++;
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-                }
-                img.Dispose();
-
-                Series series = new Series();
-                series.ChartType = SeriesChartType.Column;
-                series.Name = "series1";
-                histogram.Series.Add(series);
-
-                for (int i = 0; i <= 255; ++i)
-                    histogram.Series["series1"].Points.AddXY(i, pointsArray[i]);
-
-                histogram.ChartAreas[0].AxisX.Minimum = 0;
-                histogram.ChartAreas[0].AxisX.Maximum = 255;
-                histogram.Series[0]["PointWidth"] = "1";
-
-                switch (comboBox2.SelectedIndex)
-                {
-                    case 1:
-                        series.Color = Color.FromArgb(255, 50, 30);
-                        break;
-
-                    case 2:
-                        series.Color = Color.FromArgb(100, 255, 60);
-                        break;
-
-                    case 3:
-                        series.Color = Color.FromArgb(40, 40, 255);
-                        break;
-
-                    case 4:
-                        if (theme == true)
-                            series.Color = Color.FromArgb(47, 47, 47);
-                        break;
-                    default:
-                        break;
-                }
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-            }
-            else
-                MessageBox.Show("Image is not selected", "Error");
-        }
-
-        private static ImageCodecInfo GetEncoder(ImageFormat format)
-        {
-            var codecs = ImageCodecInfo.GetImageDecoders();
-            foreach (var codec in codecs)
-            {
-                if (codec.FormatID == format.Guid)
-                {
-                    return codec;
-                }
-            }
-            return null;
-        }
 
         private void JPEGingToolStripMenuItem_Click(object sender, EventArgs e)//джепегирует изображение
         {
@@ -1291,26 +464,6 @@ namespace ImgApp_2_WinForms
                 //credits.ForeColor = Color.FromArgb(221, 221, 221);
                 //debug.ForeColor = Color.FromArgb(221, 221, 221);
                 //opacity.ForeColor = Color.FromArgb(221, 221, 221);
-            }
-        }
-
-        private void histogrammToolStripMenuItem_Click(object sender, EventArgs e)//прячет/показывает окно гистограммы
-        {
-            if (histogrammToolStripMenuItem.Checked == true)
-            {
-                histogrammToolStripMenuItem.Checked = false;
-                histogram.Visible = false;
-                comboBox2.Visible = false;
-                button3.Visible = false;
-                ImageOutput.Size = new Size(ImageOutput.Width, Convert.ToInt32(ImageOutput.Height * 1.25));
-            }
-            else
-            {
-                histogrammToolStripMenuItem.Checked = true;
-                histogram.Visible = true;
-                comboBox2.Visible = true;
-                button3.Visible = true;
-                ImageOutput.Size = new Size(ImageOutput.Width, Convert.ToInt32(ImageOutput.Height * 0.8));
             }
         }
 
@@ -1518,6 +671,364 @@ namespace ImgApp_2_WinForms
                 Clipboard.SetImage(ImageOutput.Image);
         }
 
+        #region histogram
+        private void histogramRender2(object sender, EventArgs e)//СОВСЕМ улучшенная отрисовка гистограммы
+        {
+            if (LayerList.SelectedIndices.Count > 0)
+            {
+                if (comboBox2.SelectedIndex == 0)
+                {
+                    Stopwatch timer = new Stopwatch();
+                    timer.Start();
+                    this.Cursor = Cursors.WaitCursor;
+
+                    histogram.Series[0].Points.Clear();
+                    histogram.Series.Clear();
+
+                    int[] RpointsArray = new int[256];
+                    int[] GpointsArray = new int[256];
+                    int[] BpointsArray = new int[256];
+
+                    int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
+                    var img1 = new Bitmap(LoadedImages[index]);
+
+                    byte[] img1_bytes = new byte[0];
+
+                    using (Bitmap _tmp = new Bitmap(img1.Width, img1.Height, PixelFormat.Format24bppRgb))
+                    {
+                        _tmp.SetResolution(img1.HorizontalResolution, img1.VerticalResolution); //устанавливаем DPI такой же как у исходного
+
+                        using (var g = Graphics.FromImage(_tmp)) //рисуем исходное изображение на временном, "типо-копируем"
+                        {
+                            g.DrawImageUnscaled(img1, 0, 0);
+                        }
+                        img1_bytes = getImgBytes(_tmp); //получаем байты изображения, см. описание ф-ции 
+                    }
+
+                    //Parallel.For(0, (img1.Width * img1.Height * 3) - 2, i =>
+                    // {
+                    //     if (i % 3 != 0)
+                    //         return;
+                    //     RpointsArray[img1_bytes[i + 2]]++;
+                    //     GpointsArray[img1_bytes[i + 1]]++;
+                    //     BpointsArray[img1_bytes[i]]++;
+                    // });
+
+                    //for (int i = 0; i < img1.Width * img1.Height * 3 - 2; i += 3)
+                    //{
+                    //    int r = img1_bytes[i + 2];
+                    //    int g = img1_bytes[i + 1];
+                    //    int b = img1_bytes[i];
+
+                    //    RpointsArray[r]++;
+                    //    GpointsArray[g]++;
+                    //    BpointsArray[b]++;
+                    //    if (i >= (img1.Width * 3)-3)
+                    //        continue;
+                    //}
+
+                    for (int i = 0; i < img1.Width * img1.Height * 3; i++)
+                    {
+                        if (i % 3 == 0)
+                            BpointsArray[img1_bytes[i]]++;
+
+                        if (i % 3 == 1)
+                            GpointsArray[img1_bytes[i]]++;
+
+                        if (i % 3 == 2)
+                            RpointsArray[img1_bytes[i]]++;
+                    }
+
+                    img1.Dispose();
+
+                    ChartArea areaR = new ChartArea();
+                    histogram.ChartAreas.Add(areaR);
+
+                    ChartArea areaG = new ChartArea();
+                    histogram.ChartAreas.Add(areaG);
+
+                    ChartArea areaB = new ChartArea();
+                    histogram.ChartAreas.Add(areaB);
+
+                    Series seriesR = new Series();
+                    seriesR.ChartType = SeriesChartType.Column;
+                    seriesR.Name = "seriesR";
+                    seriesR.ChartArea = areaR.Name;
+                    histogram.Series.Add(seriesR);
+
+                    Series seriesG = new Series();
+                    seriesG.ChartType = SeriesChartType.Column;
+                    seriesG.Name = "seriesG";
+                    seriesG.ChartArea = areaG.Name;
+                    histogram.Series.Add(seriesG);
+
+                    Series seriesB = new Series();
+                    seriesB.ChartType = SeriesChartType.Column;
+                    seriesB.Name = "seriesB";
+                    seriesB.ChartArea = areaB.Name;
+                    histogram.Series.Add(seriesB);
+
+                    for (int i = 0; i <= 255; ++i)
+                    {
+                        histogram.Series["seriesR"].Points.AddXY(i, RpointsArray[i]);
+                        histogram.Series["seriesG"].Points.AddXY(i, GpointsArray[i]);
+                        histogram.Series["seriesB"].Points.AddXY(i, BpointsArray[i]);
+                    }
+
+                    areaR.RecalculateAxesScale();
+                    areaG.RecalculateAxesScale();
+                    areaB.RecalculateAxesScale();
+
+                    var max = areaR.AxisY.Maximum;
+                    if (areaG.AxisY.Maximum > max)
+                        max = areaG.AxisY.Maximum;
+                    if (areaB.AxisY.Maximum > max)
+                        max = areaB.AxisY.Maximum;
+
+                    areaG.AxisY.Maximum = max;
+                    areaG.AxisY.Maximum = max;
+                    areaB.AxisY.Maximum = max;
+
+                    histogram.ChartAreas[0].AxisX.Minimum = 0;
+                    histogram.ChartAreas[0].AxisX.Maximum = 255;
+                    histogram.ChartAreas[1].AxisX.Minimum = 0;
+                    histogram.ChartAreas[1].AxisX.Maximum = 255;
+                    histogram.ChartAreas[2].AxisX.Minimum = 0;
+                    histogram.ChartAreas[2].AxisX.Maximum = 255;
+                    histogram.Series[0]["PointWidth"] = "1";
+                    histogram.Series[1]["PointWidth"] = "1";
+                    histogram.Series[2]["PointWidth"] = "1";
+
+                    areaR.Position = new ElementPosition(0, 0, 100, 100);
+                    areaG.Position = new ElementPosition(0, 0, 100, 100);
+                    areaB.Position = new ElementPosition(0, 0, 100, 100);
+
+                    areaR.AxisX.IsMarginVisible = false;
+                    areaG.AxisX.IsMarginVisible = false;
+                    areaB.AxisX.IsMarginVisible = false;
+
+                    seriesR.Color = Color.FromArgb(128, 255, 50, 30);
+                    seriesG.Color = Color.FromArgb(128, 100, 255, 60);
+                    seriesB.Color = Color.FromArgb(128, 40, 40, 255);
+
+                    areaR.BackColor = Color.Transparent;
+                    areaG.BackColor = Color.Transparent;
+                    areaB.BackColor = Color.Transparent;
+
+                    this.Cursor = Cursors.Default;
+                    timer.Stop();
+                    debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+                }
+                else
+                    button1_Click(sender, e);
+            }
+            else
+                MessageBox.Show("Image is not selected", "Error");
+
+        }
+
+        private void histogramRender(object sender, EventArgs e)//улучшенная отрисовка гистограммы
+        {
+            if (LayerList.SelectedIndices.Count > 0)
+            {
+                if (comboBox2.SelectedIndex == 0)
+                {
+                    Stopwatch timer = new Stopwatch();
+                    timer.Start();
+                    this.Cursor = Cursors.WaitCursor;
+
+                    histogram.Series[0].Points.Clear();
+                    histogram.Series.Clear();
+
+                    int[] RpointsArray = new int[256];
+                    int[] GpointsArray = new int[256];
+                    int[] BpointsArray = new int[256];
+
+                    int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
+                    var img = new Bitmap(LoadedImages[index]);
+                    for (int i = 0; i < img.Height; ++i)
+                        for (int j = 0; j < img.Width; ++j)
+                        {
+                            var pix = img.GetPixel(j, i);
+                            RpointsArray[pix.R]++;
+                            GpointsArray[pix.G]++;
+                            BpointsArray[pix.B]++;
+                        }
+                    img.Dispose();
+
+                    ChartArea areaR = new ChartArea();
+                    histogram.ChartAreas.Add(areaR);
+
+                    ChartArea areaG = new ChartArea();
+                    histogram.ChartAreas.Add(areaG);
+
+                    ChartArea areaB = new ChartArea();
+                    histogram.ChartAreas.Add(areaB);
+
+                    Series seriesR = new Series();
+                    seriesR.ChartType = SeriesChartType.Column;
+                    seriesR.Name = "seriesR";
+                    seriesR.ChartArea = areaR.Name;
+                    histogram.Series.Add(seriesR);
+
+                    Series seriesG = new Series();
+                    seriesG.ChartType = SeriesChartType.Column;
+                    seriesG.Name = "seriesG";
+                    seriesG.ChartArea = areaG.Name;
+                    histogram.Series.Add(seriesG);
+
+                    Series seriesB = new Series();
+                    seriesB.ChartType = SeriesChartType.Column;
+                    seriesB.Name = "seriesB";
+                    seriesB.ChartArea = areaB.Name;
+                    histogram.Series.Add(seriesB);
+
+                    for (int i = 0; i <= 255; ++i)
+                    {
+                        histogram.Series["seriesR"].Points.AddXY(i, RpointsArray[i]);
+                        histogram.Series["seriesG"].Points.AddXY(i, GpointsArray[i]);
+                        histogram.Series["seriesB"].Points.AddXY(i, BpointsArray[i]);
+                    }
+
+                    areaR.RecalculateAxesScale();
+                    areaG.RecalculateAxesScale();
+                    areaB.RecalculateAxesScale();
+
+                    var max = areaR.AxisY.Maximum;
+                    if (areaG.AxisY.Maximum > max)
+                        max = areaG.AxisY.Maximum;
+                    if (areaB.AxisY.Maximum > max)
+                        max = areaB.AxisY.Maximum;
+
+                    areaG.AxisY.Maximum = max;
+                    areaG.AxisY.Maximum = max;
+                    areaB.AxisY.Maximum = max;
+
+                    histogram.ChartAreas[0].AxisX.Minimum = 0;
+                    histogram.ChartAreas[0].AxisX.Maximum = 255;
+                    histogram.ChartAreas[1].AxisX.Minimum = 0;
+                    histogram.ChartAreas[1].AxisX.Maximum = 255;
+                    histogram.ChartAreas[2].AxisX.Minimum = 0;
+                    histogram.ChartAreas[2].AxisX.Maximum = 255;
+                    histogram.Series[0]["PointWidth"] = "1";
+                    histogram.Series[1]["PointWidth"] = "1";
+                    histogram.Series[2]["PointWidth"] = "1";
+
+                    areaR.Position = new ElementPosition(0, 0, 100, 100);
+                    areaG.Position = new ElementPosition(0, 0, 100, 100);
+                    areaB.Position = new ElementPosition(0, 0, 100, 100);
+
+                    areaR.AxisX.IsMarginVisible = false;
+                    areaG.AxisX.IsMarginVisible = false;
+                    areaB.AxisX.IsMarginVisible = false;
+
+                    seriesR.Color = Color.FromArgb(128, 255, 50, 30);
+                    seriesG.Color = Color.FromArgb(128, 100, 255, 60);
+                    seriesB.Color = Color.FromArgb(128, 40, 40, 255);
+
+                    areaR.BackColor = Color.Transparent;
+                    areaG.BackColor = Color.Transparent;
+                    areaB.BackColor = Color.Transparent;
+
+                    this.Cursor = Cursors.Default;
+                    timer.Stop();
+                    debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+                }
+                else
+                    button1_Click(sender, e);
+            }
+            else
+                MessageBox.Show("Image is not selected", "Error");
+        }
+
+        private void button1_Click(object sender, EventArgs e)//отрисовка гистограммы
+        {
+            if (LayerList.SelectedIndices.Count > 0)
+            {
+                Stopwatch timer = new Stopwatch();
+                timer.Start();
+                this.Cursor = Cursors.WaitCursor;
+
+                histogram.Series[0].Points.Clear();
+                histogram.Series.Clear();
+
+                int[] pointsArray = new int[256];
+
+                var index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
+                var img = new Bitmap(LoadedImages[index]);
+                for (int i = 0; i < img.Height; ++i)
+                {
+                    for (int j = 0; j < img.Width; ++j)
+                    {
+                        var pix = img.GetPixel(j, i);
+                        switch (comboBox2.SelectedIndex)
+                        {
+                            case 1:
+                                pointsArray[pix.R]++;
+                                break;
+
+                            case 2:
+                                pointsArray[pix.G]++;
+                                break;
+
+                            case 3:
+                                pointsArray[pix.B]++;
+                                break;
+
+                            case 4:
+                                int brightness = (int)Math.Round(Color.FromArgb(pix.R, pix.G, pix.B).GetBrightness() * 255);
+                                pointsArray[brightness]++;
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                }
+                img.Dispose();
+
+                Series series = new Series();
+                series.ChartType = SeriesChartType.Column;
+                series.Name = "series1";
+                histogram.Series.Add(series);
+
+                for (int i = 0; i <= 255; ++i)
+                    histogram.Series["series1"].Points.AddXY(i, pointsArray[i]);
+
+                histogram.ChartAreas[0].AxisX.Minimum = 0;
+                histogram.ChartAreas[0].AxisX.Maximum = 255;
+                histogram.Series[0]["PointWidth"] = "1";
+
+                switch (comboBox2.SelectedIndex)
+                {
+                    case 1:
+                        series.Color = Color.FromArgb(255, 50, 30);
+                        break;
+
+                    case 2:
+                        series.Color = Color.FromArgb(100, 255, 60);
+                        break;
+
+                    case 3:
+                        series.Color = Color.FromArgb(40, 40, 255);
+                        break;
+
+                    case 4:
+                        if (theme == true)
+                            series.Color = Color.FromArgb(47, 47, 47);
+                        break;
+                    default:
+                        break;
+                }
+
+                this.Cursor = Cursors.Default;
+                timer.Stop();
+                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+            }
+            else
+                MessageBox.Show("Image is not selected", "Error");
+        }
+
         private void autoHistogramToolStripMenuItem_Click(object sender, EventArgs e)//автоматический расчёт гистограммы
         {
             if (autoHistogramToolStripMenuItem.Checked == true)
@@ -1526,6 +1037,28 @@ namespace ImgApp_2_WinForms
                 autoHistogramToolStripMenuItem.Checked = true;
         }
 
+        private void histogrammToolStripMenuItem_Click(object sender, EventArgs e)//прячет/показывает окно гистограммы
+        {
+            if (histogrammToolStripMenuItem.Checked == true)
+            {
+                histogrammToolStripMenuItem.Checked = false;
+                histogram.Visible = false;
+                comboBox2.Visible = false;
+                button3.Visible = false;
+                ImageOutput.Size = new Size(ImageOutput.Width, Convert.ToInt32(ImageOutput.Height * 1.25));
+            }
+            else
+            {
+                histogrammToolStripMenuItem.Checked = true;
+                histogram.Visible = true;
+                comboBox2.Visible = true;
+                button3.Visible = true;
+                ImageOutput.Size = new Size(ImageOutput.Width, Convert.ToInt32(ImageOutput.Height * 0.8));
+            }
+        }
+        #endregion
+
+        #region binarization
         private void fToolStripMenuItem_Click(object sender, EventArgs e)//банальная бинаризация
         {
             if (LayerList.SelectedIndices.Count > 0)
@@ -1575,7 +1108,9 @@ namespace ImgApp_2_WinForms
             else
                 MessageBox.Show("Image is not selected", "Error");
         }
+        #endregion
 
+        #region curve
         private void bCurve_Click(object sender, EventArgs e)//очистка кривой
         {
             Points.Clear();
@@ -1717,5 +1252,49 @@ namespace ImgApp_2_WinForms
             else
                 MessageBox.Show("Image is not selected", "Error");
         }
+        #endregion
+
+        #region helper functions
+        public static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
+        {
+            if (val.CompareTo(min) < 0) return min;
+            else if (val.CompareTo(max) > 0) return max;
+            else return val;
+        }
+
+        static byte[] getImgBytes(Bitmap img)
+        {
+            byte[] bytes = new byte[img.Width * img.Height * 3];  //выделяем память под массив байтов
+            var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
+                ImageLockMode.ReadOnly,
+                img.PixelFormat);
+            Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);  //копируем байты изображения в массив
+            img.UnlockBits(data);   //разблокируем изображение
+            return bytes; //возвращаем байты
+        }
+
+        static void writeImageBytes(Bitmap img, byte[] bytes)
+        {
+            var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
+                ImageLockMode.WriteOnly,
+                img.PixelFormat);
+            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length); //копируем байты массива в изображение
+
+            img.UnlockBits(data);  //разблокируем изображение
+        }
+
+        private static ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            var codecs = ImageCodecInfo.GetImageDecoders();
+            foreach (var codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+            return null;
+        }
+        #endregion
     }
 }
