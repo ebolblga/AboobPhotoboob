@@ -30,6 +30,7 @@ namespace ImgApp_2_WinForms
         public Form1()
         {
             InitializeComponent();
+            DoubleBuffered = true;
             LoadedImages = new List<Image>();
             comboBox2.SelectedIndex = 0;
             channelBox.SelectedIndex = 0;
