@@ -86,7 +86,7 @@ namespace ImgApp_2_WinForms
 
                 if (autoHistogramToolStripMenuItem.Checked == true && histogrammToolStripMenuItem.Checked == true)
                 {
-                    histogramRender(sender, e);
+                    histogramRender2(sender, e);
                 }
             }
         }
@@ -683,64 +683,26 @@ namespace ImgApp_2_WinForms
                     timer.Start();
                     this.Cursor = Cursors.WaitCursor;
 
-                    histogram.Series[0].Points.Clear();
                     histogram.Series.Clear();
+                    histogram.ChartAreas.Clear();
 
                     int[] RpointsArray = new int[256];
                     int[] GpointsArray = new int[256];
                     int[] BpointsArray = new int[256];
 
                     int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
-                    var img1 = new Bitmap(LoadedImages[index]);
+                    var img = new Bitmap(LoadedImages[index]);
 
-                    byte[] img1_bytes = new byte[0];
+                    byte[] imgBytes = GetRGBValues(img);
 
-                    using (Bitmap _tmp = new Bitmap(img1.Width, img1.Height, PixelFormat.Format24bppRgb))
+                    for (int i = 0; i < img.Width * img.Height * 4 - 3; i += 4)
                     {
-                        _tmp.SetResolution(img1.HorizontalResolution, img1.VerticalResolution); //устанавливаем DPI такой же как у исходного
-
-                        using (var g = Graphics.FromImage(_tmp)) //рисуем исходное изображение на временном, "типо-копируем"
-                        {
-                            g.DrawImageUnscaled(img1, 0, 0);
-                        }
-                        img1_bytes = getImgBytes(_tmp); //получаем байты изображения, см. описание ф-ции 
+                        RpointsArray[imgBytes[i + 2]]++;
+                        GpointsArray[imgBytes[i + 1]]++;
+                        BpointsArray[imgBytes[i]]++;
                     }
 
-                    //Parallel.For(0, (img1.Width * img1.Height * 3) - 2, i =>
-                    // {
-                    //     if (i % 3 != 0)
-                    //         return;
-                    //     RpointsArray[img1_bytes[i + 2]]++;
-                    //     GpointsArray[img1_bytes[i + 1]]++;
-                    //     BpointsArray[img1_bytes[i]]++;
-                    // });
-
-                    //for (int i = 0; i < img1.Width * img1.Height * 3 - 2; i += 3)
-                    //{
-                    //    int r = img1_bytes[i + 2];
-                    //    int g = img1_bytes[i + 1];
-                    //    int b = img1_bytes[i];
-
-                    //    RpointsArray[r]++;
-                    //    GpointsArray[g]++;
-                    //    BpointsArray[b]++;
-                    //    if (i >= (img1.Width * 3)-3)
-                    //        continue;
-                    //}
-
-                    for (int i = 0; i < img1.Width * img1.Height * 3; i++)
-                    {
-                        if (i % 3 == 0)
-                            BpointsArray[img1_bytes[i]]++;
-
-                        if (i % 3 == 1)
-                            GpointsArray[img1_bytes[i]]++;
-
-                        if (i % 3 == 2)
-                            RpointsArray[img1_bytes[i]]++;
-                    }
-
-                    img1.Dispose();
+                    img.Dispose();
 
                     ChartArea areaR = new ChartArea();
                     histogram.ChartAreas.Add(areaR);
@@ -776,6 +738,7 @@ namespace ImgApp_2_WinForms
                         histogram.Series["seriesB"].Points.AddXY(i, BpointsArray[i]);
                     }
 
+                    #region cosmetics
                     areaR.RecalculateAxesScale();
                     areaG.RecalculateAxesScale();
                     areaB.RecalculateAxesScale();
@@ -786,19 +749,19 @@ namespace ImgApp_2_WinForms
                     if (areaB.AxisY.Maximum > max)
                         max = areaB.AxisY.Maximum;
 
-                    areaG.AxisY.Maximum = max;
+                    areaR.AxisY.Maximum = max;
                     areaG.AxisY.Maximum = max;
                     areaB.AxisY.Maximum = max;
 
-                    histogram.ChartAreas[0].AxisX.Minimum = 0;
-                    histogram.ChartAreas[0].AxisX.Maximum = 255;
-                    histogram.ChartAreas[1].AxisX.Minimum = 0;
-                    histogram.ChartAreas[1].AxisX.Maximum = 255;
-                    histogram.ChartAreas[2].AxisX.Minimum = 0;
-                    histogram.ChartAreas[2].AxisX.Maximum = 255;
-                    histogram.Series[0]["PointWidth"] = "1";
-                    histogram.Series[1]["PointWidth"] = "1";
-                    histogram.Series[2]["PointWidth"] = "1";
+                    areaR.AxisX.Minimum = 0;
+                    areaR.AxisX.Maximum = 255;
+                    areaG.AxisX.Minimum = 0;
+                    areaG.AxisX.Maximum = 255;
+                    areaB.AxisX.Minimum = 0;
+                    areaB.AxisX.Maximum = 255;
+                    seriesR["PointWidth"] = "1";
+                    seriesG["PointWidth"] = "1";
+                    seriesB["PointWidth"] = "1";
 
                     areaR.Position = new ElementPosition(0, 0, 100, 100);
                     areaG.Position = new ElementPosition(0, 0, 100, 100);
@@ -815,6 +778,7 @@ namespace ImgApp_2_WinForms
                     areaR.BackColor = Color.Transparent;
                     areaG.BackColor = Color.Transparent;
                     areaB.BackColor = Color.Transparent;
+                    #endregion
 
                     this.Cursor = Cursors.Default;
                     timer.Stop();
@@ -826,6 +790,27 @@ namespace ImgApp_2_WinForms
             else
                 MessageBox.Show("Image is not selected", "Error");
 
+        }
+        private byte[] GetRGBValues(Bitmap bmp)
+        {
+
+            // Lock the bitmap's bits. 
+            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            System.Drawing.Imaging.BitmapData bmpData =
+             bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+             bmp.PixelFormat);
+
+            // Get the address of the first line.
+            IntPtr ptr = bmpData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap.
+            int bytes = bmpData.Stride * bmp.Height;
+            byte[] rgbValues = new byte[bytes];
+
+            // Copy the RGB values into the array.
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes); bmp.UnlockBits(bmpData);
+
+            return rgbValues;
         }
 
         private void histogramRender(object sender, EventArgs e)//улучшенная отрисовка гистограммы
@@ -1297,5 +1282,10 @@ namespace ImgApp_2_WinForms
             return null;
         }
         #endregion
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+        }
     }
 }

@@ -30,9 +30,9 @@ namespace ImgApp_2_WinForms
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.LayerList = new System.Windows.Forms.ListView();
             this.ImageListMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -87,6 +87,7 @@ namespace ImgApp_2_WinForms
             this.bApplyCurve = new System.Windows.Forms.Button();
             this.bRender3 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.ImageListMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.histogram)).BeginInit();
@@ -346,6 +347,8 @@ namespace ImgApp_2_WinForms
             // 
             // autoHistogramToolStripMenuItem
             // 
+            this.autoHistogramToolStripMenuItem.Checked = true;
+            this.autoHistogramToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.autoHistogramToolStripMenuItem.Name = "autoHistogramToolStripMenuItem";
             this.autoHistogramToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.autoHistogramToolStripMenuItem.Text = "Auto Histogram";
@@ -378,25 +381,25 @@ namespace ImgApp_2_WinForms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.histogram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(69)))), ((int)(((byte)(69)))));
             this.histogram.BorderSkin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            chartArea1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(69)))), ((int)(((byte)(69)))));
-            chartArea1.Name = "ChartArea1";
-            chartArea1.ShadowColor = System.Drawing.Color.White;
-            this.histogram.ChartAreas.Add(chartArea1);
-            legend1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(67)))), ((int)(((byte)(67)))));
-            legend1.Enabled = false;
-            legend1.Font = new System.Drawing.Font("Montserrat", 8.249999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            legend1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            legend1.IsTextAutoFit = false;
-            legend1.Name = "Legend1";
-            this.histogram.Legends.Add(legend1);
+            chartArea2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(69)))), ((int)(((byte)(69)))));
+            chartArea2.Name = "ChartArea1";
+            chartArea2.ShadowColor = System.Drawing.Color.White;
+            this.histogram.ChartAreas.Add(chartArea2);
+            legend2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(67)))), ((int)(((byte)(67)))));
+            legend2.Enabled = false;
+            legend2.Font = new System.Drawing.Font("Montserrat", 8.249999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            legend2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            legend2.IsTextAutoFit = false;
+            legend2.Name = "Legend1";
+            this.histogram.Legends.Add(legend2);
             this.histogram.Location = new System.Drawing.Point(95, 464);
             this.histogram.Name = "histogram";
             this.histogram.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Grayscale;
-            series1.ChartArea = "ChartArea1";
-            series1.IsXValueIndexed = true;
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.histogram.Series.Add(series1);
+            series2.ChartArea = "ChartArea1";
+            series2.IsXValueIndexed = true;
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.histogram.Series.Add(series2);
             this.histogram.Size = new System.Drawing.Size(936, 90);
             this.histogram.TabIndex = 8;
             this.histogram.Text = "chart1";
@@ -629,6 +632,10 @@ namespace ImgApp_2_WinForms
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.histogramRender);
             // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -729,6 +736,7 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.Button bApplyCurve;
         private System.Windows.Forms.Button bRender3;
         private System.Windows.Forms.Button button1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 
