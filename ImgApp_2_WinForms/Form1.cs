@@ -19,10 +19,10 @@ namespace ImgApp_2_WinForms
     public partial class Form1 : Form
     {
         private List<Image> LoadedImages { get; set; }
-        const int N = 20; //max amount of images
+        const int N = 20;   //максимальное кол-во изображений (чтоб краша из-за недостатка памяти небыло)
         public static Bitmap image = null;
-        private int[] mode = new int[N];
-        int[] opacityArray = Enumerable.Repeat(100, N).ToArray();
+        private int[] mode = new int[N];    //массив режимов наложения слоёв
+        int[] opacityArray = Enumerable.Repeat(100, N).ToArray();   //массив прозрачности слоёв
         bool theme = false; //0 dark theme, 1 light theme
         private List<Point> Points = new List<Point>();
         private List<Point> Points2 = new List<Point>();
@@ -337,11 +337,6 @@ namespace ImgApp_2_WinForms
                 MessageBox.Show("Image is not selected", "Error");
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)//завершение программы
-        {
-            this.Close();
-        }
-
         private void bClear_Click(object sender, EventArgs e)//удаление слоя/слоёв
         {
             if (LayerList.SelectedIndices.Count > 0)
@@ -418,56 +413,6 @@ namespace ImgApp_2_WinForms
                 MessageBox.Show("Image is not selected", "Error");
         }
 
-        private void themeBox1_Click(object sender, EventArgs e)//переключатель темы
-        {
-            if (theme == false)
-            {
-                var light = new Bitmap("..\\..\\..\\darkThemeSmallest.png");
-                themeBox1.Image = light;
-                theme = true;
-
-                this.BackColor = Color.FromArgb(240, 240, 240);
-                LayerList.BackColor = Color.FromArgb(219, 219, 219);
-                LayerList.ForeColor = Color.FromArgb(47, 47, 47);
-                histogram.BackColor = Color.FromArgb(219, 219, 219);
-                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(219, 219, 219);
-                credits.ForeColor = Color.FromArgb(47, 47, 47);
-                debug.ForeColor = Color.FromArgb(47, 47, 47);
-                opacity.ForeColor = Color.FromArgb(47, 47, 47);
-                label1.ForeColor = Color.FromArgb(47, 47, 47);
-                label2.ForeColor = Color.FromArgb(47, 47, 47);
-                curveEditBox.BackColor = Color.FromArgb(219, 219, 219);
-            }
-            else
-            {
-                var dark = new Bitmap("..\\..\\..\\lightThemeSmallest.png");
-                themeBox1.Image = dark;
-                theme = false;
-
-                this.BackColor = Color.FromArgb(47, 47, 47);
-                LayerList.BackColor = Color.FromArgb(69, 69, 69);
-                LayerList.ForeColor = Color.FromArgb(224, 224, 224);
-                histogram.BackColor = Color.FromArgb(69, 69, 69);
-                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(69, 69, 69);
-                credits.ForeColor = Color.FromArgb(224, 224, 224);
-                debug.ForeColor = Color.FromArgb(224, 224, 224);
-                opacity.ForeColor = Color.FromArgb(224, 224, 224);
-                label1.ForeColor = Color.FromArgb(224, 224, 224);
-                label2.ForeColor = Color.FromArgb(224, 224, 224);
-                curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
-
-                //photoshop theme
-                //this.BackColor = Color.FromArgb(38, 38, 38);
-                //LayerList.BackColor = Color.FromArgb(83, 83, 83);
-                //LayerList.ForeColor = Color.FromArgb(221, 221, 221);
-                //histogram.BackColor = Color.FromArgb(83, 83, 83);
-                //histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(83, 83, 83);
-                //credits.ForeColor = Color.FromArgb(221, 221, 221);
-                //debug.ForeColor = Color.FromArgb(221, 221, 221);
-                //opacity.ForeColor = Color.FromArgb(221, 221, 221);
-            }
-        }
-
         private void transparencyBar_Scroll(object sender, EventArgs e)//скрол бар прозрачности
         {
             opacity.Text = "Opacity: " + opacityBar.Value.ToString() + "%";
@@ -478,7 +423,7 @@ namespace ImgApp_2_WinForms
             }
         }
 
-        private void openImageToolStripMenuItem_Click(object sender, EventArgs e)//открытия одного изображения
+        private void openImageToolStripMenuItem_Click(object sender, EventArgs e)//открытие одного изображения
         {
             if (LoadedImages.Count == 0)
             {
@@ -594,21 +539,6 @@ namespace ImgApp_2_WinForms
                 MessageBox.Show("Too many images in a project, careful", "Error");
         }
 
-        private float imageResize(Image image)//изменение размера изображения не портя соотношение сторон
-        {
-            int originalWidth = image.Width;
-            int originalHeight = image.Height;
-            float maxWidth = 77;
-            float maxHeight = 80;
-
-            float ratioX = (float)maxWidth / (float)originalWidth;
-            float ratioY = (float)maxHeight / (float)originalHeight;
-
-            float ratio = Math.Min(ratioX, ratioY);
-
-            return ratio;
-        }
-
         private void channelBox_SelectionChangeCommitted(object sender, EventArgs e)//RGB каналы
         {
             if (LayerList.SelectedIndices.Count > 0)
@@ -664,12 +594,6 @@ namespace ImgApp_2_WinForms
             }
             else
                 MessageBox.Show("Image is not selected", "Error");
-        }
-
-        private void copyToClipboardToolStripMenuItem_Click(object sender, EventArgs e)//копирование изображения
-        {
-            if (ImageOutput.Image != null)
-                Clipboard.SetImage(ImageOutput.Image);
         }
 
         #region histogram
@@ -738,7 +662,6 @@ namespace ImgApp_2_WinForms
                         histogram.Series["seriesB"].Points.AddXY(i, BpointsArray[i]);
                     }
 
-                    #region cosmetics
                     areaR.RecalculateAxesScale();
                     areaG.RecalculateAxesScale();
                     areaB.RecalculateAxesScale();
@@ -778,68 +701,38 @@ namespace ImgApp_2_WinForms
                     areaR.BackColor = Color.Transparent;
                     areaG.BackColor = Color.Transparent;
                     areaB.BackColor = Color.Transparent;
-                    #endregion
 
                     this.Cursor = Cursors.Default;
                     timer.Stop();
                     debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
                 }
                 else
-                    button1_Click(sender, e);
-            }
-            else
-                MessageBox.Show("Image is not selected", "Error");
-
-        }
-        private byte[] GetRGBValues(Bitmap bmp)
-        {
-
-            // Lock the bitmap's bits. 
-            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-            System.Drawing.Imaging.BitmapData bmpData =
-             bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
-             bmp.PixelFormat);
-
-            // Get the address of the first line.
-            IntPtr ptr = bmpData.Scan0;
-
-            // Declare an array to hold the bytes of the bitmap.
-            int bytes = bmpData.Stride * bmp.Height;
-            byte[] rgbValues = new byte[bytes];
-
-            // Copy the RGB values into the array.
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes); bmp.UnlockBits(bmpData);
-
-            return rgbValues;
-        }
-
-        private void histogramRender(object sender, EventArgs e)//улучшенная отрисовка гистограммы
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                if (comboBox2.SelectedIndex == 0)
                 {
                     Stopwatch timer = new Stopwatch();
                     timer.Start();
                     this.Cursor = Cursors.WaitCursor;
 
-                    histogram.Series[0].Points.Clear();
                     histogram.Series.Clear();
+                    histogram.ChartAreas.Clear();
 
                     int[] RpointsArray = new int[256];
                     int[] GpointsArray = new int[256];
                     int[] BpointsArray = new int[256];
+                    int[] BrightnessArray = new int[256];
 
                     int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
                     var img = new Bitmap(LoadedImages[index]);
-                    for (int i = 0; i < img.Height; ++i)
-                        for (int j = 0; j < img.Width; ++j)
-                        {
-                            var pix = img.GetPixel(j, i);
-                            RpointsArray[pix.R]++;
-                            GpointsArray[pix.G]++;
-                            BpointsArray[pix.B]++;
-                        }
+
+                    byte[] imgBytes = GetRGBValues(img);
+
+                    for (int i = 0; i < img.Width * img.Height * 4 - 3; i += 4)
+                    {
+                        RpointsArray[imgBytes[i + 2]]++;
+                        GpointsArray[imgBytes[i + 1]]++;
+                        BpointsArray[imgBytes[i]]++;
+                        BrightnessArray[(int)Math.Round(Color.FromArgb(imgBytes[i + 2], imgBytes[i + 1], imgBytes[i]).GetBrightness() * 255)]++;
+                    }
+
                     img.Dispose();
 
                     ChartArea areaR = new ChartArea();
@@ -850,6 +743,9 @@ namespace ImgApp_2_WinForms
 
                     ChartArea areaB = new ChartArea();
                     histogram.ChartAreas.Add(areaB);
+
+                    ChartArea areaBr = new ChartArea();
+                    histogram.ChartAreas.Add(areaBr);
 
                     Series seriesR = new Series();
                     seriesR.ChartType = SeriesChartType.Column;
@@ -869,150 +765,96 @@ namespace ImgApp_2_WinForms
                     seriesB.ChartArea = areaB.Name;
                     histogram.Series.Add(seriesB);
 
+                    Series seriesBr = new Series();
+                    seriesBr.ChartType = SeriesChartType.Column;
+                    seriesBr.Name = "seriesBr";
+                    seriesBr.ChartArea = areaBr.Name;
+                    histogram.Series.Add(seriesBr);
+
                     for (int i = 0; i <= 255; ++i)
-                    {
-                        histogram.Series["seriesR"].Points.AddXY(i, RpointsArray[i]);
-                        histogram.Series["seriesG"].Points.AddXY(i, GpointsArray[i]);
-                        histogram.Series["seriesB"].Points.AddXY(i, BpointsArray[i]);
-                    }
+                        switch (comboBox2.SelectedIndex)
+                        {
+                            case 1:
+                                histogram.Series["seriesR"].Points.AddXY(i, RpointsArray[i]);
+                                break;
+
+                            case 2:
+                                histogram.Series["seriesG"].Points.AddXY(i, GpointsArray[i]);
+                                break;
+
+                            case 3:
+                                histogram.Series["seriesB"].Points.AddXY(i, BpointsArray[i]);
+                                break;
+
+                            case 4:
+                                histogram.Series["seriesBr"].Points.AddXY(i, BrightnessArray[i]);
+                                break;
+
+                            default:
+                                break;
+                        }
 
                     areaR.RecalculateAxesScale();
                     areaG.RecalculateAxesScale();
                     areaB.RecalculateAxesScale();
+                    areaBr.RecalculateAxesScale();
 
                     var max = areaR.AxisY.Maximum;
                     if (areaG.AxisY.Maximum > max)
                         max = areaG.AxisY.Maximum;
                     if (areaB.AxisY.Maximum > max)
                         max = areaB.AxisY.Maximum;
+                    if (areaBr.AxisY.Maximum > max)
+                        max = areaBr.AxisY.Maximum;
 
-                    areaG.AxisY.Maximum = max;
+                    areaR.AxisY.Maximum = max;
                     areaG.AxisY.Maximum = max;
                     areaB.AxisY.Maximum = max;
+                    areaBr.AxisY.Maximum = max;
 
-                    histogram.ChartAreas[0].AxisX.Minimum = 0;
-                    histogram.ChartAreas[0].AxisX.Maximum = 255;
-                    histogram.ChartAreas[1].AxisX.Minimum = 0;
-                    histogram.ChartAreas[1].AxisX.Maximum = 255;
-                    histogram.ChartAreas[2].AxisX.Minimum = 0;
-                    histogram.ChartAreas[2].AxisX.Maximum = 255;
-                    histogram.Series[0]["PointWidth"] = "1";
-                    histogram.Series[1]["PointWidth"] = "1";
-                    histogram.Series[2]["PointWidth"] = "1";
+                    areaR.AxisX.Minimum = 0;
+                    areaR.AxisX.Maximum = 255;
+                    areaG.AxisX.Minimum = 0;
+                    areaG.AxisX.Maximum = 255;
+                    areaB.AxisX.Minimum = 0;
+                    areaB.AxisX.Maximum = 255;
+                    areaBr.AxisX.Minimum = 0;
+                    areaBr.AxisX.Maximum = 255;
+                    seriesR["PointWidth"] = "1";
+                    seriesG["PointWidth"] = "1";
+                    seriesB["PointWidth"] = "1";
+                    seriesBr["PointWidth"] = "1";
 
                     areaR.Position = new ElementPosition(0, 0, 100, 100);
                     areaG.Position = new ElementPosition(0, 0, 100, 100);
                     areaB.Position = new ElementPosition(0, 0, 100, 100);
+                    areaBr.Position = new ElementPosition(0, 0, 100, 100);
 
                     areaR.AxisX.IsMarginVisible = false;
                     areaG.AxisX.IsMarginVisible = false;
                     areaB.AxisX.IsMarginVisible = false;
+                    areaBr.AxisX.IsMarginVisible = false;
 
-                    seriesR.Color = Color.FromArgb(128, 255, 50, 30);
-                    seriesG.Color = Color.FromArgb(128, 100, 255, 60);
-                    seriesB.Color = Color.FromArgb(128, 40, 40, 255);
+                    seriesR.Color = Color.FromArgb(255, 255, 50, 30);
+                    seriesG.Color = Color.FromArgb(255, 100, 255, 60);
+                    seriesB.Color = Color.FromArgb(255, 40, 40, 255);
+                    if (theme == true)
+                        seriesBr.Color = Color.FromArgb(255, 47, 47, 47);
 
                     areaR.BackColor = Color.Transparent;
                     areaG.BackColor = Color.Transparent;
                     areaB.BackColor = Color.Transparent;
+                    areaBr.BackColor = Color.Transparent;
 
                     this.Cursor = Cursors.Default;
                     timer.Stop();
                     debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+
                 }
-                else
-                    button1_Click(sender, e);
             }
             else
                 MessageBox.Show("Image is not selected", "Error");
-        }
 
-        private void button1_Click(object sender, EventArgs e)//отрисовка гистограммы
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                histogram.Series[0].Points.Clear();
-                histogram.Series.Clear();
-
-                int[] pointsArray = new int[256];
-
-                var index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
-                var img = new Bitmap(LoadedImages[index]);
-                for (int i = 0; i < img.Height; ++i)
-                {
-                    for (int j = 0; j < img.Width; ++j)
-                    {
-                        var pix = img.GetPixel(j, i);
-                        switch (comboBox2.SelectedIndex)
-                        {
-                            case 1:
-                                pointsArray[pix.R]++;
-                                break;
-
-                            case 2:
-                                pointsArray[pix.G]++;
-                                break;
-
-                            case 3:
-                                pointsArray[pix.B]++;
-                                break;
-
-                            case 4:
-                                int brightness = (int)Math.Round(Color.FromArgb(pix.R, pix.G, pix.B).GetBrightness() * 255);
-                                pointsArray[brightness]++;
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-                }
-                img.Dispose();
-
-                Series series = new Series();
-                series.ChartType = SeriesChartType.Column;
-                series.Name = "series1";
-                histogram.Series.Add(series);
-
-                for (int i = 0; i <= 255; ++i)
-                    histogram.Series["series1"].Points.AddXY(i, pointsArray[i]);
-
-                histogram.ChartAreas[0].AxisX.Minimum = 0;
-                histogram.ChartAreas[0].AxisX.Maximum = 255;
-                histogram.Series[0]["PointWidth"] = "1";
-
-                switch (comboBox2.SelectedIndex)
-                {
-                    case 1:
-                        series.Color = Color.FromArgb(255, 50, 30);
-                        break;
-
-                    case 2:
-                        series.Color = Color.FromArgb(100, 255, 60);
-                        break;
-
-                    case 3:
-                        series.Color = Color.FromArgb(40, 40, 255);
-                        break;
-
-                    case 4:
-                        if (theme == true)
-                            series.Color = Color.FromArgb(47, 47, 47);
-                        break;
-                    default:
-                        break;
-                }
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-            }
-            else
-                MessageBox.Show("Image is not selected", "Error");
         }
 
         private void autoHistogramToolStripMenuItem_Click(object sender, EventArgs e)//автоматический расчёт гистограммы
@@ -1021,6 +863,15 @@ namespace ImgApp_2_WinForms
                 autoHistogramToolStripMenuItem.Checked = false;
             else
                 autoHistogramToolStripMenuItem.Checked = true;
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)//автоматический расчёт гистограммы при смене канала
+        {
+            if (LayerList.SelectedIndices.Count > 0)
+            {
+                if (autoHistogramToolStripMenuItem.Checked == true && histogrammToolStripMenuItem.Checked == true)
+                    histogramRender2(sender, e);
+            }
         }
 
         private void histogrammToolStripMenuItem_Click(object sender, EventArgs e)//прячет/показывает окно гистограммы
@@ -1246,27 +1097,28 @@ namespace ImgApp_2_WinForms
             if (val.CompareTo(min) < 0) return min;
             else if (val.CompareTo(max) > 0) return max;
             else return val;
-        }
+        }//сжимает значения в выбранный промежуток
 
-        static byte[] getImgBytes(Bitmap img)
+        private byte[] GetRGBValues(Bitmap bmp)
         {
-            byte[] bytes = new byte[img.Width * img.Height * 3];  //выделяем память под массив байтов
-            var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
-                ImageLockMode.ReadOnly,
-                img.PixelFormat);
-            Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);  //копируем байты изображения в массив
-            img.UnlockBits(data);   //разблокируем изображение
-            return bytes; //возвращаем байты
-        }
 
-        static void writeImageBytes(Bitmap img, byte[] bytes)
-        {
-            var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
-                ImageLockMode.WriteOnly,
-                img.PixelFormat);
-            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length); //копируем байты массива в изображение
+            // Lock the bitmap's bits. 
+            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            System.Drawing.Imaging.BitmapData bmpData =
+             bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+             bmp.PixelFormat);
 
-            img.UnlockBits(data);  //разблокируем изображение
+            // Get the address of the first line.
+            IntPtr ptr = bmpData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap.
+            int bytes = bmpData.Stride * bmp.Height;
+            byte[] rgbValues = new byte[bytes];
+
+            // Copy the RGB values into the array.
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes); bmp.UnlockBits(bmpData);
+
+            return rgbValues;
         }
 
         private static ImageCodecInfo GetEncoder(ImageFormat format)
@@ -1280,12 +1132,70 @@ namespace ImgApp_2_WinForms
                 }
             }
             return null;
+        }//настройки кодека Jpeg для фильтра
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)//завершение программы
+        {
+            this.Close();
         }
         #endregion
 
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        #region cosmetics
+        private void themeBox1_Click(object sender, EventArgs e)//переключатель темы
         {
+            if (theme == false)
+            {
+                var light = new Bitmap("..\\..\\..\\darkThemeSmallest.png");
+                themeBox1.Image = light;
+                theme = true;
 
+                this.BackColor = Color.FromArgb(240, 240, 240);
+                LayerList.BackColor = Color.FromArgb(219, 219, 219);
+                LayerList.ForeColor = Color.FromArgb(47, 47, 47);
+                histogram.BackColor = Color.FromArgb(219, 219, 219);
+                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(219, 219, 219);
+                credits.ForeColor = Color.FromArgb(47, 47, 47);
+                debug.ForeColor = Color.FromArgb(47, 47, 47);
+                opacity.ForeColor = Color.FromArgb(47, 47, 47);
+                label1.ForeColor = Color.FromArgb(47, 47, 47);
+                label2.ForeColor = Color.FromArgb(47, 47, 47);
+                curveEditBox.BackColor = Color.FromArgb(219, 219, 219);
+            }
+            else
+            {
+                var dark = new Bitmap("..\\..\\..\\lightThemeSmallest.png");
+                themeBox1.Image = dark;
+                theme = false;
+
+                this.BackColor = Color.FromArgb(47, 47, 47);
+                LayerList.BackColor = Color.FromArgb(69, 69, 69);
+                LayerList.ForeColor = Color.FromArgb(224, 224, 224);
+                histogram.BackColor = Color.FromArgb(69, 69, 69);
+                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(69, 69, 69);
+                credits.ForeColor = Color.FromArgb(224, 224, 224);
+                debug.ForeColor = Color.FromArgb(224, 224, 224);
+                opacity.ForeColor = Color.FromArgb(224, 224, 224);
+                label1.ForeColor = Color.FromArgb(224, 224, 224);
+                label2.ForeColor = Color.FromArgb(224, 224, 224);
+                curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
+
+                //photoshop theme
+                //this.BackColor = Color.FromArgb(38, 38, 38);
+                //LayerList.BackColor = Color.FromArgb(83, 83, 83);
+                //LayerList.ForeColor = Color.FromArgb(221, 221, 221);
+                //histogram.BackColor = Color.FromArgb(83, 83, 83);
+                //histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(83, 83, 83);
+                //credits.ForeColor = Color.FromArgb(221, 221, 221);
+                //debug.ForeColor = Color.FromArgb(221, 221, 221);
+                //opacity.ForeColor = Color.FromArgb(221, 221, 221);
+            }
         }
+
+        private void copyToClipboardToolStripMenuItem_Click(object sender, EventArgs e)//копирование изображения
+        {
+            if (ImageOutput.Image != null)
+                Clipboard.SetImage(ImageOutput.Image);
+        }
+        #endregion
     }
 }
