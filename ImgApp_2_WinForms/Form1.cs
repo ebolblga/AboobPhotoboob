@@ -91,7 +91,7 @@ namespace ImgApp_2_WinForms
             }
         }
 
-        private void bRender3_Click(object sender, EventArgs e)//СОВСЕМ улучшенная отрисовка режимов наложения
+        private void bRender_Click(object sender, EventArgs e)//СОВСЕМ улучшенная отрисовка режимов наложения
         {
             if (LoadedImages.Count >= 2)
             {
@@ -120,19 +120,19 @@ namespace ImgApp_2_WinForms
                         break;
 
                     case 3:
-                        img_out = Render.averageRender(img1, img2, modeIndex, indexedOpacity);
+                        img_out = Render.averageByteRender(img1, img2, modeIndex, indexedOpacity);
                         break;
 
                     case 4:
-                        img_out = Render.darkenRender(img1, img2, modeIndex, indexedOpacity);
+                        img_out = Render.darkenByteRender(img1, img2, modeIndex, indexedOpacity);
                         break;
 
                     case 5:
-                        img_out = Render.lightenRender(img1, img2, modeIndex, indexedOpacity);
+                        img_out = Render.lightenByteRender(img1, img2, modeIndex, indexedOpacity);
                         break;
 
                     case 6:
-                        img_out = Render.maskRender(img1, img2, modeIndex, indexedOpacity);
+                        img_out = Render.maskByteRender(img1, img2, modeIndex, indexedOpacity);
                         break;
 
                     default:
@@ -160,19 +160,19 @@ namespace ImgApp_2_WinForms
                             break;
 
                         case 3:
-                            img_out = Render.averageRender(img1, img2, modeIndex, indexedOpacity);
+                            img_out = Render.averageByteRender(img1, img2, modeIndex, indexedOpacity);
                             break;
 
                         case 4:
-                            img_out = Render.darkenRender(img1, img2, modeIndex, indexedOpacity);
+                            img_out = Render.darkenByteRender(img1, img2, modeIndex, indexedOpacity);
                             break;
 
                         case 5:
-                            img_out = Render.lightenRender(img1, img2, modeIndex, indexedOpacity);
+                            img_out = Render.lightenByteRender(img1, img2, modeIndex, indexedOpacity);
                             break;
 
                         case 6:
-                            img_out = Render.maskRender(img1, img2, modeIndex, indexedOpacity);
+                            img_out = Render.maskByteRender(img1, img2, modeIndex, indexedOpacity);
                             break;
 
                         default:
@@ -1099,7 +1099,7 @@ namespace ImgApp_2_WinForms
             else return val;
         }//сжимает значения в выбранный промежуток
 
-        private byte[] GetRGBValues(Bitmap bmp)
+        private byte[] GetRGBValues(Bitmap bmp)//конвертирует Bitmap в byte[]
         {
 
             // Lock the bitmap's bits. 

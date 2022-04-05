@@ -339,16 +339,14 @@ namespace ImgApp_2_WinForms
             this.histogrammToolStripMenuItem.Checked = true;
             this.histogrammToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.histogrammToolStripMenuItem.Name = "histogrammToolStripMenuItem";
-            this.histogrammToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.histogrammToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.histogrammToolStripMenuItem.Text = "Histogram";
             this.histogrammToolStripMenuItem.Click += new System.EventHandler(this.histogrammToolStripMenuItem_Click);
             // 
             // autoHistogramToolStripMenuItem
             // 
-            this.autoHistogramToolStripMenuItem.Checked = true;
-            this.autoHistogramToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.autoHistogramToolStripMenuItem.Name = "autoHistogramToolStripMenuItem";
-            this.autoHistogramToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.autoHistogramToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.autoHistogramToolStripMenuItem.Text = "Auto Histogram";
             this.autoHistogramToolStripMenuItem.Click += new System.EventHandler(this.autoHistogramToolStripMenuItem_Click);
             // 
@@ -357,7 +355,7 @@ namespace ImgApp_2_WinForms
             this.curveToolStripMenuItem.Checked = true;
             this.curveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.curveToolStripMenuItem.Name = "curveToolStripMenuItem";
-            this.curveToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.curveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.curveToolStripMenuItem.Text = "Curve";
             this.curveToolStripMenuItem.Click += new System.EventHandler(this.curveToolStripMenuItem_Click);
             // 
@@ -617,7 +615,7 @@ namespace ImgApp_2_WinForms
             this.bRender3.TabIndex = 25;
             this.bRender3.Text = "Render 2.0";
             this.bRender3.UseVisualStyleBackColor = true;
-            this.bRender3.Click += new System.EventHandler(this.bRender3_Click);
+            this.bRender3.Click += new System.EventHandler(this.bRender_Click);
             // 
             // Form1
             // 
