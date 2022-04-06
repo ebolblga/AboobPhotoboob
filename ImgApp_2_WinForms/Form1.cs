@@ -19,14 +19,15 @@ namespace ImgApp_2_WinForms
     public partial class Form1 : Form
     {
         private List<Image> LoadedImages { get; set; }
-        const int N = 20;   //максимальное кол-во изображений (чтоб краша из-за недостатка памяти небыло)
+        private const int N = 20;   //максимальное кол-во изображений (чтоб краша из-за недостатка памяти небыло)
         public static Bitmap image = null;
         private int[] mode = new int[N];    //массив режимов наложения слоёв
-        int[] opacityArray = Enumerable.Repeat(100, N).ToArray();   //массив прозрачности слоёв
-        bool theme = false; //0 dark theme, 1 light theme
-        private List<Point> Points = new List<Point>();
-        private List<Point> Points2 = new List<Point>();
-        private List<Point> Points3 = new List<Point>();
+        private int[] opacityArray = Enumerable.Repeat(100, N).ToArray();   //массив прозрачности слоёв
+        private bool theme = false; //0 dark theme, 1 light theme
+        private List<Point> UserPoints = new List<Point>();
+        private List<Point> Points4Spline = new List<Point>();
+        private List<MyPoint> PointList = new List<MyPoint>();
+        private List<MyPoint> ReversePointList = new List<MyPoint>();
 
         private double[] a = new double[0];
         private double[] b = new double[0];
@@ -49,8 +50,8 @@ namespace ImgApp_2_WinForms
 
             Point point1 = new Point(200, 0);
             Point point2 = new Point(0, 200);
-            Points.Add(point1);
-            Points.Add(point2);
+            UserPoints.Add(point1);
+            UserPoints.Add(point2);
         }
 
         private void LoadImagesFromFolder(string[] paths) //загрузка изображений из выбранного файла
@@ -956,16 +957,46 @@ namespace ImgApp_2_WinForms
         #endregion
 
         #region curve
-        private void bCurve_Click(object sender, EventArgs e)//очистка кривой
+        private void curveEditBox_MouseUp(object sender, MouseEventArgs e)//добавление точек
         {
-            Points.Clear();
-            Points2.Clear();
-            Points3.Clear();
-            Point start = new Point(200, 0);
-            Point end = new Point(0, 200);
-            Points.Add(start);
-            Points.Add(end);
+            //проверка что рядом нет точек
+            for (int i = 0; i < UserPoints.Count; ++i)
+                if ((UserPoints[i].X + 3 > e.Location.X) && (UserPoints[i].X - 3 < e.Location.X))
+                    return;
+
+            Point NewPoint = new Point(e.Location.X, e.Location.Y);
+            UserPoints.Add(NewPoint);
+            UserPoints.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
+            RenderCubicSpline();
             curveEditBox.Refresh();
+        }
+
+        private void RenderCubicSpline()//поиск точек для кривой
+        {
+            double[] x = new double[UserPoints.Count];
+            double[] y = new double[UserPoints.Count];
+
+            for (int i = 0; i < UserPoints.Count; ++i)
+            {
+                x[i] = UserPoints[i].X;
+                y[i] = UserPoints[i].Y;
+            }
+            BuildSpline(x.ToArray(), y.ToArray(), UserPoints.Count);
+
+            int n = 201;
+            double[] xs = new double[n];
+            double[] ys = new double[n];
+            double stepSize = (UserPoints[UserPoints.Count - 1].X - UserPoints[0].X) / (n - 1);
+
+            for (int i = 0; i < n; ++i)
+                xs[i] = UserPoints[0].X + i * stepSize;
+            PointList.Clear();
+            for (int i = 0; i < n; ++i)
+            {
+                ys[i] = Interpolate(xs[i]);
+                MyPoint NewPoint = new MyPoint(xs[i], ys[i]);
+                PointList.Add(NewPoint);
+            }
         }
 
         private void curveEditBox_Paint(object sender, PaintEventArgs e)//рисование кривой
@@ -973,63 +1004,112 @@ namespace ImgApp_2_WinForms
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
             //рисуем точки
-            foreach (Point point in Points)
+            foreach (Point point in UserPoints)
                 e.Graphics.FillEllipse(Brushes.Red, point.X - 3, point.Y - 3, 5, 5);
-            if (Points.Count < 2) return;
+
+            if (UserPoints.Count < 2) return;
+            if (PointList.Count < 2)
+            {
+                e.Graphics.DrawCurve(Pens.LightGray, UserPoints.ToArray());
+                return;
+            }
 
             //рисуем кривую
-            //if (theme == false)
-            //    e.Graphics.DrawCurve(Pens.LightGray, Points.ToArray());
-            //else
-            //    e.Graphics.DrawCurve(Pens.Black, Points.ToArray());
-
-            if (Points3.Count > 2)
+            Points4Spline.Clear();
+            for (int i = 0; i < PointList.Count; ++i)
             {
-                e.Graphics.DrawCurve(Pens.LightGray, Points3.ToArray());
-                //foreach (Point point in Points3)
-                //    e.Graphics.FillEllipse(Brushes.Yellow, point.X - 3, point.Y - 3, 1, 1);
+                Point NewPoint = new Point((int)Clamp(PointList[i].X, 0 , 199), (int)Clamp(PointList[i].Y, 0, 199));
+                Points4Spline.Add(NewPoint);
             }
-                
+
+            if (theme == false)
+                e.Graphics.DrawCurve(Pens.LightGray, Points4Spline.ToArray());
+            else
+                e.Graphics.DrawCurve(Pens.Black, Points4Spline.ToArray());
         }
 
-        private void RenderCubicSpline(object sender, EventArgs e)
+        private void bApplyCurve2_Click(object sender, EventArgs e)//отрисовка изображения с кривыми
         {
-            //if (Points.Count % 2 != 1)
-            //    return;
-            this.Cursor = Cursors.WaitCursor;
-
-            double[] x = new double[Points.Count];
-            double[] y = new double[Points.Count];
-
-            for (int i = 0; i < Points.Count; ++i)
+            if (LayerList.SelectedIndices.Count > 0)
             {
-                x[i] = Points[i].X;
-                y[i] = Points[i].Y;
+                Stopwatch timer = new Stopwatch();
+                timer.Start();
+                this.Cursor = Cursors.WaitCursor;
+
+                int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
+                var img = new Bitmap(LoadedImages[index]);
+
+                byte[] imgBytes = GetRGBValues(img);
+                byte[] img_out_bytes = new byte[img.Width * img.Height * 4];
+
+                ReversePointList.Clear();
+                for (int i = 0; i < PointList.Count; ++i)
+                {
+                    MyPoint NewPoint = new MyPoint(PointList[i].X, 200 - PointList[i].Y);
+                    ReversePointList.Add(NewPoint);
+                }
+                ReversePointList.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
+
+                for (int i = 0; i < img.Width * img.Height * 4 - 3; i += 4)
+                {
+                    int newxR = Convert.ToInt32((double)imgBytes[i + 2] / 255 * 200);
+                    int newxG = Convert.ToInt32((double)imgBytes[i + 1] / 255 * 200);
+                    int newxB = Convert.ToInt32((double)imgBytes[i] / 255 * 200);
+
+                    img_out_bytes[i + 2] = Convert.ToByte(Clamp((double)ReversePointList[newxR].Y * 1.275, 0, 255));
+                    img_out_bytes[i + 1] = Convert.ToByte(Clamp((double)ReversePointList[newxG].Y * 1.275, 0, 255));
+                    img_out_bytes[i] = Convert.ToByte(Clamp((double)ReversePointList[newxB].Y * 1.275, 0, 255));
+                }
+
+                Bitmap img_out = new Bitmap(img.Width, img.Height, PixelFormat.Format32bppRgb);
+                writeImageBytes(img_out, img_out_bytes);
+                img.Dispose();
+
+                ImageOutput.Image = img_out;
+                SavetoLayerList(img_out);
+
+                this.Cursor = Cursors.Default;
+                timer.Stop();
+                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
             }
-            BuildSpline(x.ToArray(), y.ToArray(), Points.Count);
-
-            int n = 201;
-            double[] xs = new double[n];
-            double[] ys = new double[n];
-            double stepSize = (Points[Points.Count - 1].X - Points[0].X) / (n - 1);
-
-            for (int i = 0; i < n; ++i)
-                xs[i] = Points[0].X + i * stepSize;
-            
-            for (int i = 0; i < n; ++i)
-            {
-                ys[i] = Interpolate(xs[i]);
-                Point point1 = new Point(Convert.ToInt32(xs[i]), Convert.ToInt32(ys[i]));
-                Points3.Add(point1);
-            }
-
-            this.Cursor = Cursors.Default;
+            else
+                MessageBox.Show("Image is not selected", "Error");
         }
 
-        #region Curve.cs
+        private void bCurve_Click(object sender, EventArgs e)//очистка кривой
+        {
+            UserPoints.Clear();
+            Points4Spline.Clear();
+            PointList.Clear();
+            Point start = new Point(200, 0);
+            Point end = new Point(0, 200);
+            UserPoints.Add(start);
+            UserPoints.Add(end);
+            curveEditBox.Refresh();
+        }
+
+        private void curveToolStripMenuItem_Click(object sender, EventArgs e)//дисплэй кривой
+        {
+            if (curveToolStripMenuItem.Checked == true)
+            {
+                curveToolStripMenuItem.Checked = false;
+                curveEditBox.Visible = false;
+                bCurve.Visible = false;
+                bApplyCurve.Visible = false;
+            }
+            else
+            {
+                curveToolStripMenuItem.Checked = true;
+                curveEditBox.Visible = true;
+                bCurve.Visible = true;
+                bApplyCurve.Visible = true;
+            }
+        }
+
+        #region Cubic spline math
 
         SplineTuple[] splines; // Сплайны
-        
+
         private struct SplineTuple
         {
             public double a, b, c, d, x;
@@ -1127,189 +1207,6 @@ namespace ImgApp_2_WinForms
 
         #endregion
 
-        private void curveEditBox_MouseClick(object sender, MouseEventArgs e)//движение точек
-        {
-            //var min = e.Location.X - 8;
-            //var max = e.Location.X + 8;
-
-            //for (int i = 0; i < Points.Count; ++i)
-            //    if (Points[i].X > min && Points[i].X < max)
-            //    {
-            //        Points[i] = e.Location;
-            //        break;
-            //    }
-            //Points.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
-            //curveEditBox.Refresh();
-        }
-
-        private void curveEditBox_MouseUp(object sender, MouseEventArgs e)//добавление точек
-        {
-            //for (int i = 0; i < Points.Count; ++i)
-            //    if (Points[i].X == e.Location.X)
-            //        return;
-
-            for (int i = 0; i < Points.Count; ++i)
-                if ((Points[i].X + 10 > e.Location.X) && (Points[i].X - 10 < e.Location.X))
-                    return;
-
-            Points.Add(e.Location);
-            Points.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
-            RenderCubicSpline(sender, e);
-            Refresh();
-            curveEditBox.Refresh();
-        }
-
-        private void curveToolStripMenuItem_Click(object sender, EventArgs e)//дисплэй кривой
-        {
-            if (curveToolStripMenuItem.Checked == true)
-            {
-                curveToolStripMenuItem.Checked = false;
-                curveEditBox.Visible = false;
-                bCurve.Visible = false;
-                bApplyCurve.Visible = false;
-            }
-            else
-            {
-                curveToolStripMenuItem.Checked = true;
-                curveEditBox.Visible = true;
-                bCurve.Visible = true;
-                bApplyCurve.Visible = true;
-            }
-        }
-
-        private void bApplyCurve_Click(object sender, EventArgs e)//отрисовка изображения с кривыми
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                var selectedIndex = LayerList.SelectedIndices[0];
-                var img = new Bitmap(LoadedImages[LoadedImages.Count - 1 - selectedIndex]);
-
-                var img_out = new Bitmap(img.Width, img.Height);
-
-                //for (int i = 0; i < img.Height; ++i)
-                //{
-                //    for (int j = 0; j < img.Width; ++j)
-                //    {
-                //        var pix = img.GetPixel(j, i);
-                //        var bruh = (double)pix.R / 255;
-                //        int r = Convert.ToInt32(255 * Math.Pow((double)pix.R / 255, 2));
-                //        int g = Convert.ToInt32(255 * Math.Pow((double)pix.G / 255, 2));
-                //        int b = Convert.ToInt32(255 * Math.Pow((double)pix.B / 255, 2));
-                //        pix = Color.FromArgb(r, g, b);
-                //        img_out.SetPixel(j, i, pix);
-                //    }
-                //}
-                //Points2.Add(Points[0]);
-                //int j = 1;
-                //for (int i = 0; i < 255;)
-                //{
-                //    while (i < Points[j].X && i <= 255)
-                //    {
-                //        Points2.Add(new Point(Convert.ToInt32(Points[j - 1].X + Points[j].X / 2), Convert.ToInt32(Points[j - 1].Y + Points[j].Y / 2)));
-                //        i++;
-                //    }
-                //    j++;
-                //}
-
-                for (int i = 0; i < img.Height; ++i)
-                {
-                    for (int j2 = 0; j2 < img.Width; ++j2)
-                    {
-                        var pix = img.GetPixel(j2, i);
-
-                        int r = Clamp(Points3[pix.R].Y, 0, 255);
-                        int g = Clamp(Points3[pix.G].Y, 0, 255);
-                        int b = Clamp(Points3[pix.B].Y, 0, 255);
-
-
-                        pix = Color.FromArgb(r, g, b);
-                        img_out.SetPixel(j2, i, pix);
-                    }
-                }
-
-
-                ImageOutput.Image = img_out;
-                SavetoLayerList(img_out);
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-            }
-            else
-                MessageBox.Show("Image is not selected", "Error");
-        }
-
-        private void bApplyCurve2_Click(object sender, EventArgs e)
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
-                var img = new Bitmap(LoadedImages[index]);
-
-                byte[] imgBytes = GetRGBValues(img);
-                byte[] img_out_bytes = new byte[img.Width * img.Height * 4];
-
-                //Parallel.For(0, img.Width * img.Height * 4 - 2, i =>
-                //{
-                //    img_out_bytes[i] = Convert.ToByte(Clamp(Points3[Convert.ToInt32((float)imgBytes[i] / 255 * 200)].Y, 0, 255));
-                //});
-
-                for (int i = 0; i < img.Width * img.Height * 4 - 3; i += 4)
-                {
-                    int newxR = Convert.ToInt32((double)imgBytes[i + 2] / 255 * 200);
-                    img_out_bytes[i + 2] = Convert.ToByte(Clamp((double)Points3[200 - newxR].Y * 1.275, 0, 255));
-
-                    int newxG = Convert.ToInt32((double)imgBytes[i + 1] / 255 * 200);
-                    img_out_bytes[i + 1] = Convert.ToByte(Clamp((double)Points3[200 - newxG].Y * 1.275, 0, 255));
-
-                    int newxB = Convert.ToInt32((double)imgBytes[i] / 255 * 200);
-                    img_out_bytes[i] = Convert.ToByte(Clamp((double)Points3[200 - newxB].Y * 1.275, 0, 255));
-                }
-
-                //for (int i = 0; i < img.Width * img.Height * 4 - 3; i += 4)
-                //{
-                //    int newxR = Convert.ToInt32((double)imgBytes[i + 2] / 255 * 200);
-                //    img_out_bytes[i + 2] = Convert.ToByte(Clamp((double)Points3[newxR].X * 1.275, 0, 255));
-
-                //    int newxG = Convert.ToInt32((double)imgBytes[i + 1] / 255 * 200);
-                //    img_out_bytes[i + 1] = Convert.ToByte(Clamp((double)Points3[newxG].X * 1.275, 0, 255));
-
-                //    int newxB = Convert.ToInt32((double)imgBytes[i] / 255 * 200);
-                //    img_out_bytes[i] = Convert.ToByte(Clamp((double)Points3[newxB].X * 1.275, 0, 255));
-                //}
-
-                Bitmap img_out = new Bitmap(img.Width, img.Height, PixelFormat.Format32bppRgb);
-                writeImageBytes(img_out, img_out_bytes);
-                img.Dispose();
-
-                ImageOutput.Image = img_out;
-                SavetoLayerList(img_out);
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-
-            }
-            else
-                MessageBox.Show("Image is not selected", "Error");
-        }
-        static void writeImageBytes(Bitmap img, byte[] bytes)//конвертирует byte[] в Bitmap
-        {
-            var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
-                ImageLockMode.WriteOnly,
-                img.PixelFormat);
-            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length); //копируем байты массива в изображение
-
-            img.UnlockBits(data);  //разблокируем изображение
-        }
         #endregion
 
         #region helper functions
@@ -1359,6 +1256,17 @@ namespace ImgApp_2_WinForms
         {
             this.Close();
         }
+
+        static void writeImageBytes(Bitmap img, byte[] bytes)//конвертирует byte[] в Bitmap
+        {
+            var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
+                ImageLockMode.WriteOnly,
+                img.PixelFormat);
+            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length); //копируем байты массива в изображение
+
+            img.UnlockBits(data);  //разблокируем изображение
+        }
+
         #endregion
 
         #region cosmetics
