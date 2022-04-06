@@ -971,10 +971,37 @@ namespace ImgApp_2_WinForms
             curveEditBox.Refresh();
         }
 
+        private void curveEditBox_MouseMove(object sender, MouseEventArgs e)//движение точек
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (UserPoints.Count <= 2) return;
+                for (int i = 1; i < UserPoints.Count - 1; ++i)
+                {
+                    double dX = e.Location.X - UserPoints[i].X;
+                    double dY = e.Location.Y - UserPoints[i].Y;
+                    if (dX * dX + dY * dY < 49)
+                    {
+                        //UserPoints[minindex] = ((Control)sender).PointToScreen(new Point(e.X, e.Y));
+                        UserPoints[i] = new Point(e.Location.X, e.Location.Y);
+                        break;
+                    }
+                }
+                UserPoints.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
+                RenderCubicSpline();
+                curveEditBox.Refresh();
+                return;
+            }
+        }
+
         private void RenderCubicSpline()//поиск точек для кривой
         {
             double[] x = new double[UserPoints.Count];
             double[] y = new double[UserPoints.Count];
+
+            //for (int i = 1; i < UserPoints.Count; ++i)
+            //    if (UserPoints[i].X == UserPoints[i - 1].X)
+                    //UserPoints.RemoveAt(i);
 
             for (int i = 0; i < UserPoints.Count; ++i)
             {
@@ -1003,9 +1030,22 @@ namespace ImgApp_2_WinForms
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
+            SolidBrush brush1 = new SolidBrush(Color.FromArgb(200, 255, 13, 0));
+            SolidBrush brush2 = new SolidBrush(Color.FromArgb(200, 255, 255, 0));
+
             //рисуем точки
-            foreach (Point point in UserPoints)
-                e.Graphics.FillEllipse(Brushes.Red, point.X - 3, point.Y - 3, 5, 5);
+            //foreach (Point point in UserPoints)
+            //{
+            //    //e.Graphics.FillEllipse(Brushes.Red, point.X - 3, point.Y - 3, 5, 5);
+            //    e.Graphics.FillRectangle(brush1, point.X - 4, point.Y - 4, 8, 8);
+            //    e.Graphics.FillRectangle(brush2, point.X - 3, point.Y - 3, 6, 6);
+            //}
+
+            for (int i = 1; i < UserPoints.Count - 1; ++i)
+            {
+                e.Graphics.FillRectangle(brush1, UserPoints[i].X - 4, UserPoints[i].Y - 4, 8, 8);
+                e.Graphics.FillRectangle(brush2, UserPoints[i].X - 3, UserPoints[i].Y - 3, 6, 6);
+            }
 
             if (UserPoints.Count < 2) return;
             if (PointList.Count < 2)

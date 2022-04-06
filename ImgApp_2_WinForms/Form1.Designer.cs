@@ -582,6 +582,7 @@ namespace ImgApp_2_WinForms
             this.curveEditBox.TabIndex = 22;
             this.curveEditBox.Paint += new System.Windows.Forms.PaintEventHandler(this.curveEditBox_Paint);
             this.curveEditBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.curveEditBox_MouseUp);
+            this.curveEditBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.curveEditBox_MouseMove);
             // 
             // bCurve
             // 
