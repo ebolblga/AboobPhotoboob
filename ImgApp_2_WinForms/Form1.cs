@@ -26,6 +26,14 @@ namespace ImgApp_2_WinForms
         bool theme = false; //0 dark theme, 1 light theme
         private List<Point> Points = new List<Point>();
         private List<Point> Points2 = new List<Point>();
+        private List<Point> Points3 = new List<Point>();
+
+        private double[] a = new double[0];
+        private double[] b = new double[0];
+        private double[] c = new double[0];
+        private double[] d = new double[0];
+        private double[] e = new double[0];
+        private double[] f = new double[0];
 
         public Form1()
         {
@@ -951,6 +959,8 @@ namespace ImgApp_2_WinForms
         private void bCurve_Click(object sender, EventArgs e)//очистка кривой
         {
             Points.Clear();
+            Points2.Clear();
+            Points3.Clear();
             Point start = new Point(200, 0);
             Point end = new Point(0, 200);
             Points.Add(start);
@@ -968,12 +978,154 @@ namespace ImgApp_2_WinForms
             if (Points.Count < 2) return;
 
             //рисуем кривую
-            if (theme == false)
-                e.Graphics.DrawCurve(Pens.LightGray, Points.ToArray());
-            else
-                e.Graphics.DrawCurve(Pens.Black, Points.ToArray());
+            //if (theme == false)
+            //    e.Graphics.DrawCurve(Pens.LightGray, Points.ToArray());
+            //else
+            //    e.Graphics.DrawCurve(Pens.Black, Points.ToArray());
 
+            if (Points3.Count > 2)
+            {
+                e.Graphics.DrawCurve(Pens.LightGray, Points3.ToArray());
+                //foreach (Point point in Points3)
+                //    e.Graphics.FillEllipse(Brushes.Yellow, point.X - 3, point.Y - 3, 1, 1);
+            }
+                
         }
+
+        private void RenderCubicSpline(object sender, EventArgs e)
+        {
+            //if (Points.Count % 2 != 1)
+            //    return;
+            this.Cursor = Cursors.WaitCursor;
+
+            double[] x = new double[Points.Count];
+            double[] y = new double[Points.Count];
+
+            for (int i = 0; i < Points.Count; ++i)
+            {
+                x[i] = Points[i].X;
+                y[i] = Points[i].Y;
+            }
+            BuildSpline(x.ToArray(), y.ToArray(), Points.Count);
+
+            int n = 201;
+            double[] xs = new double[n];
+            double[] ys = new double[n];
+            double stepSize = (Points[Points.Count - 1].X - Points[0].X) / (n - 1);
+
+            for (int i = 0; i < n; ++i)
+                xs[i] = Points[0].X + i * stepSize;
+            
+            for (int i = 0; i < n; ++i)
+            {
+                ys[i] = Interpolate(xs[i]);
+                Point point1 = new Point(Convert.ToInt32(xs[i]), Convert.ToInt32(ys[i]));
+                Points3.Add(point1);
+            }
+
+            this.Cursor = Cursors.Default;
+        }
+
+        #region Curve.cs
+
+        SplineTuple[] splines; // Сплайны
+        
+        private struct SplineTuple
+        {
+            public double a, b, c, d, x;
+        }   // Структура, описывающая сплайн на каждом сегменте сетки
+
+        public void BuildSpline(double[] x, double[] y, int n)
+        {
+            // x - узлы сетки, должны быть упорядочены по возрастанию, кратные узлы запрещены
+            // y - значения функции в узлах сетки
+            // n - количество узлов сетки
+
+            // Инициализация массива сплайнов
+            splines = new SplineTuple[n];
+            for (int i = 0; i < n; ++i)
+            {
+                splines[i].x = x[i];
+                splines[i].a = y[i];
+            }
+            splines[0].c = splines[n - 1].c = 0.0;
+
+            // Решение СЛАУ относительно коэффициентов сплайнов c[i] методом прогонки для трехдиагональных матриц
+            // Вычисление прогоночных коэффициентов - прямой ход метода прогонки
+            double[] alpha = new double[n - 1];
+            double[] beta = new double[n - 1];
+            alpha[0] = beta[0] = 0.0;
+            for (int i = 1; i < n - 1; ++i)
+            {
+                double hi = x[i] - x[i - 1];
+                double hi1 = x[i + 1] - x[i];
+                double A = hi;
+                double C = 2.0 * (hi + hi1);
+                double B = hi1;
+                double F = 6.0 * ((y[i + 1] - y[i]) / hi1 - (y[i] - y[i - 1]) / hi);
+                double z = (A * alpha[i - 1] + C);
+                alpha[i] = -B / z;
+                beta[i] = (F - A * beta[i - 1]) / z;
+            }
+
+            // Нахождение решения - обратный ход метода прогонки
+            for (int i = n - 2; i > 0; --i)
+            {
+                splines[i].c = alpha[i] * splines[i + 1].c + beta[i];
+            }
+
+            // По известным коэффициентам c[i] находим значения b[i] и d[i]
+            for (int i = n - 1; i > 0; --i)
+            {
+                double hi = x[i] - x[i - 1];
+                splines[i].d = (splines[i].c - splines[i - 1].c) / hi;
+                splines[i].b = hi * (2.0 * splines[i].c + splines[i - 1].c) / 6.0 + (y[i] - y[i - 1]) / hi;
+            }
+        }    // Построение сплайна
+
+        public double Interpolate(double x)
+        {
+            if (splines == null)
+            {
+                return double.NaN; // Если сплайны ещё не построены - возвращаем NaN
+            }
+
+            int n = splines.Length;
+            SplineTuple s;
+
+            if (x <= splines[0].x) // Если x меньше точки сетки x[0] - пользуемся первым эл-тов массива
+            {
+                s = splines[0];
+            }
+            else if (x >= splines[n - 1].x) // Если x больше точки сетки x[n - 1] - пользуемся последним эл-том массива
+            {
+                s = splines[n - 1];
+            }
+            else // Иначе x лежит между граничными точками сетки - производим бинарный поиск нужного эл-та массива
+            {
+                int i = 0;
+                int j = n - 1;
+                while (i + 1 < j)
+                {
+                    int k = i + (j - i) / 2;
+                    if (x <= splines[k].x)
+                    {
+                        j = k;
+                    }
+                    else
+                    {
+                        i = k;
+                    }
+                }
+                s = splines[j];
+            }
+
+            double dx = x - s.x;
+            // Вычисляем значение сплайна в заданной точке по схеме Горнера (в принципе, "умный" компилятор применил бы схему Горнера сам, но ведь не все так умны, как кажутся)
+            return s.a + (s.b + (s.c / 2.0 + s.d * dx / 6.0) * dx) * dx;
+        }   //нахождение f(x) после построения сплайна
+
+        #endregion
 
         private void curveEditBox_MouseClick(object sender, MouseEventArgs e)//движение точек
         {
@@ -1002,6 +1154,7 @@ namespace ImgApp_2_WinForms
 
             Points.Add(e.Location);
             Points.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
+            RenderCubicSpline(sender, e);
             Refresh();
             curveEditBox.Refresh();
         }
@@ -1050,17 +1203,17 @@ namespace ImgApp_2_WinForms
                 //        img_out.SetPixel(j, i, pix);
                 //    }
                 //}
-                Points2.Add(Points[0]);
-                int j = 1;
-                for (int i = 0; i < 255;)
-                {
-                    while (i < Points[j].X && i <= 255)
-                    {
-                        Points2.Add(new Point(Convert.ToInt32(Points[j - 1].X + Points[j].X / 2), Convert.ToInt32(Points[j - 1].Y + Points[j].Y / 2)));
-                        i++;
-                    }
-                    j++;
-                }
+                //Points2.Add(Points[0]);
+                //int j = 1;
+                //for (int i = 0; i < 255;)
+                //{
+                //    while (i < Points[j].X && i <= 255)
+                //    {
+                //        Points2.Add(new Point(Convert.ToInt32(Points[j - 1].X + Points[j].X / 2), Convert.ToInt32(Points[j - 1].Y + Points[j].Y / 2)));
+                //        i++;
+                //    }
+                //    j++;
+                //}
 
                 for (int i = 0; i < img.Height; ++i)
                 {
@@ -1068,9 +1221,9 @@ namespace ImgApp_2_WinForms
                     {
                         var pix = img.GetPixel(j2, i);
 
-                        int r = Clamp(Points2[pix.R].Y, 0, 255);
-                        int g = Clamp(Points2[pix.G].Y, 0, 255);
-                        int b = Clamp(Points2[pix.B].Y, 0, 255);
+                        int r = Clamp(Points3[pix.R].Y, 0, 255);
+                        int g = Clamp(Points3[pix.G].Y, 0, 255);
+                        int b = Clamp(Points3[pix.B].Y, 0, 255);
 
 
                         pix = Color.FromArgb(r, g, b);
@@ -1088,6 +1241,74 @@ namespace ImgApp_2_WinForms
             }
             else
                 MessageBox.Show("Image is not selected", "Error");
+        }
+
+        private void bApplyCurve2_Click(object sender, EventArgs e)
+        {
+            if (LayerList.SelectedIndices.Count > 0)
+            {
+                Stopwatch timer = new Stopwatch();
+                timer.Start();
+                this.Cursor = Cursors.WaitCursor;
+
+                int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
+                var img = new Bitmap(LoadedImages[index]);
+
+                byte[] imgBytes = GetRGBValues(img);
+                byte[] img_out_bytes = new byte[img.Width * img.Height * 4];
+
+                //Parallel.For(0, img.Width * img.Height * 4 - 2, i =>
+                //{
+                //    img_out_bytes[i] = Convert.ToByte(Clamp(Points3[Convert.ToInt32((float)imgBytes[i] / 255 * 200)].Y, 0, 255));
+                //});
+
+                for (int i = 0; i < img.Width * img.Height * 4 - 3; i += 4)
+                {
+                    int newxR = Convert.ToInt32((double)imgBytes[i + 2] / 255 * 200);
+                    img_out_bytes[i + 2] = Convert.ToByte(Clamp((double)Points3[200 - newxR].Y * 1.275, 0, 255));
+
+                    int newxG = Convert.ToInt32((double)imgBytes[i + 1] / 255 * 200);
+                    img_out_bytes[i + 1] = Convert.ToByte(Clamp((double)Points3[200 - newxG].Y * 1.275, 0, 255));
+
+                    int newxB = Convert.ToInt32((double)imgBytes[i] / 255 * 200);
+                    img_out_bytes[i] = Convert.ToByte(Clamp((double)Points3[200 - newxB].Y * 1.275, 0, 255));
+                }
+
+                //for (int i = 0; i < img.Width * img.Height * 4 - 3; i += 4)
+                //{
+                //    int newxR = Convert.ToInt32((double)imgBytes[i + 2] / 255 * 200);
+                //    img_out_bytes[i + 2] = Convert.ToByte(Clamp((double)Points3[newxR].X * 1.275, 0, 255));
+
+                //    int newxG = Convert.ToInt32((double)imgBytes[i + 1] / 255 * 200);
+                //    img_out_bytes[i + 1] = Convert.ToByte(Clamp((double)Points3[newxG].X * 1.275, 0, 255));
+
+                //    int newxB = Convert.ToInt32((double)imgBytes[i] / 255 * 200);
+                //    img_out_bytes[i] = Convert.ToByte(Clamp((double)Points3[newxB].X * 1.275, 0, 255));
+                //}
+
+                Bitmap img_out = new Bitmap(img.Width, img.Height, PixelFormat.Format32bppRgb);
+                writeImageBytes(img_out, img_out_bytes);
+                img.Dispose();
+
+                ImageOutput.Image = img_out;
+                SavetoLayerList(img_out);
+
+                this.Cursor = Cursors.Default;
+                timer.Stop();
+                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+
+            }
+            else
+                MessageBox.Show("Image is not selected", "Error");
+        }
+        static void writeImageBytes(Bitmap img, byte[] bytes)//конвертирует byte[] в Bitmap
+        {
+            var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
+                ImageLockMode.WriteOnly,
+                img.PixelFormat);
+            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length); //копируем байты массива в изображение
+
+            img.UnlockBits(data);  //разблокируем изображение
         }
         #endregion
 

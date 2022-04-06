@@ -86,6 +86,7 @@ namespace ImgApp_2_WinForms
             this.bCurve = new System.Windows.Forms.Button();
             this.bApplyCurve = new System.Windows.Forms.Button();
             this.bRender3 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.ImageListMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.histogram)).BeginInit();
@@ -339,14 +340,14 @@ namespace ImgApp_2_WinForms
             this.histogrammToolStripMenuItem.Checked = true;
             this.histogrammToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.histogrammToolStripMenuItem.Name = "histogrammToolStripMenuItem";
-            this.histogrammToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.histogrammToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.histogrammToolStripMenuItem.Text = "Histogram";
             this.histogrammToolStripMenuItem.Click += new System.EventHandler(this.histogrammToolStripMenuItem_Click);
             // 
             // autoHistogramToolStripMenuItem
             // 
             this.autoHistogramToolStripMenuItem.Name = "autoHistogramToolStripMenuItem";
-            this.autoHistogramToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.autoHistogramToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.autoHistogramToolStripMenuItem.Text = "Auto Histogram";
             this.autoHistogramToolStripMenuItem.Click += new System.EventHandler(this.autoHistogramToolStripMenuItem_Click);
             // 
@@ -355,7 +356,7 @@ namespace ImgApp_2_WinForms
             this.curveToolStripMenuItem.Checked = true;
             this.curveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.curveToolStripMenuItem.Name = "curveToolStripMenuItem";
-            this.curveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.curveToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.curveToolStripMenuItem.Text = "Curve";
             this.curveToolStripMenuItem.Click += new System.EventHandler(this.curveToolStripMenuItem_Click);
             // 
@@ -604,7 +605,7 @@ namespace ImgApp_2_WinForms
             this.bApplyCurve.TabIndex = 24;
             this.bApplyCurve.Text = "Apply";
             this.bApplyCurve.UseVisualStyleBackColor = true;
-            this.bApplyCurve.Click += new System.EventHandler(this.bApplyCurve_Click);
+            this.bApplyCurve.Click += new System.EventHandler(this.bApplyCurve2_Click);
             // 
             // bRender3
             // 
@@ -617,12 +618,23 @@ namespace ImgApp_2_WinForms
             this.bRender3.UseVisualStyleBackColor = true;
             this.bRender3.Click += new System.EventHandler(this.bRender_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(750, 39);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 26;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.RenderCubicSpline);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
             this.ClientSize = new System.Drawing.Size(1190, 568);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.bRender3);
             this.Controls.Add(this.bApplyCurve);
             this.Controls.Add(this.bCurve);
@@ -715,6 +727,7 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.ToolStripMenuItem curveToolStripMenuItem;
         private System.Windows.Forms.Button bApplyCurve;
         private System.Windows.Forms.Button bRender3;
+        private System.Windows.Forms.Button button1;
     }
 }
 
