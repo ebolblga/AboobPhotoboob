@@ -18,6 +18,8 @@ namespace ImgApp_2_WinForms
 {
     public partial class Form1 : Form
     {
+
+        #region variables
         private List<Image> LoadedImages { get; set; }
         private const int N = 20;   //максимальное кол-во изображений (чтоб краша из-за недостатка памяти небыло)
         public static Bitmap image = null;
@@ -35,6 +37,7 @@ namespace ImgApp_2_WinForms
         private double[] d = new double[0];
         private double[] e = new double[0];
         private double[] f = new double[0];
+        #endregion
 
         public Form1()
         {
@@ -976,6 +979,7 @@ namespace ImgApp_2_WinForms
             if (e.Button == MouseButtons.Left)
             {
                 if (UserPoints.Count <= 2) return;
+                bool found = false;
                 for (int i = 1; i < UserPoints.Count - 1; ++i)
                 {
                     double dX = e.Location.X - UserPoints[i].X;
@@ -984,9 +988,11 @@ namespace ImgApp_2_WinForms
                     {
                         //UserPoints[minindex] = ((Control)sender).PointToScreen(new Point(e.X, e.Y));
                         UserPoints[i] = new Point(e.Location.X, e.Location.Y);
+                        found = true;
                         break;
                     }
                 }
+                if (found == false) return;
                 UserPoints.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
                 RenderCubicSpline();
                 curveEditBox.Refresh();
@@ -1056,9 +1062,10 @@ namespace ImgApp_2_WinForms
 
             //рисуем кривую
             Points4Spline.Clear();
+
             for (int i = 0; i < PointList.Count; ++i)
             {
-                Point NewPoint = new Point((int)Clamp(PointList[i].X, 0 , 199), (int)Clamp(PointList[i].Y, 0, 199));
+                Point NewPoint = new Point((int)Clamp(PointList[i].X, 0, 199), (int)Clamp(PointList[i].Y, 0, 199));
                 Points4Spline.Add(NewPoint);
             }
 
