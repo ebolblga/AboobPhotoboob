@@ -960,6 +960,9 @@ namespace ImgApp_2_WinForms
         #endregion
 
         #region curve
+
+        public int HighlightedPoint = 0;    //выделенная точка
+
         private void curveEditBox_MouseUp(object sender, MouseEventArgs e)//добавление точек
         {
             //проверка что рядом нет точек
@@ -967,6 +970,7 @@ namespace ImgApp_2_WinForms
                 if ((UserPoints[i].X + 3 > e.Location.X) && (UserPoints[i].X - 3 < e.Location.X))
                     return;
 
+            HighlightedPoint = 0;
             Point NewPoint = new Point(e.Location.X, e.Location.Y);
             UserPoints.Add(NewPoint);
             UserPoints.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
@@ -986,18 +990,43 @@ namespace ImgApp_2_WinForms
                     double dY = e.Location.Y - UserPoints[i].Y;
                     if (dX * dX + dY * dY < 49)
                     {
+                        HighlightedPoint = i;
                         //UserPoints[minindex] = ((Control)sender).PointToScreen(new Point(e.X, e.Y));
                         UserPoints[i] = new Point(e.Location.X, e.Location.Y);
                         found = true;
                         break;
                     }
                 }
-                if (found == false) return;
+                if (found == false)
+                {
+                    HighlightedPoint = 0;
+                    return;
+                }
                 UserPoints.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
                 RenderCubicSpline();
                 curveEditBox.Refresh();
                 return;
             }
+            //else      //код для хайлайта точек
+            //{
+            //    if (UserPoints.Count <= 2) return;
+            //    bool found = false;
+            //    for (int i = 1; i < UserPoints.Count - 1; ++i)
+            //    {
+            //        double dX = e.Location.X - UserPoints[i].X;
+            //        double dY = e.Location.Y - UserPoints[i].Y;
+            //        if (dX * dX + dY * dY < 49)
+            //        {
+            //            greendot = i;
+            //            found = true;
+            //            curveEditBox.Refresh();
+            //            break;
+            //        }
+            //    }
+            //    if (found == false)
+            //        greendot = 0;
+            //    return;
+            //}
         }
 
         private void RenderCubicSpline()//поиск точек для кривой
@@ -1007,14 +1036,31 @@ namespace ImgApp_2_WinForms
 
             //for (int i = 1; i < UserPoints.Count; ++i)
             //    if (UserPoints[i].X == UserPoints[i - 1].X)
-                    //UserPoints.RemoveAt(i);
+            //UserPoints.RemoveAt(i);
 
-            for (int i = 0; i < UserPoints.Count; ++i)
+            x[0] = UserPoints[0].X;
+            y[0] = UserPoints[0].Y;
+            int newcount = 1;
+            for (int j = 1; j < UserPoints.Count; ++j)
             {
-                x[i] = UserPoints[i].X;
-                y[i] = UserPoints[i].Y;
+                if (UserPoints[j].X == UserPoints[j - 1].X)
+                {
+                    if (UserPoints[j].Y < UserPoints[j - 1].Y)
+                    {
+                        x[newcount - 1] = UserPoints[j].X;
+                        y[newcount - 1] = UserPoints[j].Y;     
+                    }
+                    --newcount;
+                }
+                    
+                else
+                {
+                    x[newcount] = UserPoints[j].X;
+                    y[newcount] = UserPoints[j].Y;
+                }
+                ++newcount;
             }
-            BuildSpline(x.ToArray(), y.ToArray(), UserPoints.Count);
+            BuildSpline(x.ToArray(), y.ToArray(), newcount);
 
             int n = 201;
             double[] xs = new double[n];
@@ -1039,26 +1085,25 @@ namespace ImgApp_2_WinForms
             SolidBrush brush1 = new SolidBrush(Color.FromArgb(200, 255, 13, 0));
             SolidBrush brush2 = new SolidBrush(Color.FromArgb(200, 255, 255, 0));
 
-            //рисуем точки
-            //foreach (Point point in UserPoints)
-            //{
-            //    //e.Graphics.FillEllipse(Brushes.Red, point.X - 3, point.Y - 3, 5, 5);
-            //    e.Graphics.FillRectangle(brush1, point.X - 4, point.Y - 4, 8, 8);
-            //    e.Graphics.FillRectangle(brush2, point.X - 3, point.Y - 3, 6, 6);
-            //}
-
-            for (int i = 1; i < UserPoints.Count - 1; ++i)
+            for (int i = 1; i < UserPoints.Count - 1; ++i)  //рисуем точки
             {
                 e.Graphics.FillRectangle(brush1, UserPoints[i].X - 4, UserPoints[i].Y - 4, 8, 8);
-                e.Graphics.FillRectangle(brush2, UserPoints[i].X - 3, UserPoints[i].Y - 3, 6, 6);
+                e.Graphics.FillRectangle(brush2, UserPoints[i].X - 3, UserPoints[i].Y - 3, 6, 6);         
             }
 
+            if (HighlightedPoint != 0)  //зелёная "активная" точка
+                e.Graphics.FillRectangle(Brushes.Green, UserPoints[HighlightedPoint].X - 3, UserPoints[HighlightedPoint].Y - 3, 6, 6);
+
             if (UserPoints.Count < 2) return;
-            if (PointList.Count < 2)
+
+            if (PointList.Count < 2)    //если меньше двух точек рисуем прямую
             {
                 e.Graphics.DrawCurve(Pens.LightGray, UserPoints.ToArray());
                 return;
             }
+
+            if (additionalCurveMarkersToolStripMenuItem.Checked == true)    //рисуем оранжевые прямые
+                e.Graphics.DrawLines(Pens.DarkOrange, UserPoints.ToArray());
 
             //рисуем кривую
             Points4Spline.Clear();
@@ -1128,6 +1173,7 @@ namespace ImgApp_2_WinForms
             UserPoints.Clear();
             Points4Spline.Clear();
             PointList.Clear();
+            HighlightedPoint = 0;
             Point start = new Point(200, 0);
             Point end = new Point(0, 200);
             UserPoints.Add(start);
@@ -1373,5 +1419,19 @@ namespace ImgApp_2_WinForms
                 Clipboard.SetImage(ImageOutput.Image);
         }
         #endregion
+
+        private void additionalCurveMarkersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (additionalCurveMarkersToolStripMenuItem.Checked == true)
+            {
+                additionalCurveMarkersToolStripMenuItem.Checked = false;
+                curveEditBox.Refresh();
+            }
+            else
+            {
+                additionalCurveMarkersToolStripMenuItem.Checked = true;
+                curveEditBox.Refresh();
+            }
+        }
     }
 }
