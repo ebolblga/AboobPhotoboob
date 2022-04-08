@@ -1,6 +1,6 @@
 # Aboob Photoboob
 ## High end image editing software on C# Windows Forms App (.NET Framework)
-![image](https://user-images.githubusercontent.com/82185066/161241798-f5b9a86c-8a4d-4ec1-b142-b04fbadf8152.png)
+![image](https://user-images.githubusercontent.com/82185066/162346693-05942bf3-da61-4af8-8528-b0efdcce6bdd.png)
 ### Functionality:
 
 1. Import image/folder of images, delete them from project, save
