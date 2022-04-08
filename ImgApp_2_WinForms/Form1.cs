@@ -971,8 +971,7 @@ namespace ImgApp_2_WinForms
                     return;
 
             HighlightedPoint = 0;
-            Point NewPoint = new Point(e.Location.X, e.Location.Y);
-            UserPoints.Add(NewPoint);
+            UserPoints.Add(new Point((int)Clamp(e.Location.X, 0, 199), (int)Clamp(e.Location.Y, 0, 199)));
             UserPoints.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
             RenderCubicSpline();
             curveEditBox.Refresh();
@@ -991,8 +990,7 @@ namespace ImgApp_2_WinForms
                     if (dX * dX + dY * dY < 49)
                     {
                         HighlightedPoint = i;
-                        //UserPoints[minindex] = ((Control)sender).PointToScreen(new Point(e.X, e.Y));
-                        UserPoints[i] = new Point(e.Location.X, e.Location.Y);
+                        UserPoints[i] = new Point((int)Clamp(e.Location.X, 0, 199), (int)Clamp(e.Location.Y, 0, 199));
                         found = true;
                         break;
                     }
@@ -1034,10 +1032,6 @@ namespace ImgApp_2_WinForms
             double[] x = new double[UserPoints.Count];
             double[] y = new double[UserPoints.Count];
 
-            //for (int i = 1; i < UserPoints.Count; ++i)
-            //    if (UserPoints[i].X == UserPoints[i - 1].X)
-            //UserPoints.RemoveAt(i);
-
             x[0] = UserPoints[0].X;
             y[0] = UserPoints[0].Y;
             int newcount = 1;
@@ -1052,7 +1046,6 @@ namespace ImgApp_2_WinForms
                     }
                     --newcount;
                 }
-                    
                 else
                 {
                     x[newcount] = UserPoints[j].X;
@@ -1060,27 +1053,32 @@ namespace ImgApp_2_WinForms
                 }
                 ++newcount;
             }
+
             BuildSpline(x.ToArray(), y.ToArray(), newcount);
 
             int n = 201;
-            double[] xs = new double[n];
-            double[] ys = new double[n];
+            double[] xStep = new double[n];
+            double[] yStep = new double[n];
             double stepSize = (UserPoints[UserPoints.Count - 1].X - UserPoints[0].X) / (n - 1);
 
             for (int i = 0; i < n; ++i)
-                xs[i] = UserPoints[0].X + i * stepSize;
+                xStep[i] = UserPoints[0].X + i * stepSize;
+
             PointList.Clear();
             for (int i = 0; i < n; ++i)
-            {
-                ys[i] = Interpolate(xs[i]);
-                MyPoint NewPoint = new MyPoint(xs[i], ys[i]);
-                PointList.Add(NewPoint);
-            }
+                PointList.Add(new MyPoint(xStep[i], Interpolate(xStep[i])));
         }
 
         private void curveEditBox_Paint(object sender, PaintEventArgs e)//рисование кривой
         {
+            if (UserPoints.Count < 2) return;
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            if (PointList.Count < 2)    //если меньше двух точек рисуем прямую
+            {
+                e.Graphics.DrawCurve(Pens.LightGray, UserPoints.ToArray());
+                return;
+            }
 
             SolidBrush brush1 = new SolidBrush(Color.FromArgb(200, 255, 13, 0));
             SolidBrush brush2 = new SolidBrush(Color.FromArgb(200, 255, 255, 0));
@@ -1094,14 +1092,6 @@ namespace ImgApp_2_WinForms
             if (HighlightedPoint != 0)  //зелёная "активная" точка
                 e.Graphics.FillRectangle(Brushes.Green, UserPoints[HighlightedPoint].X - 3, UserPoints[HighlightedPoint].Y - 3, 6, 6);
 
-            if (UserPoints.Count < 2) return;
-
-            if (PointList.Count < 2)    //если меньше двух точек рисуем прямую
-            {
-                e.Graphics.DrawCurve(Pens.LightGray, UserPoints.ToArray());
-                return;
-            }
-
             if (additionalCurveMarkersToolStripMenuItem.Checked == true)    //рисуем оранжевые прямые
                 e.Graphics.DrawLines(Pens.DarkOrange, UserPoints.ToArray());
 
@@ -1109,10 +1099,7 @@ namespace ImgApp_2_WinForms
             Points4Spline.Clear();
 
             for (int i = 0; i < PointList.Count; ++i)
-            {
-                Point NewPoint = new Point((int)Clamp(PointList[i].X, 0, 199), (int)Clamp(PointList[i].Y, 0, 199));
-                Points4Spline.Add(NewPoint);
-            }
+                Points4Spline.Add(new Point((int)Clamp(PointList[i].X, 0, 199), (int)Clamp(PointList[i].Y, 0, 199)));
 
             if (theme == false)
                 e.Graphics.DrawCurve(Pens.LightGray, Points4Spline.ToArray());
