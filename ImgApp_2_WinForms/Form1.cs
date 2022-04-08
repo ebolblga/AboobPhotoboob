@@ -1199,6 +1199,20 @@ namespace ImgApp_2_WinForms
             }
         }
 
+        private void additionalCurveMarkersToolStripMenuItem_Click(object sender, EventArgs e)//прячет/показывает дополнительные линии
+        {
+            if (additionalCurveMarkersToolStripMenuItem.Checked == true)
+            {
+                additionalCurveMarkersToolStripMenuItem.Checked = false;
+                curveEditBox.Refresh();
+            }
+            else
+            {
+                additionalCurveMarkersToolStripMenuItem.Checked = true;
+                curveEditBox.Refresh();
+            }
+        }
+
         #region Cubic spline math
 
         SplineTuple[] splines; // Сплайны
@@ -1419,19 +1433,5 @@ namespace ImgApp_2_WinForms
                 Clipboard.SetImage(ImageOutput.Image);
         }
         #endregion
-
-        private void additionalCurveMarkersToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (additionalCurveMarkersToolStripMenuItem.Checked == true)
-            {
-                additionalCurveMarkersToolStripMenuItem.Checked = false;
-                curveEditBox.Refresh();
-            }
-            else
-            {
-                additionalCurveMarkersToolStripMenuItem.Checked = true;
-                curveEditBox.Refresh();
-            }
-        }
     }
 }
