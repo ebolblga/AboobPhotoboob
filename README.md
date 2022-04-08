@@ -24,16 +24,15 @@
   •Slider method
 6. JPEG compression filter
 7. Histogram RGB / R / G / B / Brightness
-8. Dynamic curve
+8. Dynamic curve<br />
+  •Rendered manually with math from wiki about cubic splines<br />
+  •Can add and move points<br />
+  •If 2 points have same X axis, only top one is added to rendering queue<br />
 
 ### Decorations:
 
 1. Dark/Light theme
 2. Can hide some windows
-  
-  
-  
-  
   
   #
 > Optimizations on rendering 5 layers:
