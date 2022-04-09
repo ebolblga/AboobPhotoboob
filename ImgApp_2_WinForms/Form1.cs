@@ -957,6 +957,21 @@ namespace ImgApp_2_WinForms
             else
                 MessageBox.Show("Image is not selected", "Error");
         }
+
+        private void sliderMethodToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (LayerList.SelectedIndices.Count > 0)
+            {
+                image = new Bitmap(LoadedImages[LoadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
+                FormSliderBinarization SliderBinarization = new FormSliderBinarization(this);
+                SliderBinarization.img = image;
+                SliderBinarization.ShowDialog();
+                ImageOutput.Image = image;
+                SavetoLayerList(image);
+            }
+            else
+                MessageBox.Show("Image is not selected", "Error");
+        }
         #endregion
 
         #region curve

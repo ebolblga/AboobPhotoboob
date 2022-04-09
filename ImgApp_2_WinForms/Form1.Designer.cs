@@ -65,6 +65,7 @@ namespace ImgApp_2_WinForms
             this.histogrammToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoHistogramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.curveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.additionalCurveMarkersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bClear = new System.Windows.Forms.Button();
             this.histogram = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -86,7 +87,6 @@ namespace ImgApp_2_WinForms
             this.bCurve = new System.Windows.Forms.Button();
             this.bApplyCurve = new System.Windows.Forms.Button();
             this.bRender3 = new System.Windows.Forms.Button();
-            this.additionalCurveMarkersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ImageListMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.histogram)).BeginInit();
@@ -253,45 +253,46 @@ namespace ImgApp_2_WinForms
             // fToolStripMenuItem
             // 
             this.fToolStripMenuItem.Name = "fToolStripMenuItem";
-            this.fToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.fToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.fToolStripMenuItem.Text = "Gavrilov\'s method";
             this.fToolStripMenuItem.Click += new System.EventHandler(this.fToolStripMenuItem_Click);
             // 
             // otsusMethodToolStripMenuItem
             // 
             this.otsusMethodToolStripMenuItem.Name = "otsusMethodToolStripMenuItem";
-            this.otsusMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.otsusMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.otsusMethodToolStripMenuItem.Text = "Otsu\'s method";
             // 
             // niblacksMethodToolStripMenuItem
             // 
             this.niblacksMethodToolStripMenuItem.Name = "niblacksMethodToolStripMenuItem";
-            this.niblacksMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.niblacksMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.niblacksMethodToolStripMenuItem.Text = "Niblack\'s method";
             // 
             // sauvolasMethodToolStripMenuItem
             // 
             this.sauvolasMethodToolStripMenuItem.Name = "sauvolasMethodToolStripMenuItem";
-            this.sauvolasMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.sauvolasMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.sauvolasMethodToolStripMenuItem.Text = "Sauvola\'s method";
             // 
             // wulffsMethodToolStripMenuItem
             // 
             this.wulffsMethodToolStripMenuItem.Name = "wulffsMethodToolStripMenuItem";
-            this.wulffsMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.wulffsMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.wulffsMethodToolStripMenuItem.Text = "Wulff\'s method";
             // 
             // bradleysMethodToolStripMenuItem
             // 
             this.bradleysMethodToolStripMenuItem.Name = "bradleysMethodToolStripMenuItem";
-            this.bradleysMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.bradleysMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.bradleysMethodToolStripMenuItem.Text = "Bradley\'s method";
             // 
             // sliderMethodToolStripMenuItem
             // 
             this.sliderMethodToolStripMenuItem.Name = "sliderMethodToolStripMenuItem";
-            this.sliderMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.sliderMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.sliderMethodToolStripMenuItem.Text = "Slider method";
+            this.sliderMethodToolStripMenuItem.Click += new System.EventHandler(this.sliderMethodToolStripMenuItem_Click);
             // 
             // джепегированиеToolStripMenuItem
             // 
@@ -362,6 +363,15 @@ namespace ImgApp_2_WinForms
             this.curveToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.curveToolStripMenuItem.Text = "Curve";
             this.curveToolStripMenuItem.Click += new System.EventHandler(this.curveToolStripMenuItem_Click);
+            // 
+            // additionalCurveMarkersToolStripMenuItem
+            // 
+            this.additionalCurveMarkersToolStripMenuItem.Checked = true;
+            this.additionalCurveMarkersToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.additionalCurveMarkersToolStripMenuItem.Name = "additionalCurveMarkersToolStripMenuItem";
+            this.additionalCurveMarkersToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.additionalCurveMarkersToolStripMenuItem.Text = "Additional Curve Markers";
+            this.additionalCurveMarkersToolStripMenuItem.Click += new System.EventHandler(this.additionalCurveMarkersToolStripMenuItem_Click);
             // 
             // bClear
             // 
@@ -620,15 +630,6 @@ namespace ImgApp_2_WinForms
             this.bRender3.Text = "Render 2.0";
             this.bRender3.UseVisualStyleBackColor = true;
             this.bRender3.Click += new System.EventHandler(this.bRender_Click);
-            // 
-            // additionalCurveMarkersToolStripMenuItem
-            // 
-            this.additionalCurveMarkersToolStripMenuItem.Checked = true;
-            this.additionalCurveMarkersToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.additionalCurveMarkersToolStripMenuItem.Name = "additionalCurveMarkersToolStripMenuItem";
-            this.additionalCurveMarkersToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.additionalCurveMarkersToolStripMenuItem.Text = "Additional Curve Markers";
-            this.additionalCurveMarkersToolStripMenuItem.Click += new System.EventHandler(this.additionalCurveMarkersToolStripMenuItem_Click);
             // 
             // Form1
             // 
