@@ -88,6 +88,7 @@ namespace ImgApp_2_WinForms
             this.bApplyCurve = new System.Windows.Forms.Button();
             this.bRender3 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.myMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ImageListMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.histogram)).BeginInit();
@@ -246,7 +247,8 @@ namespace ImgApp_2_WinForms
             this.sauvolasMethodToolStripMenuItem,
             this.wulffsMethodToolStripMenuItem,
             this.bradleysMethodToolStripMenuItem,
-            this.sliderMethodToolStripMenuItem});
+            this.sliderMethodToolStripMenuItem,
+            this.myMethodToolStripMenuItem});
             this.binarizationToolStripMenuItem.Name = "binarizationToolStripMenuItem";
             this.binarizationToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.binarizationToolStripMenuItem.Text = "Binarization";
@@ -645,6 +647,13 @@ namespace ImgApp_2_WinForms
             this.label3.TabIndex = 26;
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // myMethodToolStripMenuItem
+            // 
+            this.myMethodToolStripMenuItem.Name = "myMethodToolStripMenuItem";
+            this.myMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.myMethodToolStripMenuItem.Text = "My method";
+            this.myMethodToolStripMenuItem.Click += new System.EventHandler(this.myMethodToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -745,6 +754,7 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.ToolStripMenuItem additionalCurveMarkersToolStripMenuItem;
         public System.Windows.Forms.PictureBox ImageOutput;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ToolStripMenuItem myMethodToolStripMenuItem;
     }
 }
 
