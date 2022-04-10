@@ -15,13 +15,14 @@
 3. Transparency slider
 4. Switch between channels RGB / R / G / B / Brightness
 5. Binarization algorithms:<br />
-  •Gavrilov's method<br />
-  •Otsu's method<br />
-  •Niblack's method<br />
-  •Sauvola's method<br />
-  •Wulff's method<br />
-  •Bradley's method<br />
-  •Slider method
+  - [x] •Gavrilov's method<br />
+  - [x] •Otsu's method<br />
+  - [ ] •Niblack's method<br />
+  - [ ] •Sauvola's method<br />
+  - [ ] •Wulff's method<br />
+  - [ ] •Bradley's method<br />
+  - [x] •Slider method
+  - [x] •My method
 6. JPEG compression filter
 7. Histogram RGB / R / G / B / Brightness
 8. Dynamic curve<br />
@@ -42,4 +43,6 @@
 | Bitmap  | 9.1 sec  | 100%  |
 | no switch in loop | 2.6 sec  | 28.57%  |
 | byte[]  | 0.28 sec  | 3.08%  |
-| byte[] + parallel  | 0.22 sec  | 2.42%  |
+| + parallel  | 0.22 sec  | 2.42%  |
+| + pointers  | ?  | ?  |
+| + release  | ?  | ?  |
