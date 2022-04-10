@@ -25,7 +25,7 @@ namespace ImgApp_2_WinForms
         public static Bitmap image = null;
         private int[] mode = new int[N];    //массив режимов наложения слоёв
         private int[] opacityArray = Enumerable.Repeat(100, N).ToArray();   //массив прозрачности слоёв
-        private bool theme = false; //0 dark theme, 1 light theme
+        private bool theme; //0 dark theme, 1 light theme
         private List<Point> UserPoints = new List<Point>();
         private List<Point> Points4Spline = new List<Point>();
         private List<MyPoint> PointList = new List<MyPoint>();
@@ -43,11 +43,13 @@ namespace ImgApp_2_WinForms
         {
             InitializeComponent();
             DoubleBuffered = true;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
             LoadedImages = new List<Image>();
             comboBox2.SelectedIndex = 0;
             channelBox.SelectedIndex = 0;
-            var dark = new Bitmap(@"C:\Users\kirill\Desktop\Учеба\Семестр 6\СЦОИ\Лаб 1\ImgApp_2_WinForms-master\lightThemeSmallest.png");
-            themeBox1.Image = dark;
             //this.TopMost = true;
             //this.WindowState = FormWindowState.Maximized;
 
@@ -55,6 +57,90 @@ namespace ImgApp_2_WinForms
             Point point2 = new Point(0, 200);
             UserPoints.Add(point1);
             UserPoints.Add(point2);
+            GetSettings();
+        }
+
+        public void GetSettings()//загружает настройки пользователя
+        {
+            theme = Properties.Settings.Default.Theme;
+            if(theme == false)
+            {
+                var dark = new Bitmap("..\\..\\..\\lightThemeSmallest.png");
+                themeBox1.Image = dark;
+
+                this.BackColor = Color.FromArgb(47, 47, 47);
+                LayerList.BackColor = Color.FromArgb(69, 69, 69);
+                LayerList.ForeColor = Color.FromArgb(224, 224, 224);
+                histogram.BackColor = Color.FromArgb(69, 69, 69);
+                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(69, 69, 69);
+                credits.ForeColor = Color.FromArgb(224, 224, 224);
+                debug.ForeColor = Color.FromArgb(224, 224, 224);
+                opacity.ForeColor = Color.FromArgb(224, 224, 224);
+                label1.ForeColor = Color.FromArgb(224, 224, 224);
+                label2.ForeColor = Color.FromArgb(224, 224, 224);
+                curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
+            }
+            else
+            {
+                var light = new Bitmap("..\\..\\..\\darkThemeSmallest.png");
+                themeBox1.Image = light;
+
+                this.BackColor = Color.FromArgb(240, 240, 240);
+                LayerList.BackColor = Color.FromArgb(219, 219, 219);
+                LayerList.ForeColor = Color.FromArgb(47, 47, 47);
+                histogram.BackColor = Color.FromArgb(219, 219, 219);
+                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(219, 219, 219);
+                credits.ForeColor = Color.FromArgb(47, 47, 47);
+                debug.ForeColor = Color.FromArgb(47, 47, 47);
+                opacity.ForeColor = Color.FromArgb(47, 47, 47);
+                label1.ForeColor = Color.FromArgb(47, 47, 47);
+                label2.ForeColor = Color.FromArgb(47, 47, 47);
+                curveEditBox.BackColor = Color.FromArgb(219, 219, 219);
+            }
+
+            histogrammToolStripMenuItem.Checked = Properties.Settings.Default.Histogram;
+            autoHistogramToolStripMenuItem.Checked = Properties.Settings.Default.AutoHist;
+            curveToolStripMenuItem.Checked = Properties.Settings.Default.Curve;
+            additionalCurveMarkersToolStripMenuItem.Checked = Properties.Settings.Default.Markers;
+
+            if (histogrammToolStripMenuItem.Checked == false)
+            {
+                histogram.Visible = false;
+                comboBox2.Visible = false;
+                button3.Visible = false;
+                ImageOutput.Size = new Size(ImageOutput.Width, Convert.ToInt32(ImageOutput.Height * 1.25));
+            }
+            else
+            {
+                histogram.Visible = true;
+                comboBox2.Visible = true;
+                button3.Visible = true;
+                ImageOutput.Size = new Size(ImageOutput.Width, Convert.ToInt32(ImageOutput.Height * 0.8));
+            }
+
+            if (curveToolStripMenuItem.Checked == false)
+            {
+                curveEditBox.Visible = false;
+                bCurve.Visible = false;
+                bApplyCurve.Visible = false;
+            }
+            else
+            {
+                curveEditBox.Visible = true;
+                bCurve.Visible = true;
+                bApplyCurve.Visible = true;
+            }
+        }
+
+        public void SaveSettings()//сохраняет настройки пользователя
+        {
+            Properties.Settings.Default.Theme = theme;
+            Properties.Settings.Default.Histogram = histogrammToolStripMenuItem.Checked;
+            Properties.Settings.Default.AutoHist = autoHistogramToolStripMenuItem.Checked;
+            Properties.Settings.Default.Curve = curveToolStripMenuItem.Checked;
+            Properties.Settings.Default.Markers = additionalCurveMarkersToolStripMenuItem.Checked;
+
+            Properties.Settings.Default.Save();
         }
 
         private void LoadImagesFromFolder(string[] paths) //загрузка изображений из выбранного файла
@@ -1102,6 +1188,8 @@ namespace ImgApp_2_WinForms
 
         private void curveEditBox_MouseMove(object sender, MouseEventArgs e)//движение точек
         {
+            if (additionalCurveMarkersToolStripMenuItem.Checked == true)
+                label3.Text = $"{e.Location.X * 1.2814:N0} ; {(199 - e.Location.Y) * 1.2814:N0}";
             if (e.Button == MouseButtons.Left)
             {
                 if (UserPoints.Count <= 2) return;
@@ -1148,8 +1236,6 @@ namespace ImgApp_2_WinForms
             //        greendot = 0;
             //    return;
             //}
-
-            //label3.Text = $"{e.Location.X} ; {200 - e.Location.Y}";
         }
 
         private void RenderCubicSpline()//поиск точек для кривой
@@ -1201,7 +1287,10 @@ namespace ImgApp_2_WinForms
 
             if (PointList.Count < 2)    //если меньше двух точек рисуем прямую
             {
-                e.Graphics.DrawCurve(Pens.LightGray, UserPoints.ToArray());
+                if (theme == false)
+                    e.Graphics.DrawCurve(Pens.LightGray, UserPoints.ToArray());
+                else
+                    e.Graphics.DrawCurve(Pens.Black, UserPoints.ToArray());
                 return;
             }
 
@@ -1217,8 +1306,18 @@ namespace ImgApp_2_WinForms
             if (HighlightedPoint != 0)  //зелёная "активная" точка
                 e.Graphics.FillRectangle(Brushes.Green, UserPoints[HighlightedPoint].X - 3, UserPoints[HighlightedPoint].Y - 3, 6, 6);
 
-            if (additionalCurveMarkersToolStripMenuItem.Checked == true)    //рисуем оранжевые прямые
+            if (additionalCurveMarkersToolStripMenuItem.Checked == true)
+            {
+                //рисуем оранжевые прямые
                 e.Graphics.DrawLines(Pens.DarkOrange, UserPoints.ToArray());
+
+                PointF point1 = new PointF(89.5F, 99.5F);
+                PointF point2 = new PointF(109.5F, 99.5F);
+                e.Graphics.DrawLine(Pens.DarkGray, point1, point2);
+                PointF point3 = new PointF(99.5F, 89.5F);
+                PointF point4 = new PointF(99.5F, 109.5F);
+                e.Graphics.DrawLine(Pens.DarkGray, point3, point4);
+            }
 
             //рисуем кривую
             Points4Spline.Clear();
@@ -1290,6 +1389,7 @@ namespace ImgApp_2_WinForms
             Point end = new Point(0, 200);
             UserPoints.Add(start);
             UserPoints.Add(end);
+
             curveEditBox.Refresh();
         }
 
@@ -1316,6 +1416,7 @@ namespace ImgApp_2_WinForms
             if (additionalCurveMarkersToolStripMenuItem.Checked == true)
             {
                 additionalCurveMarkersToolStripMenuItem.Checked = false;
+                label3.Text = "";
                 curveEditBox.Refresh();
             }
             else
@@ -1473,6 +1574,7 @@ namespace ImgApp_2_WinForms
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)//завершение программы
         {
+            SaveSettings();
             this.Close();
         }
 

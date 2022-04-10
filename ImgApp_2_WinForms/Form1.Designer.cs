@@ -638,14 +638,13 @@ namespace ImgApp_2_WinForms
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.label3.Location = new System.Drawing.Point(990, 24);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(0, 11);
+            this.label3.Size = new System.Drawing.Size(41, 10);
             this.label3.TabIndex = 26;
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label3.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             // 
             // myMethodToolStripMenuItem
             // 
@@ -686,6 +685,7 @@ namespace ImgApp_2_WinForms
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Aboobe Photoboob";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ImageListMenuStrip1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
