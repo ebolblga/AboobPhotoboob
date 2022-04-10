@@ -87,6 +87,7 @@ namespace ImgApp_2_WinForms
             this.bCurve = new System.Windows.Forms.Button();
             this.bApplyCurve = new System.Windows.Forms.Button();
             this.bRender3 = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.ImageListMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.histogram)).BeginInit();
@@ -262,6 +263,7 @@ namespace ImgApp_2_WinForms
             this.otsusMethodToolStripMenuItem.Name = "otsusMethodToolStripMenuItem";
             this.otsusMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.otsusMethodToolStripMenuItem.Text = "Otsu\'s method";
+            this.otsusMethodToolStripMenuItem.Click += new System.EventHandler(this.otsusMethodToolStripMenuItem_Click);
             // 
             // niblacksMethodToolStripMenuItem
             // 
@@ -631,12 +633,25 @@ namespace ImgApp_2_WinForms
             this.bRender3.UseVisualStyleBackColor = true;
             this.bRender3.Click += new System.EventHandler(this.bRender_Click);
             // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label3.Location = new System.Drawing.Point(990, 24);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(0, 11);
+            this.label3.TabIndex = 26;
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
             this.ClientSize = new System.Drawing.Size(1190, 568);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.bRender3);
             this.Controls.Add(this.bApplyCurve);
             this.Controls.Add(this.bCurve);
@@ -676,8 +691,6 @@ namespace ImgApp_2_WinForms
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox ImageOutput;
         private System.Windows.Forms.ListView LayerList;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ComboBox comboBox1;
@@ -730,6 +743,8 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.Button bApplyCurve;
         private System.Windows.Forms.Button bRender3;
         private System.Windows.Forms.ToolStripMenuItem additionalCurveMarkersToolStripMenuItem;
+        public System.Windows.Forms.PictureBox ImageOutput;
+        private System.Windows.Forms.Label label3;
     }
 }
 

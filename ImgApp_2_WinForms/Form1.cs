@@ -1040,6 +1040,8 @@ namespace ImgApp_2_WinForms
             //        greendot = 0;
             //    return;
             //}
+
+            //label3.Text = $"{e.Location.X} ; {200 - e.Location.Y}";
         }
 
         private void RenderCubicSpline()//поиск точек для кривой
@@ -1435,5 +1437,58 @@ namespace ImgApp_2_WinForms
                 Clipboard.SetImage(ImageOutput.Image);
         }
         #endregion
+
+        private void otsusMethodToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (LayerList.SelectedIndices.Count > 0)
+            {
+                Stopwatch timer = new Stopwatch();
+                timer.Start();
+                this.Cursor = Cursors.WaitCursor;
+
+                var selectedIndex = LayerList.SelectedIndices[0];
+                var img = new Bitmap(LoadedImages[LoadedImages.Count - 1 - selectedIndex]);
+
+                int w = img.Width;
+                int h = img.Height;
+
+                float threshold = (float)Binarization.Otsu(img) / 255;
+
+                byte[] img_bytes = GetRGBValues(img);
+
+                int imglength = w * h * 4;
+
+                byte[] img_out_bytes = new byte[imglength];
+
+                for (int i = 0; i < imglength - 2; i += 4)
+                {
+                    var brightness = Color.FromArgb(img_bytes[i + 2], img_bytes[i + 1], img_bytes[i]).GetBrightness();
+                    if (brightness > threshold)
+                    {
+                        img_out_bytes[i + 2] = 255;
+                        img_out_bytes[i + 1] = 255;
+                        img_out_bytes[i] = 255;
+                    }
+                    else
+                    {
+                        img_out_bytes[i + 2] = 0;
+                        img_out_bytes[i + 1] = 0;
+                        img_out_bytes[i] = 0;
+                    }
+                }
+
+                Bitmap img_out = new Bitmap(w, h, PixelFormat.Format32bppRgb);
+                writeImageBytes(img_out, img_out_bytes);
+
+                ImageOutput.Image = img_out;
+                SavetoLayerList(img_out);
+
+                this.Cursor = Cursors.Default;
+                timer.Stop();
+                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+            }
+            else
+                MessageBox.Show("Image is not selected", "Error");
+        }
     }
 }

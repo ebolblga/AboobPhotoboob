@@ -58,6 +58,8 @@ namespace ImgApp_2_WinForms
             Bitmap img_out = new Bitmap(w, h, PixelFormat.Format32bppRgb);
             writeImageBytes(img_out, img_out_bytes);
 
+            //Form1 f = new Form1();
+            //f.ImageOutput.Image = img_out;
             Form1.image = img_out;
             this.Close();
         }
