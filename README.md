@@ -1,6 +1,6 @@
 # Aboob Photoboob
 ## High end image editing software on C# Windows Forms App (.NET Framework)
-![image](https://user-images.githubusercontent.com/82185066/162346693-05942bf3-da61-4af8-8528-b0efdcce6bdd.png)
+![image](https://user-images.githubusercontent.com/82185066/162630436-aa95d9ee-ccc6-4922-9af5-4883d7a4323e.png)
 ### Functionality:
 
 1. Import image/folder of images, delete them from project, save
@@ -32,8 +32,10 @@
 
 ### Decorations:
 
-1. Dark/Light theme
-2. Can hide some windows
+1. Can hide some windows
+2. Dark/Light theme
+![image](https://user-images.githubusercontent.com/82185066/162630450-43a9c3fb-7d27-4691-8df4-4e69d40bfc14.png)
+
   
   #
 > Optimizations on rendering 5 layers:
