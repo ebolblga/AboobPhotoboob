@@ -1647,5 +1647,30 @@ namespace ImgApp_2_WinForms
                 Clipboard.SetImage(ImageOutput.Image);
         }
         #endregion
+
+        private void aSCIIFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (LayerList.SelectedIndices.Count > 0)
+            {
+                Stopwatch timer = new Stopwatch();
+                timer.Start();
+                this.Cursor = Cursors.WaitCursor;
+
+                var selectedIndex = LayerList.SelectedIndices[0];
+                var img = new Bitmap(LoadedImages[LoadedImages.Count - 1 - selectedIndex]);
+                Bitmap img_out = new Bitmap(img.Width, img.Height);
+
+                img_out = ASCII.Display(img);
+
+                ImageOutput.Image = img_out;
+                SavetoLayerList(img_out);
+
+                this.Cursor = Cursors.Default;
+                timer.Stop();
+                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+            }
+            else
+                MessageBox.Show("Image is not selected", "Error");
+        }
     }
 }

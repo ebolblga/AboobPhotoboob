@@ -56,6 +56,7 @@ namespace ImgApp_2_WinForms
             this.wulffsMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bradleysMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sliderMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.myMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.джепегированиеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.brightnessContrastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colorBalanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,7 +89,7 @@ namespace ImgApp_2_WinForms
             this.bApplyCurve = new System.Windows.Forms.Button();
             this.bRender3 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.myMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aSCIIFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ImageListMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.histogram)).BeginInit();
@@ -229,6 +230,7 @@ namespace ImgApp_2_WinForms
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.binarizationToolStripMenuItem,
+            this.aSCIIFilterToolStripMenuItem,
             this.джепегированиеToolStripMenuItem,
             this.brightnessContrastToolStripMenuItem,
             this.colorBalanceToolStripMenuItem,
@@ -256,47 +258,54 @@ namespace ImgApp_2_WinForms
             // fToolStripMenuItem
             // 
             this.fToolStripMenuItem.Name = "fToolStripMenuItem";
-            this.fToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.fToolStripMenuItem.Text = "Gavrilov\'s method";
             this.fToolStripMenuItem.Click += new System.EventHandler(this.fToolStripMenuItem_Click);
             // 
             // otsusMethodToolStripMenuItem
             // 
             this.otsusMethodToolStripMenuItem.Name = "otsusMethodToolStripMenuItem";
-            this.otsusMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.otsusMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.otsusMethodToolStripMenuItem.Text = "Otsu\'s method";
             this.otsusMethodToolStripMenuItem.Click += new System.EventHandler(this.otsusMethodToolStripMenuItem_Click);
             // 
             // niblacksMethodToolStripMenuItem
             // 
             this.niblacksMethodToolStripMenuItem.Name = "niblacksMethodToolStripMenuItem";
-            this.niblacksMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.niblacksMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.niblacksMethodToolStripMenuItem.Text = "Niblack\'s method";
             // 
             // sauvolasMethodToolStripMenuItem
             // 
             this.sauvolasMethodToolStripMenuItem.Name = "sauvolasMethodToolStripMenuItem";
-            this.sauvolasMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sauvolasMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.sauvolasMethodToolStripMenuItem.Text = "Sauvola\'s method";
             // 
             // wulffsMethodToolStripMenuItem
             // 
             this.wulffsMethodToolStripMenuItem.Name = "wulffsMethodToolStripMenuItem";
-            this.wulffsMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.wulffsMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.wulffsMethodToolStripMenuItem.Text = "Wulff\'s method";
             // 
             // bradleysMethodToolStripMenuItem
             // 
             this.bradleysMethodToolStripMenuItem.Name = "bradleysMethodToolStripMenuItem";
-            this.bradleysMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.bradleysMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.bradleysMethodToolStripMenuItem.Text = "Bradley\'s method";
             // 
             // sliderMethodToolStripMenuItem
             // 
             this.sliderMethodToolStripMenuItem.Name = "sliderMethodToolStripMenuItem";
-            this.sliderMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sliderMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.sliderMethodToolStripMenuItem.Text = "Slider method";
             this.sliderMethodToolStripMenuItem.Click += new System.EventHandler(this.sliderMethodToolStripMenuItem_Click);
+            // 
+            // myMethodToolStripMenuItem
+            // 
+            this.myMethodToolStripMenuItem.Name = "myMethodToolStripMenuItem";
+            this.myMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.myMethodToolStripMenuItem.Text = "My method";
+            this.myMethodToolStripMenuItem.Click += new System.EventHandler(this.myMethodToolStripMenuItem_Click);
             // 
             // джепегированиеToolStripMenuItem
             // 
@@ -646,12 +655,12 @@ namespace ImgApp_2_WinForms
             this.label3.TabIndex = 26;
             this.label3.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             // 
-            // myMethodToolStripMenuItem
+            // aSCIIFilterToolStripMenuItem
             // 
-            this.myMethodToolStripMenuItem.Name = "myMethodToolStripMenuItem";
-            this.myMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.myMethodToolStripMenuItem.Text = "My method";
-            this.myMethodToolStripMenuItem.Click += new System.EventHandler(this.myMethodToolStripMenuItem_Click);
+            this.aSCIIFilterToolStripMenuItem.Name = "aSCIIFilterToolStripMenuItem";
+            this.aSCIIFilterToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.aSCIIFilterToolStripMenuItem.Text = "ASCII Filter";
+            this.aSCIIFilterToolStripMenuItem.Click += new System.EventHandler(this.aSCIIFilterToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -755,6 +764,7 @@ namespace ImgApp_2_WinForms
         public System.Windows.Forms.PictureBox ImageOutput;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ToolStripMenuItem myMethodToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aSCIIFilterToolStripMenuItem;
     }
 }
 
