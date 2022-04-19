@@ -3,7 +3,7 @@
 ![image](https://user-images.githubusercontent.com/82185066/162630436-aa95d9ee-ccc6-4922-9af5-4883d7a4323e.png)
 ### Functionality:
 
-1. Import image/folder of images, delete them from project, save
+1. Import image/folder of images, delete them from project, save (with watermark)
 2. Blend modes:<br />
   •Normal<br />
   •Addition<br />
