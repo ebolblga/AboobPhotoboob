@@ -3,7 +3,7 @@
 ![image](https://user-images.githubusercontent.com/82185066/162630436-aa95d9ee-ccc6-4922-9af5-4883d7a4323e.png)
 ### Functionality:
 
-1. Import image/folder of images, delete them from project, save
+1. Import image/folder of images, delete them from project, save (with watermark)
 2. Blend modes:<br />
   •Normal<br />
   •Addition<br />
@@ -30,6 +30,9 @@
   •Can add and move points<br />
   •If 2 points have same X axis, only top one is added to rendering queue<br />
 ![ezgif-5-d4eb9d028c](https://user-images.githubusercontent.com/82185066/162632745-5ef4bffb-00e1-4832-93f7-163b4ef7281c.gif)
+9. ASCII Filter
+![image](https://user-images.githubusercontent.com/82185066/162750941-b4dd2244-9069-4729-b398-ff95708610e6.png)
+
 
 
 ### Decorations:
@@ -51,3 +54,9 @@
 | + parallel  | 0.22 sec  | 2.42%  |
 | + pointers  | ?  | ?  |
 | + release  | ?  | ?  |
+
+## Dependencies
+System.Drawing.Common by Microsoft
+
+## License
+This program is licensed under the GPL-3.0 License. Please read the License file to know about the usage terms and conditions.
