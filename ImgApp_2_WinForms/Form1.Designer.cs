@@ -106,6 +106,7 @@ namespace ImgApp_2_WinForms
             this.Binarization3 = new System.Windows.Forms.Button();
             this.Binarization2 = new System.Windows.Forms.Button();
             this.Binarization1 = new System.Windows.Forms.Button();
+            this.OCRText = new System.Windows.Forms.RichTextBox();
             this.ImageListMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.histogram)).BeginInit();
@@ -748,6 +749,7 @@ namespace ImgApp_2_WinForms
             this.GetText.TabIndex = 38;
             this.GetText.Text = "Read Text";
             this.GetText.UseVisualStyleBackColor = true;
+            this.GetText.Click += new System.EventHandler(this.GetText_Click);
             // 
             // BinarizationSlider
             // 
@@ -872,12 +874,28 @@ namespace ImgApp_2_WinForms
             this.Binarization1.UseVisualStyleBackColor = true;
             this.Binarization1.Click += new System.EventHandler(this.Binarization1_Click);
             // 
+            // OCRText
+            // 
+            this.OCRText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.OCRText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(69)))), ((int)(((byte)(69)))));
+            this.OCRText.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.OCRText.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.OCRText.Location = new System.Drawing.Point(138, 36);
+            this.OCRText.Name = "OCRText";
+            this.OCRText.Size = new System.Drawing.Size(120, 422);
+            this.OCRText.TabIndex = 43;
+            this.OCRText.Text = "";
+            this.OCRText.Visible = false;
+            this.OCRText.Click += new System.EventHandler(this.OCRText_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
             this.ClientSize = new System.Drawing.Size(1190, 568);
+            this.Controls.Add(this.OCRText);
             this.Controls.Add(this.BinarizationPanel);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.bRender3);
@@ -995,6 +1013,7 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.Button SaveResult;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.RichTextBox OCRText;
     }
 }
 

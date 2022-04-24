@@ -1,5 +1,7 @@
 ﻿namespace ImgApp_2_WinForms
 {
+    using Patagames.Ocr;
+    using Patagames.Ocr.Enums;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -1790,6 +1792,7 @@
 
             Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
             Bitmap img_out = Binarization.Gavrilov(img);
+            img.Dispose();
             ImageOutput.Image = img_out;
 
             this.Cursor = Cursors.Default;
@@ -1822,6 +1825,7 @@
 
             Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
             Bitmap img_out = Binarization.Otsu(img);
+            img.Dispose();
             ImageOutput.Image = img_out;
 
             this.Cursor = Cursors.Default;
@@ -1843,6 +1847,7 @@
 
             Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
             Bitmap img_out = Binarization.Kochanovskiy(img);
+            img.Dispose();
             ImageOutput.Image = img_out;
 
             this.Cursor = Cursors.Default;
@@ -1878,6 +1883,7 @@
 
             Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
             Bitmap img_out = Binarization.Niblack(img);
+            img.Dispose();
             ImageOutput.Image = img_out;
 
             this.Cursor = Cursors.Default;
@@ -1899,6 +1905,7 @@
 
             Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
             Bitmap img_out = Binarization.Sauvola(img);
+            img.Dispose();
             ImageOutput.Image = img_out;
 
             this.Cursor = Cursors.Default;
@@ -1920,6 +1927,7 @@
 
             Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
             Bitmap img_out = Binarization.Wulff(img);
+            img.Dispose();
             ImageOutput.Image = img_out;
 
             this.Cursor = Cursors.Default;
@@ -1941,13 +1949,70 @@
 
             Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
             Bitmap img_out = Binarization.Bradley(img);
+            img.Dispose();
             ImageOutput.Image = img_out;
 
             this.Cursor = Cursors.Default;
             timer.Stop();
             debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-
         }
         #endregion
+
+        private void GetText_Click(object sender, EventArgs e)
+        {
+            if (ImageOutput.Image == null)
+            {
+                MessageBox.Show("No image is loaded", "Error");
+                return;
+            }
+
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            this.Cursor = Cursors.WaitCursor;
+
+            Bitmap img = new Bitmap(ImageOutput.Image);
+            int side = 499;
+            Rectangle crop = new Rectangle(Convert.ToInt32(((double)img.Width / 2) - ((double)side / 2)), Convert.ToInt32(((double)img.Height / 2) - ((double)side / 2)), side, side);
+            Bitmap imgCropped = img.Clone(crop, img.PixelFormat);
+            img.Dispose();
+            ImageOutput.Image = imgCropped;
+
+            using (var objOcr = OcrApi.Create())
+            {
+                objOcr.Init(Languages.English);
+
+                //objOcr.Init(@"..\..\tessdata", "eng", OcrEngineMode.OEM_DEFAULT);
+                //objOcr.SetVariable("tessedit_char_whitelist", "0123456789,/ -");
+                string returnText = "Tesseract.Net optical character recognition output: ";
+                try
+                {
+                    returnText += objOcr.GetTextFromImage(imgCropped);
+                    Clipboard.SetText(returnText);
+                    OCRText.Visible = true;
+                    OCRText.Text = returnText;
+                }
+                catch
+                {
+                    img.Dispose();
+                    this.Cursor = Cursors.Default;
+                    timer.Stop();
+                    debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+                    MessageBox.Show("Tesseract.Net.SDK error.\nProbably forgot to crop...", "Error");
+                    return;
+                }
+            }
+
+            img.Dispose();
+            this.Cursor = Cursors.Default;
+            timer.Stop();
+            debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+
+        }
+
+        private void OCRText_Click(object sender, EventArgs e)
+        {
+            OCRText.Visible = false;
+            OCRText.Text = string.Empty;
+        }
     }
 }
