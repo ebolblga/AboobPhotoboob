@@ -695,6 +695,33 @@
             }
         }
 
+        private void aSCIIFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (LayerList.SelectedIndices.Count > 0)
+            {
+                Stopwatch timer = new Stopwatch();
+                timer.Start();
+                this.Cursor = Cursors.WaitCursor;
+
+                var selectedIndex = LayerList.SelectedIndices[0];
+                var img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
+                Bitmap img_out = new Bitmap(img.Width, img.Height);
+
+                img_out = ASCII.Display(img);
+
+                ImageOutput.Image = img_out;
+                SavetoLayerList(img_out);
+
+                this.Cursor = Cursors.Default;
+                timer.Stop();
+                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+            }
+            else
+            {
+                MessageBox.Show("Image is not selected", "Error");
+            }
+        }
+
         #region histogram
         private void histogramRender2(object sender, EventArgs e)//СОВСЕМ улучшенная отрисовка гистограммы
         {
@@ -1016,7 +1043,7 @@
         }
         #endregion
 
-        #region binarization
+        #region oldBinarization
         private void fToolStripMenuItem_Click(object sender, EventArgs e)//банальная бинаризация
         {
             if (LayerList.SelectedIndices.Count > 0)
@@ -1702,17 +1729,17 @@
                 themeBox1.Image = dark;
                 _theme = false;
 
-                //this.BackColor = Color.FromArgb(47, 47, 47);
-                //LayerList.BackColor = Color.FromArgb(69, 69, 69);
-                //LayerList.ForeColor = Color.FromArgb(224, 224, 224);
-                //histogram.BackColor = Color.FromArgb(69, 69, 69);
-                //histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(69, 69, 69);
-                //credits.ForeColor = Color.FromArgb(224, 224, 224);
-                //debug.ForeColor = Color.FromArgb(224, 224, 224);
-                //opacity.ForeColor = Color.FromArgb(224, 224, 224);
-                //label1.ForeColor = Color.FromArgb(224, 224, 224);
-                //label2.ForeColor = Color.FromArgb(224, 224, 224);
-                //curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
+                this.BackColor = Color.FromArgb(47, 47, 47);
+                LayerList.BackColor = Color.FromArgb(69, 69, 69);
+                LayerList.ForeColor = Color.FromArgb(224, 224, 224);
+                histogram.BackColor = Color.FromArgb(69, 69, 69);
+                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(69, 69, 69);
+                credits.ForeColor = Color.FromArgb(224, 224, 224);
+                debug.ForeColor = Color.FromArgb(224, 224, 224);
+                opacity.ForeColor = Color.FromArgb(224, 224, 224);
+                label1.ForeColor = Color.FromArgb(224, 224, 224);
+                label2.ForeColor = Color.FromArgb(224, 224, 224);
+                curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
 
                 //photoshop theme
                 //this.BackColor = Color.FromArgb(38, 38, 38);
@@ -1725,17 +1752,17 @@
                 //opacity.ForeColor = Color.FromArgb(221, 221, 221);
 
                 // moder flat UI
-                this.BackColor = Color.FromArgb(21, 23, 39);
-                LayerList.BackColor = Color.FromArgb(23, 27, 44);
-                LayerList.ForeColor = Color.FromArgb(123, 128, 142);
-                histogram.BackColor = Color.FromArgb(23, 27, 44);
-                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(23, 27, 44);
-                credits.ForeColor = Color.FromArgb(123, 128, 142);
-                debug.ForeColor = Color.FromArgb(123, 128, 142);
-                opacity.ForeColor = Color.FromArgb(123, 128, 142);
-                label1.ForeColor = Color.FromArgb(123, 128, 142);
-                label2.ForeColor = Color.FromArgb(123, 128, 142);
-                curveEditBox.BackColor = Color.FromArgb(23, 27, 44);
+                //this.BackColor = Color.FromArgb(21, 23, 39);
+                //LayerList.BackColor = Color.FromArgb(23, 27, 44);
+                //LayerList.ForeColor = Color.FromArgb(123, 128, 142);
+                //histogram.BackColor = Color.FromArgb(23, 27, 44);
+                //histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(23, 27, 44);
+                //credits.ForeColor = Color.FromArgb(123, 128, 142);
+                //debug.ForeColor = Color.FromArgb(123, 128, 142);
+                //opacity.ForeColor = Color.FromArgb(123, 128, 142);
+                //label1.ForeColor = Color.FromArgb(123, 128, 142);
+                //label2.ForeColor = Color.FromArgb(123, 128, 142);
+                //curveEditBox.BackColor = Color.FromArgb(23, 27, 44);
             }
         }
 
@@ -1748,33 +1775,7 @@
         }
         #endregion
 
-        private void aSCIIFilterToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                var selectedIndex = LayerList.SelectedIndices[0];
-                var img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
-                Bitmap img_out = new Bitmap(img.Width, img.Height);
-
-                img_out = ASCII.Display(img);
-
-                ImageOutput.Image = img_out;
-                SavetoLayerList(img_out);
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-            }
-            else
-            {
-                MessageBox.Show("Image is not selected", "Error");
-            }
-        }
-
+        #region Binarization
         private void Binarization1_Click(object sender, EventArgs e)
         {
             if (LayerList.SelectedIndices.Count < 1)
@@ -1882,7 +1883,71 @@
             this.Cursor = Cursors.Default;
             timer.Stop();
             debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+        }
+
+        private void Binarization6_Click(object sender, EventArgs e)
+        {
+            if (LayerList.SelectedIndices.Count < 1)
+            {
+                MessageBox.Show("No image is selected", "Error");
+                return;
+            }
+
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            this.Cursor = Cursors.WaitCursor;
+
+            Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
+            Bitmap img_out = Binarization.Sauvola(img);
+            ImageOutput.Image = img_out;
+
+            this.Cursor = Cursors.Default;
+            timer.Stop();
+            debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+        }
+
+        private void Binarization7_Click(object sender, EventArgs e)
+        {
+            if (LayerList.SelectedIndices.Count < 1)
+            {
+                MessageBox.Show("No image is selected", "Error");
+                return;
+            }
+
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            this.Cursor = Cursors.WaitCursor;
+
+            Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
+            Bitmap img_out = Binarization.Wulff(img);
+            ImageOutput.Image = img_out;
+
+            this.Cursor = Cursors.Default;
+            timer.Stop();
+            debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+        }
+
+        private void Binarization8_Click(object sender, EventArgs e)
+        {
+            if (LayerList.SelectedIndices.Count < 1)
+            {
+                MessageBox.Show("No image is selected", "Error");
+                return;
+            }
+
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            this.Cursor = Cursors.WaitCursor;
+
+            Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
+            Bitmap img_out = Binarization.Bradley(img);
+            ImageOutput.Image = img_out;
+
+            this.Cursor = Cursors.Default;
+            timer.Stop();
+            debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
 
         }
+        #endregion
     }
 }

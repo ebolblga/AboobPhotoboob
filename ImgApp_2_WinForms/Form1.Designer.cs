@@ -91,21 +91,21 @@ namespace ImgApp_2_WinForms
             this.bRender3 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.BinarizationPanel = new System.Windows.Forms.Panel();
-            this.Binarization1 = new System.Windows.Forms.Button();
-            this.Binarization2 = new System.Windows.Forms.Button();
-            this.Binarization3 = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.SaveResult = new System.Windows.Forms.Button();
+            this.GetText = new System.Windows.Forms.Button();
+            this.BinarizationSlider = new System.Windows.Forms.TrackBar();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.Binarization8 = new System.Windows.Forms.Button();
             this.Binarization7 = new System.Windows.Forms.Button();
             this.Binarization6 = new System.Windows.Forms.Button();
             this.Binarization5 = new System.Windows.Forms.Button();
-            this.Binarization8 = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.BinarizationSlider = new System.Windows.Forms.TrackBar();
-            this.GetText = new System.Windows.Forms.Button();
-            this.SaveResult = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.Binarization3 = new System.Windows.Forms.Button();
+            this.Binarization2 = new System.Windows.Forms.Button();
+            this.Binarization1 = new System.Windows.Forms.Button();
             this.ImageListMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.histogram)).BeginInit();
@@ -276,52 +276,52 @@ namespace ImgApp_2_WinForms
             // fToolStripMenuItem
             // 
             this.fToolStripMenuItem.Name = "fToolStripMenuItem";
-            this.fToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.fToolStripMenuItem.Text = "Gavrilov\'s method";
             this.fToolStripMenuItem.Click += new System.EventHandler(this.fToolStripMenuItem_Click);
             // 
             // otsusMethodToolStripMenuItem
             // 
             this.otsusMethodToolStripMenuItem.Name = "otsusMethodToolStripMenuItem";
-            this.otsusMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.otsusMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.otsusMethodToolStripMenuItem.Text = "Otsu\'s method";
             this.otsusMethodToolStripMenuItem.Click += new System.EventHandler(this.otsusMethodToolStripMenuItem_Click);
             // 
             // niblacksMethodToolStripMenuItem
             // 
             this.niblacksMethodToolStripMenuItem.Name = "niblacksMethodToolStripMenuItem";
-            this.niblacksMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.niblacksMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.niblacksMethodToolStripMenuItem.Text = "Niblack\'s method";
             // 
             // sauvolasMethodToolStripMenuItem
             // 
             this.sauvolasMethodToolStripMenuItem.Name = "sauvolasMethodToolStripMenuItem";
-            this.sauvolasMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sauvolasMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.sauvolasMethodToolStripMenuItem.Text = "Sauvola\'s method";
             // 
             // wulffsMethodToolStripMenuItem
             // 
             this.wulffsMethodToolStripMenuItem.Name = "wulffsMethodToolStripMenuItem";
-            this.wulffsMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.wulffsMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.wulffsMethodToolStripMenuItem.Text = "Wulff\'s method";
             // 
             // bradleysMethodToolStripMenuItem
             // 
             this.bradleysMethodToolStripMenuItem.Name = "bradleysMethodToolStripMenuItem";
-            this.bradleysMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.bradleysMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.bradleysMethodToolStripMenuItem.Text = "Bradley\'s method";
             // 
             // sliderMethodToolStripMenuItem
             // 
             this.sliderMethodToolStripMenuItem.Name = "sliderMethodToolStripMenuItem";
-            this.sliderMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sliderMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.sliderMethodToolStripMenuItem.Text = "Slider method";
             this.sliderMethodToolStripMenuItem.Click += new System.EventHandler(this.sliderMethodToolStripMenuItem_Click);
             // 
             // myMethodToolStripMenuItem
             // 
             this.myMethodToolStripMenuItem.Name = "myMethodToolStripMenuItem";
-            this.myMethodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.myMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.myMethodToolStripMenuItem.Text = "My method";
             this.myMethodToolStripMenuItem.Click += new System.EventHandler(this.myMethodToolStripMenuItem_Click);
             // 
@@ -705,146 +705,16 @@ namespace ImgApp_2_WinForms
             this.BinarizationPanel.Size = new System.Drawing.Size(120, 422);
             this.BinarizationPanel.TabIndex = 27;
             // 
-            // Binarization1
+            // label8
             // 
-            this.Binarization1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Binarization1.Location = new System.Drawing.Point(15, 45);
-            this.Binarization1.Name = "Binarization1";
-            this.Binarization1.Size = new System.Drawing.Size(89, 23);
-            this.Binarization1.TabIndex = 26;
-            this.Binarization1.Text = "Gavrilov";
-            this.Binarization1.UseVisualStyleBackColor = true;
-            this.Binarization1.Click += new System.EventHandler(this.Binarization1_Click);
-            // 
-            // Binarization2
-            // 
-            this.Binarization2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Binarization2.Location = new System.Drawing.Point(15, 74);
-            this.Binarization2.Name = "Binarization2";
-            this.Binarization2.Size = new System.Drawing.Size(89, 23);
-            this.Binarization2.TabIndex = 27;
-            this.Binarization2.Text = "Otsu";
-            this.Binarization2.UseVisualStyleBackColor = true;
-            this.Binarization2.Click += new System.EventHandler(this.Binarization2_Click);
-            // 
-            // Binarization3
-            // 
-            this.Binarization3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Binarization3.Font = new System.Drawing.Font("Montserrat", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Binarization3.Location = new System.Drawing.Point(15, 103);
-            this.Binarization3.Name = "Binarization3";
-            this.Binarization3.Size = new System.Drawing.Size(89, 23);
-            this.Binarization3.TabIndex = 28;
-            this.Binarization3.Text = "Kochanovskiy";
-            this.Binarization3.UseVisualStyleBackColor = true;
-            this.Binarization3.Click += new System.EventHandler(this.Binarization3_Click);
-            // 
-            // Binarization7
-            // 
-            this.Binarization7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Binarization7.Location = new System.Drawing.Point(15, 280);
-            this.Binarization7.Name = "Binarization7";
-            this.Binarization7.Size = new System.Drawing.Size(89, 23);
-            this.Binarization7.TabIndex = 31;
-            this.Binarization7.Text = "Wulff";
-            this.Binarization7.UseVisualStyleBackColor = true;
-            // 
-            // Binarization6
-            // 
-            this.Binarization6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Binarization6.Location = new System.Drawing.Point(15, 251);
-            this.Binarization6.Name = "Binarization6";
-            this.Binarization6.Size = new System.Drawing.Size(89, 23);
-            this.Binarization6.TabIndex = 30;
-            this.Binarization6.Text = "Sauvola";
-            this.Binarization6.UseVisualStyleBackColor = true;
-            // 
-            // Binarization5
-            // 
-            this.Binarization5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Binarization5.Location = new System.Drawing.Point(15, 222);
-            this.Binarization5.Name = "Binarization5";
-            this.Binarization5.Size = new System.Drawing.Size(89, 23);
-            this.Binarization5.TabIndex = 29;
-            this.Binarization5.Text = "Niblack";
-            this.Binarization5.UseVisualStyleBackColor = true;
-            this.Binarization5.Click += new System.EventHandler(this.Binarization5_Click);
-            // 
-            // Binarization8
-            // 
-            this.Binarization8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Binarization8.Location = new System.Drawing.Point(16, 309);
-            this.Binarization8.Name = "Binarization8";
-            this.Binarization8.Size = new System.Drawing.Size(89, 23);
-            this.Binarization8.TabIndex = 32;
-            this.Binarization8.Text = "Bradley";
-            this.Binarization8.UseVisualStyleBackColor = true;
-            // 
-            // label4
-            // 
-            this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label4.Location = new System.Drawing.Point(0, 29);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(120, 13);
-            this.label4.TabIndex = 34;
-            this.label4.Text = "Global methods";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label5
-            // 
-            this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label5.Location = new System.Drawing.Point(0, 206);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(120, 15);
-            this.label5.TabIndex = 35;
-            this.label5.Text = "Local methods";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label6
-            // 
-            this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("Montserrat SemiBold", 9.749999F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label6.Location = new System.Drawing.Point(0, 5);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(120, 18);
-            this.label6.TabIndex = 36;
-            this.label6.Text = "Binarization";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // BinarizationSlider
-            // 
-            this.BinarizationSlider.LargeChange = 1;
-            this.BinarizationSlider.Location = new System.Drawing.Point(0, 158);
-            this.BinarizationSlider.Maximum = 255;
-            this.BinarizationSlider.Name = "BinarizationSlider";
-            this.BinarizationSlider.Size = new System.Drawing.Size(120, 45);
-            this.BinarizationSlider.TabIndex = 37;
-            this.BinarizationSlider.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.BinarizationSlider.Scroll += new System.EventHandler(this.BinarizationSlider_Scroll);
-            // 
-            // GetText
-            // 
-            this.GetText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.GetText.Location = new System.Drawing.Point(16, 375);
-            this.GetText.Name = "GetText";
-            this.GetText.Size = new System.Drawing.Size(89, 23);
-            this.GetText.TabIndex = 38;
-            this.GetText.Text = "Read Text";
-            this.GetText.UseVisualStyleBackColor = true;
-            // 
-            // SaveResult
-            // 
-            this.SaveResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.SaveResult.Location = new System.Drawing.Point(16, 346);
-            this.SaveResult.Name = "SaveResult";
-            this.SaveResult.Size = new System.Drawing.Size(89, 23);
-            this.SaveResult.TabIndex = 39;
-            this.SaveResult.Text = "Save result";
-            this.SaveResult.UseVisualStyleBackColor = true;
-            this.SaveResult.Click += new System.EventHandler(this.SaveResult_Click);
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label8.Location = new System.Drawing.Point(0, 139);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(120, 13);
+            this.label8.TabIndex = 41;
+            this.label8.Text = "Slider";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label7
             // 
@@ -858,16 +728,149 @@ namespace ImgApp_2_WinForms
             this.label7.Text = "0";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label8
+            // SaveResult
             // 
-            this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label8.Location = new System.Drawing.Point(0, 139);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(120, 13);
-            this.label8.TabIndex = 41;
-            this.label8.Text = "Slider";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.SaveResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.SaveResult.Location = new System.Drawing.Point(16, 346);
+            this.SaveResult.Name = "SaveResult";
+            this.SaveResult.Size = new System.Drawing.Size(89, 23);
+            this.SaveResult.TabIndex = 39;
+            this.SaveResult.Text = "Save result";
+            this.SaveResult.UseVisualStyleBackColor = true;
+            this.SaveResult.Click += new System.EventHandler(this.SaveResult_Click);
+            // 
+            // GetText
+            // 
+            this.GetText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.GetText.Location = new System.Drawing.Point(16, 375);
+            this.GetText.Name = "GetText";
+            this.GetText.Size = new System.Drawing.Size(89, 23);
+            this.GetText.TabIndex = 38;
+            this.GetText.Text = "Read Text";
+            this.GetText.UseVisualStyleBackColor = true;
+            // 
+            // BinarizationSlider
+            // 
+            this.BinarizationSlider.LargeChange = 1;
+            this.BinarizationSlider.Location = new System.Drawing.Point(0, 158);
+            this.BinarizationSlider.Maximum = 255;
+            this.BinarizationSlider.Name = "BinarizationSlider";
+            this.BinarizationSlider.Size = new System.Drawing.Size(120, 45);
+            this.BinarizationSlider.TabIndex = 37;
+            this.BinarizationSlider.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.BinarizationSlider.Scroll += new System.EventHandler(this.BinarizationSlider_Scroll);
+            // 
+            // label6
+            // 
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Montserrat SemiBold", 9.749999F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label6.Location = new System.Drawing.Point(0, 5);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(120, 18);
+            this.label6.TabIndex = 36;
+            this.label6.Text = "Binarization";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label5
+            // 
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label5.Location = new System.Drawing.Point(0, 206);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(120, 15);
+            this.label5.TabIndex = 35;
+            this.label5.Text = "Local methods";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label4
+            // 
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label4.Location = new System.Drawing.Point(0, 29);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(120, 13);
+            this.label4.TabIndex = 34;
+            this.label4.Text = "Global methods";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // Binarization8
+            // 
+            this.Binarization8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Binarization8.Location = new System.Drawing.Point(16, 309);
+            this.Binarization8.Name = "Binarization8";
+            this.Binarization8.Size = new System.Drawing.Size(89, 23);
+            this.Binarization8.TabIndex = 32;
+            this.Binarization8.Text = "Bradley";
+            this.Binarization8.UseVisualStyleBackColor = true;
+            this.Binarization8.Click += new System.EventHandler(this.Binarization8_Click);
+            // 
+            // Binarization7
+            // 
+            this.Binarization7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Binarization7.Location = new System.Drawing.Point(15, 280);
+            this.Binarization7.Name = "Binarization7";
+            this.Binarization7.Size = new System.Drawing.Size(89, 23);
+            this.Binarization7.TabIndex = 31;
+            this.Binarization7.Text = "Wulff";
+            this.Binarization7.UseVisualStyleBackColor = true;
+            this.Binarization7.Click += new System.EventHandler(this.Binarization7_Click);
+            // 
+            // Binarization6
+            // 
+            this.Binarization6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Binarization6.Location = new System.Drawing.Point(15, 251);
+            this.Binarization6.Name = "Binarization6";
+            this.Binarization6.Size = new System.Drawing.Size(89, 23);
+            this.Binarization6.TabIndex = 30;
+            this.Binarization6.Text = "Sauvola";
+            this.Binarization6.UseVisualStyleBackColor = true;
+            this.Binarization6.Click += new System.EventHandler(this.Binarization6_Click);
+            // 
+            // Binarization5
+            // 
+            this.Binarization5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Binarization5.Location = new System.Drawing.Point(15, 222);
+            this.Binarization5.Name = "Binarization5";
+            this.Binarization5.Size = new System.Drawing.Size(89, 23);
+            this.Binarization5.TabIndex = 29;
+            this.Binarization5.Text = "Niblack";
+            this.Binarization5.UseVisualStyleBackColor = true;
+            this.Binarization5.Click += new System.EventHandler(this.Binarization5_Click);
+            // 
+            // Binarization3
+            // 
+            this.Binarization3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Binarization3.Font = new System.Drawing.Font("Montserrat", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Binarization3.Location = new System.Drawing.Point(15, 103);
+            this.Binarization3.Name = "Binarization3";
+            this.Binarization3.Size = new System.Drawing.Size(89, 23);
+            this.Binarization3.TabIndex = 28;
+            this.Binarization3.Text = "Kochanovskiy";
+            this.Binarization3.UseVisualStyleBackColor = true;
+            this.Binarization3.Click += new System.EventHandler(this.Binarization3_Click);
+            // 
+            // Binarization2
+            // 
+            this.Binarization2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Binarization2.Location = new System.Drawing.Point(15, 74);
+            this.Binarization2.Name = "Binarization2";
+            this.Binarization2.Size = new System.Drawing.Size(89, 23);
+            this.Binarization2.TabIndex = 27;
+            this.Binarization2.Text = "Otsu";
+            this.Binarization2.UseVisualStyleBackColor = true;
+            this.Binarization2.Click += new System.EventHandler(this.Binarization2_Click);
+            // 
+            // Binarization1
+            // 
+            this.Binarization1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Binarization1.Location = new System.Drawing.Point(15, 45);
+            this.Binarization1.Name = "Binarization1";
+            this.Binarization1.Size = new System.Drawing.Size(89, 23);
+            this.Binarization1.TabIndex = 26;
+            this.Binarization1.Text = "Gavrilov";
+            this.Binarization1.UseVisualStyleBackColor = true;
+            this.Binarization1.Click += new System.EventHandler(this.Binarization1_Click);
             // 
             // Form1
             // 
