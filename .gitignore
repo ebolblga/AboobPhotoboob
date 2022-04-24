@@ -338,3 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/ImgApp_2_WinForms/GlobalSuppressions.cs

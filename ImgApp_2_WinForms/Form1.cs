@@ -1,42 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
-
-namespace ImgApp_2_WinForms
+﻿namespace ImgApp_2_WinForms
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Drawing.Imaging;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
+    using System.Windows.Forms.DataVisualization.Charting;
+
     public partial class Form1 : Form
     {
 
         #region variables
-        private List<Image> LoadedImages { get; set; }
-        private const int N = 20;   //максимальное кол-во изображений (чтоб краша из-за недостатка памяти небыло)
-        public static Bitmap image = null;
-        private int[] mode = new int[N];    //массив режимов наложения слоёв
-        private int[] opacityArray = Enumerable.Repeat(100, N).ToArray();   //массив прозрачности слоёв
-        private bool theme; //0 dark theme, 1 light theme
-        private List<Point> UserPoints = new List<Point>();
-        private List<Point> Points4Spline = new List<Point>();
-        private List<MyPoint> PointList = new List<MyPoint>();
-        private List<MyPoint> ReversePointList = new List<MyPoint>();
+        private List<Image> _loadedImages { get; set; }
 
-        private double[] a = new double[0];
-        private double[] b = new double[0];
-        private double[] c = new double[0];
-        private double[] d = new double[0];
-        private double[] e = new double[0];
-        private double[] f = new double[0];
+        public static Bitmap Image = null;
+        private const int N = 20;   //максимальное кол-во изображений (чтоб краша из-за недостатка памяти небыло)
+        private int[] _mode = new int[N];    //массив режимов наложения слоёв
+        private int[] _opacityArray = Enumerable.Repeat(100, N).ToArray();   //массив прозрачности слоёв
+        private bool _theme; //0 dark theme, 1 light theme
+        private List<Point> _userPoints = new List<Point>();
+        private List<Point> _points4Spline = new List<Point>();
+        private List<MyPoint> _pointList = new List<MyPoint>();
+        private List<MyPoint> _reversePointList = new List<MyPoint>();
+
+        private struct SplineTuple
+        {
+            public double a;
+            public double b;
+            public double c;
+            public double d;
+            public double x;
+        } // Структура, описывающая сплайн на каждом сегменте сетки
+
+        private SplineTuple[] _splines; // Сплайны
         #endregion
 
         public Form1()
@@ -47,7 +48,7 @@ namespace ImgApp_2_WinForms
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            LoadedImages = new List<Image>();
+            _loadedImages = new List<Image>();
             comboBox2.SelectedIndex = 0;
             channelBox.SelectedIndex = 0;
             //this.TopMost = true;
@@ -55,15 +56,15 @@ namespace ImgApp_2_WinForms
 
             Point point1 = new Point(200, 0);
             Point point2 = new Point(0, 200);
-            UserPoints.Add(point1);
-            UserPoints.Add(point2);
+            _userPoints.Add(point1);
+            _userPoints.Add(point2);
             GetSettings();
         }
 
         public void GetSettings()//загружает настройки пользователя
         {
-            theme = Properties.Settings.Default.Theme;
-            if(theme == false)
+            _theme = Properties.Settings.Default.Theme;
+            if (_theme == false)
             {
                 var dark = new Bitmap("..\\..\\..\\lightThemeSmallest.png");
                 themeBox1.Image = dark;
@@ -134,7 +135,7 @@ namespace ImgApp_2_WinForms
 
         public void SaveSettings()//сохраняет настройки пользователя
         {
-            Properties.Settings.Default.Theme = theme;
+            Properties.Settings.Default.Theme = _theme;
             Properties.Settings.Default.Histogram = histogrammToolStripMenuItem.Checked;
             Properties.Settings.Default.AutoHist = autoHistogramToolStripMenuItem.Checked;
             Properties.Settings.Default.Curve = curveToolStripMenuItem.Checked;
@@ -149,8 +150,8 @@ namespace ImgApp_2_WinForms
             foreach (var path in paths)
             {
                 //string tempLocation = $@"C:\Users\kirill\Desktop\Учеба\Семестр 6\СЦОИ\Лаб 1\ImgApp_2_WinForms-master\Images\{index}.jpg";
-                var tempImage = Image.FromFile(path);
-                LoadedImages.Add(tempImage);
+                var tempImage = System.Drawing.Image.FromFile(path);
+                _loadedImages.Add(tempImage);
             }
         }
 
@@ -159,12 +160,12 @@ namespace ImgApp_2_WinForms
             if (LayerList.SelectedIndices.Count > 0)
             {
                 var selectedIndex = LayerList.SelectedIndices[0];
-                mode[selectedIndex] = comboBox1.SelectedIndex;
+                _mode[selectedIndex] = comboBox1.SelectedIndex;
             }
             else
             {
                 comboBox1.SelectedIndex = -1;
-                MessageBox.Show("Image is not selected", "Error");                
+                MessageBox.Show("Image is not selected", "Error");
             }
         }
 
@@ -173,13 +174,13 @@ namespace ImgApp_2_WinForms
             if (LayerList.SelectedIndices.Count > 0)
             {
                 var selectedIndex = LayerList.SelectedIndices[0];
-                var invertedIndex = LoadedImages.Count - 1 - selectedIndex;
-                Image selectedImage = LoadedImages[invertedIndex];
+                var invertedIndex = _loadedImages.Count - 1 - selectedIndex;
+                Image selectedImage = _loadedImages[invertedIndex];
                 ImageOutput.Image = selectedImage;
-                comboBox1.SelectedIndex = mode[selectedIndex];
+                comboBox1.SelectedIndex = _mode[selectedIndex];
                 channelBox.SelectedIndex = 0;
 
-                opacityBar.Value = opacityArray[selectedIndex];
+                opacityBar.Value = _opacityArray[selectedIndex];
                 opacity.Text = "Opacity: " + opacityBar.Value.ToString() + "%";
 
                 if (autoHistogramToolStripMenuItem.Checked == true && histogrammToolStripMenuItem.Checked == true)
@@ -191,19 +192,19 @@ namespace ImgApp_2_WinForms
 
         private void bRender_Click(object sender, EventArgs e)//СОВСЕМ улучшенная отрисовка режимов наложения
         {
-            if (LoadedImages.Count >= 2)
+            if (_loadedImages.Count >= 2)
             {
                 Stopwatch timer = new Stopwatch();
                 timer.Start();
                 this.Cursor = Cursors.WaitCursor;
 
-                int Index = 1;
-                Bitmap img1 = new Bitmap(LoadedImages[Index - 1]);
-                Bitmap img2 = new Bitmap(LoadedImages[Index]);
-                int modeIndex = LoadedImages.Count - 1 - Index;
-                int indexedOpacity = Convert.ToInt32(opacityArray[modeIndex] * 2.55);
+                int index = 1;
+                Bitmap img1 = new Bitmap(_loadedImages[index - 1]);
+                Bitmap img2 = new Bitmap(_loadedImages[index]);
+                int modeIndex = _loadedImages.Count - 1 - index;
+                int indexedOpacity = Convert.ToInt32(_opacityArray[modeIndex] * 2.55);
                 Bitmap img_out = null;
-                switch (mode[modeIndex])
+                switch (_mode[modeIndex])
                 {
                     case 0:
                         img_out = Render.normalByteRender(img1, img2, modeIndex, indexedOpacity);
@@ -237,13 +238,13 @@ namespace ImgApp_2_WinForms
                         break;
                 }
 
-                for (; Index < LoadedImages.Count - 1; ++Index)
+                for (; index < _loadedImages.Count - 1; ++index)
                 {
                     img1 = new Bitmap(img_out);
-                    img2 = new Bitmap(LoadedImages[Index + 1]);
-                    modeIndex = LoadedImages.Count - 2 - Index;
-                    indexedOpacity = Convert.ToInt32(opacityArray[modeIndex] * 2.55);
-                    switch (mode[modeIndex])
+                    img2 = new Bitmap(_loadedImages[index + 1]);
+                    modeIndex = _loadedImages.Count - 2 - index;
+                    indexedOpacity = Convert.ToInt32(_opacityArray[modeIndex] * 2.55);
+                    switch (_mode[modeIndex])
                     {
                         case 0:
                             img_out = Render.normalByteRender(img1, img2, modeIndex, indexedOpacity);
@@ -286,12 +287,14 @@ namespace ImgApp_2_WinForms
                 debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
             }
             else
+            {
                 MessageBox.Show("Needs at least 2 images in a project", "Error");
+            }
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)//загрузка файлов в проект
         {
-            if (LoadedImages.Count == 0)
+            if (_loadedImages.Count == 0)
             {
                 FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
                 //дефолтная папка с картинками
@@ -309,18 +312,21 @@ namespace ImgApp_2_WinForms
                     ImageList images = new ImageList();
                     images.ImageSize = new Size(77, 80);
 
-                    foreach (var image in LoadedImages)
+                    foreach (var image in _loadedImages)
                     {
                         images.Images.Add(image);
                     }
+
                     //добавляю картинки в список слоёв
                     LayerList.LargeImageList = images;
 
-                    for (int itemIndex = LoadedImages.Count - 1; itemIndex >= 0; --itemIndex)
+                    for (int itemIndex = _loadedImages.Count - 1; itemIndex >= 0; --itemIndex)
+                    {
                         LayerList.Items.Add(new ListViewItem($"Image {itemIndex}", itemIndex));
+                    }
                 }
             }
-            else if (LoadedImages.Count <= N / 2)
+            else if (_loadedImages.Count <= N / 2)
             {
                 FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
                 //дефолтная папка с картинками
@@ -336,13 +342,14 @@ namespace ImgApp_2_WinForms
 
                     foreach (var path in imagePaths)
                     {
-                        for (int i = mode.Length - 1; i > 0; --i)
+                        for (int i = _mode.Length - 1; i > 0; --i)
                         {
-                            mode[i] = mode[i - 1];
-                            opacityArray[i] = opacityArray[i - 1];
+                            _mode[i] = _mode[i - 1];
+                            _opacityArray[i] = _opacityArray[i - 1];
                         }
-                        mode[0] = 0;
-                        opacityArray[0] = 100;
+
+                        _mode[0] = 0;
+                        _opacityArray[0] = 100;
                     }
 
                     //очищаю список картинок
@@ -351,25 +358,31 @@ namespace ImgApp_2_WinForms
                     //инициализация списка картинок
                     ImageList images = new ImageList();
                     images.ImageSize = new Size(77, 80);
-                    foreach (var image in LoadedImages)
+                    foreach (var image in _loadedImages)
+                    {
                         images.Images.Add(image);
+                    }
 
                     //добавляю картинки в список слоёв
                     LayerList.LargeImageList = images;
 
                     //int itemIndex = 0; itemIndex < LoadedImages.Count; ++itemIndex
-                    for (int itemIndex = LoadedImages.Count - 1; itemIndex >= 0; --itemIndex)
+                    for (int itemIndex = _loadedImages.Count - 1; itemIndex >= 0; --itemIndex)
+                    {
                         LayerList.Items.Add(new ListViewItem($"Image {itemIndex}", itemIndex));
+                    }
                 }
             }
-            else if (LoadedImages.Count > N / 2)
+            else if (_loadedImages.Count > N / 2)
+            {
                 MessageBox.Show("Too many images in a project, careful", "Error");
+            }
         }
 
         private void SavetoLayerList(Bitmap img_out)//перезагрузка списка слоёв
         {
             this.Cursor = Cursors.WaitCursor;
-            LoadedImages.Add(img_out);
+            _loadedImages.Add(img_out);
 
             //очищаю список картинок
             LayerList.Items.Clear();
@@ -377,23 +390,28 @@ namespace ImgApp_2_WinForms
             //инициализация списка картинок
             ImageList images = new ImageList();
             images.ImageSize = new Size(77, 80);
-            foreach (var image in LoadedImages)
+            foreach (var image in _loadedImages)
+            {
                 images.Images.Add(image);
+            }
 
             //добавляю картинки в список слоёв
             LayerList.LargeImageList = images;
 
             //int itemIndex = 0; itemIndex < LoadedImages.Count; ++itemIndex
-            for (int itemIndex = LoadedImages.Count - 1; itemIndex >= 0; --itemIndex)
-                LayerList.Items.Add(new ListViewItem($"Image {itemIndex}", itemIndex));
-
-            for (int i = mode.Length - 1; i > 0; --i)
+            for (int itemIndex = _loadedImages.Count - 1; itemIndex >= 0; --itemIndex)
             {
-                mode[i] = mode[i - 1];
-                opacityArray[i] = opacityArray[i - 1];
+                LayerList.Items.Add(new ListViewItem($"Image {itemIndex}", itemIndex));
             }
-            mode[0] = 0;
-            opacityArray[0] = 100;
+
+            for (int i = _mode.Length - 1; i > 0; --i)
+            {
+                _mode[i] = _mode[i - 1];
+                _opacityArray[i] = _opacityArray[i - 1];
+            }
+
+            _mode[0] = 0;
+            _opacityArray[0] = 100;
 
             this.Cursor = Cursors.Default;
         }
@@ -408,7 +426,7 @@ namespace ImgApp_2_WinForms
                 saveFileFialog.Filter = "JPG images (*.jpg)|*.jpg";
                 saveFileFialog.RestoreDirectory = true;
 
-                var img_out = new Bitmap(LoadedImages[LoadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
+                var img_out = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
                 SolidBrush drawBrush = new SolidBrush(Color.Black);
                 Graphics graphics = Graphics.FromImage(img_out);
 
@@ -427,12 +445,15 @@ namespace ImgApp_2_WinForms
                         img_out.Save(saveFileFialog.FileName);
                     }
                 }
+
                 drawFont.Dispose();
                 semiTransBrush.Dispose();
                 img_out.Dispose();
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
+            }
         }
 
         private void bClear_Click(object sender, EventArgs e)//удаление слоя/слоёв
@@ -442,15 +463,15 @@ namespace ImgApp_2_WinForms
                 ImageOutput.Image = null;
 
                 var puk = LayerList.SelectedIndices[0];
-                var puk2 = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
-                for (int i = LayerList.SelectedIndices[0]; i < mode.Length - 1; ++i)
+                var puk2 = _loadedImages.Count - 1 - LayerList.SelectedIndices[0];
+                for (int i = LayerList.SelectedIndices[0]; i < _mode.Length - 1; ++i)
                 {
-                    mode[i] = mode[i + 1];
-                    opacityArray[i] = opacityArray[i + 1];
+                    _mode[i] = _mode[i + 1];
+                    _opacityArray[i] = _opacityArray[i + 1];
                 }
-                    
 
-                LoadedImages.RemoveAt(LoadedImages.Count - 1 - LayerList.SelectedIndices[0]);
+
+                _loadedImages.RemoveAt(_loadedImages.Count - 1 - LayerList.SelectedIndices[0]);
                 LayerList.Items.RemoveAt(LayerList.SelectedIndices[0]);
             }
             else
@@ -458,13 +479,14 @@ namespace ImgApp_2_WinForms
                 DialogResult dialogResult = MessageBox.Show("No images are selected, you want to delete all?", "Confirmation", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
-                    for (int i = 0; i < mode.Length; ++i)
+                    for (int i = 0; i < _mode.Length; ++i)
                     {
-                        mode[i] = 0;
-                        opacityArray[i] = 0;
+                        _mode[i] = 0;
+                        _opacityArray[i] = 0;
                     }
+
                     ImageOutput.Image = null;
-                    LoadedImages.Clear();
+                    _loadedImages.Clear();
                     LayerList.Items.Clear();
                 }
             }
@@ -474,12 +496,14 @@ namespace ImgApp_2_WinForms
         {
             if (LayerList.SelectedIndices.Count > 0)
             {
-                image = new Bitmap(LoadedImages[LoadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
-                Form2 BrightnessForm = new Form2(this);
-                BrightnessForm.ShowDialog();
+                Image = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
+                Form2 brightnessForm = new Form2(this);
+                brightnessForm.ShowDialog();
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
+            }
         }
 
         private void JPEGingToolStripMenuItem_Click(object sender, EventArgs e)//джепегирует изображение
@@ -491,10 +515,10 @@ namespace ImgApp_2_WinForms
                 this.Cursor = Cursors.WaitCursor;
 
                 var selectedIndex = LayerList.SelectedIndices[0];
-                var img = new Bitmap(LoadedImages[LoadedImages.Count - 1 - selectedIndex]);
+                var img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
 
                 var encoderParameters = new EncoderParameters(1);
-                encoderParameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 5L);
+                encoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 5L);
                 img.Save(@"..\..\..\..\out.jpg", GetEncoder(ImageFormat.Jpeg), encoderParameters);
 
                 var img2 = new Bitmap(@"..\..\..\..\out.jpg");
@@ -508,7 +532,9 @@ namespace ImgApp_2_WinForms
                 debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
+            }
         }
 
         private void transparencyBar_Scroll(object sender, EventArgs e)//скрол бар прозрачности
@@ -517,13 +543,13 @@ namespace ImgApp_2_WinForms
             if (LayerList.SelectedIndices.Count > 0)
             {
                 var selectedIndex = LayerList.SelectedIndices[0];
-                opacityArray[selectedIndex] = opacityBar.Value;
+                _opacityArray[selectedIndex] = opacityBar.Value;
             }
         }
 
         private void openImageToolStripMenuItem_Click(object sender, EventArgs e)//открытие одного изображения
         {
-            if (LoadedImages.Count == 0)
+            if (_loadedImages.Count == 0)
             {
                 OpenFileDialog folderBrowser = new OpenFileDialog();
                 folderBrowser.InitialDirectory = @"C:\Users\kirill\Desktop\Учеба\Семестр 6\СЦОИ\Лаб 1\Images 2"; //C:\Users\kirill\Desktop\Учеба\Семестр 6\СЦОИ\Лаб 1\Images 2
@@ -533,19 +559,23 @@ namespace ImgApp_2_WinForms
                     try
                     {
                         string path = folderBrowser.FileName;
-                        var tempImage = Image.FromFile(path);
-                        LoadedImages.Add(tempImage);
+                        var tempImage = System.Drawing.Image.FromFile(path);
+                        _loadedImages.Add(tempImage);
 
                         ImageList images = new ImageList();
                         images.ImageSize = new Size(77, 80);
 
-                        foreach (var image in LoadedImages)
+                        foreach (var image in _loadedImages)
+                        {
                             images.Images.Add(image);
+                        }
 
                         LayerList.LargeImageList = images;
 
-                        for (int itemIndex = LoadedImages.Count - 1; itemIndex >= 0; --itemIndex)
+                        for (int itemIndex = _loadedImages.Count - 1; itemIndex >= 0; --itemIndex)
+                        {
                             LayerList.Items.Add(new ListViewItem($"Image {itemIndex}", itemIndex));
+                        }
                     }
                     catch
                     {
@@ -553,7 +583,7 @@ namespace ImgApp_2_WinForms
                     }
                 }
             }
-            else if (LoadedImages.Count < N)
+            else if (_loadedImages.Count < N)
             {
                 OpenFileDialog folderBrowser = new OpenFileDialog();
                 folderBrowser.InitialDirectory = @"C:\Users\kirill\Desktop\Учеба\Семестр 6\СЦОИ\Лаб 1\Images 2";
@@ -563,78 +593,45 @@ namespace ImgApp_2_WinForms
                     try
                     {
                         string path = folderBrowser.FileName;
-                        var tempImage = Image.FromFile(path);
-                        LoadedImages.Add(tempImage);
+                        var tempImage = System.Drawing.Image.FromFile(path);
+                        _loadedImages.Add(tempImage);
 
-                        for (int i = mode.Length - 1; i > 0; --i)
+                        for (int i = _mode.Length - 1; i > 0; --i)
                         {
-                            mode[i] = mode[i - 1];
-                            opacityArray[i] = opacityArray[i - 1];
+                            _mode[i] = _mode[i - 1];
+                            _opacityArray[i] = _opacityArray[i - 1];
                         }
-                        mode[0] = 0;
-                        opacityArray[0] = 100;
+
+                        _mode[0] = 0;
+                        _opacityArray[0] = 100;
 
                         LayerList.Items.Clear();
 
                         ImageList images = new ImageList();
 
                         images.ImageSize = new Size(77, 80);
-                        foreach (var image in LoadedImages)
+                        foreach (var image in _loadedImages)
+                        {
                             images.Images.Add(image);
+                        }
 
                         LayerList.LargeImageList = images;
 
-                        for (int itemIndex = LoadedImages.Count - 1; itemIndex >= 0; --itemIndex)
+                        for (int itemIndex = _loadedImages.Count - 1; itemIndex >= 0; --itemIndex)
+                        {
                             LayerList.Items.Add(new ListViewItem($"Image {itemIndex}", itemIndex));
+                        }
                     }
                     catch
                     {
                         DialogResult rezult = MessageBox.Show("Impossible to open selected file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-
-                    //FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
-                    ////дефолтная папка с картинками
-                    //folderBrowser.SelectedPath = @"C:\Users\kirill\Desktop\Учеба\Семестр 6\СЦОИ\Лаб 1\Images";
-                    //if (folderBrowser.ShowDialog() == DialogResult.OK)
-                    //{
-                    //    //выделенная директория
-                    //    var selectedDirectory = folderBrowser.SelectedPath;
-                    //    //пути картинок из выделенной директории
-                    //    var imagePaths = Directory.GetFiles(selectedDirectory);
-                    //    //загрузка картинок из их путей
-                    //    LoadImagesFromFolder(imagePaths);
-
-                    //    foreach (var path in imagePaths)
-                    //    {
-                    //        for (int i = mode.Length - 1; i > 0; --i)
-                    //        {
-                    //            mode[i] = mode[i - 1];
-                    //            opacityArray[i] = opacityArray[i - 1];
-                    //        }
-                    //        mode[0] = 0;
-                    //        opacityArray[0] = 100;
-                    //    }
-
-                    //    //очищаю список картинок
-                    //    LayerList.Items.Clear();
-
-                    //    //инициализация списка картинок
-                    //    ImageList images = new ImageList();
-                    //    images.ImageSize = new Size(77, 80);
-                    //    foreach (var image in LoadedImages)
-                    //        images.Images.Add(image);
-
-                    //    //добавляю картинки в список слоёв
-                    //    LayerList.LargeImageList = images;
-
-                    //    //int itemIndex = 0; itemIndex < LoadedImages.Count; ++itemIndex
-                    //    for (int itemIndex = LoadedImages.Count - 1; itemIndex >= 0; --itemIndex)
-                    //        LayerList.Items.Add(new ListViewItem($"Image {itemIndex}", itemIndex));
-                    //}
                 }
             }
-            else if (LoadedImages.Count >= N)
+            else if (_loadedImages.Count >= N)
+            {
                 MessageBox.Show("Too many images in a project, careful", "Error");
+            }
         }
 
         private void channelBox_SelectionChangeCommitted(object sender, EventArgs e)//RGB каналы
@@ -646,7 +643,7 @@ namespace ImgApp_2_WinForms
                 this.Cursor = Cursors.WaitCursor;
 
                 var selectedIndex = LayerList.SelectedIndices[0];
-                var img = new Bitmap(LoadedImages[LoadedImages.Count - 1 - selectedIndex]);
+                var img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
                 int w = img.Width;
                 int h = img.Height;
                 for (int i = 0; i < h; ++i)
@@ -681,9 +678,11 @@ namespace ImgApp_2_WinForms
                             default:
                                 break;
                         }
+
                         img.SetPixel(j, i, pix);
                     }
                 }
+
                 ImageOutput.Image = img;
 
                 this.Cursor = Cursors.Default;
@@ -691,7 +690,9 @@ namespace ImgApp_2_WinForms
                 debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
+            }
         }
 
         #region histogram
@@ -712,12 +713,12 @@ namespace ImgApp_2_WinForms
                     int[] GpointsArray = new int[256];
                     int[] BpointsArray = new int[256];
 
-                    int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
-                    var img = new Bitmap(LoadedImages[index]);
+                    int index = _loadedImages.Count - 1 - LayerList.SelectedIndices[0];
+                    var img = new Bitmap(_loadedImages[index]);
 
                     byte[] imgBytes = GetRGBValues(img);
 
-                    for (int i = 0; i < img.Width * img.Height * 4 - 3; i += 4)
+                    for (int i = 0; i < (img.Width * img.Height * 4) - 3; i += 4)
                     {
                         RpointsArray[imgBytes[i + 2]]++;
                         GpointsArray[imgBytes[i + 1]]++;
@@ -766,9 +767,14 @@ namespace ImgApp_2_WinForms
 
                     var max = areaR.AxisY.Maximum;
                     if (areaG.AxisY.Maximum > max)
+                    {
                         max = areaG.AxisY.Maximum;
+                    }
+
                     if (areaB.AxisY.Maximum > max)
+                    {
                         max = areaB.AxisY.Maximum;
+                    }
 
                     areaR.AxisY.Maximum = max;
                     areaG.AxisY.Maximum = max;
@@ -818,12 +824,12 @@ namespace ImgApp_2_WinForms
                     int[] BpointsArray = new int[256];
                     int[] BrightnessArray = new int[256];
 
-                    int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
-                    var img = new Bitmap(LoadedImages[index]);
+                    int index = _loadedImages.Count - 1 - LayerList.SelectedIndices[0];
+                    var img = new Bitmap(_loadedImages[index]);
 
                     byte[] imgBytes = GetRGBValues(img);
 
-                    for (int i = 0; i < img.Width * img.Height * 4 - 3; i += 4)
+                    for (int i = 0; i < (img.Width * img.Height * 4) - 3; i += 4)
                     {
                         RpointsArray[imgBytes[i + 2]]++;
                         GpointsArray[imgBytes[i + 1]]++;
@@ -899,11 +905,19 @@ namespace ImgApp_2_WinForms
 
                     var max = areaR.AxisY.Maximum;
                     if (areaG.AxisY.Maximum > max)
+                    {
                         max = areaG.AxisY.Maximum;
+                    }
+
                     if (areaB.AxisY.Maximum > max)
+                    {
                         max = areaB.AxisY.Maximum;
+                    }
+
                     if (areaBr.AxisY.Maximum > max)
+                    {
                         max = areaBr.AxisY.Maximum;
+                    }
 
                     areaR.AxisY.Maximum = max;
                     areaG.AxisY.Maximum = max;
@@ -936,8 +950,10 @@ namespace ImgApp_2_WinForms
                     seriesR.Color = Color.FromArgb(255, 255, 50, 30);
                     seriesG.Color = Color.FromArgb(255, 100, 255, 60);
                     seriesB.Color = Color.FromArgb(255, 40, 40, 255);
-                    if (theme == true)
+                    if (_theme == true)
+                    {
                         seriesBr.Color = Color.FromArgb(255, 47, 47, 47);
+                    }
 
                     areaR.BackColor = Color.Transparent;
                     areaG.BackColor = Color.Transparent;
@@ -951,16 +967,21 @@ namespace ImgApp_2_WinForms
                 }
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
-
+            }
         }
 
         private void autoHistogramToolStripMenuItem_Click(object sender, EventArgs e)//автоматический расчёт гистограммы
         {
             if (autoHistogramToolStripMenuItem.Checked == true)
+            {
                 autoHistogramToolStripMenuItem.Checked = false;
+            }
             else
+            {
                 autoHistogramToolStripMenuItem.Checked = true;
+            }
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)//автоматический расчёт гистограммы при смене канала
@@ -968,7 +989,9 @@ namespace ImgApp_2_WinForms
             if (LayerList.SelectedIndices.Count > 0)
             {
                 if (autoHistogramToolStripMenuItem.Checked == true && histogrammToolStripMenuItem.Checked == true)
+                {
                     histogramRender2(sender, e);
+                }
             }
         }
 
@@ -1003,7 +1026,7 @@ namespace ImgApp_2_WinForms
                 this.Cursor = Cursors.WaitCursor;
 
                 var selectedIndex = LayerList.SelectedIndices[0];
-                var img1 = new Bitmap(LoadedImages[LoadedImages.Count - 1 - selectedIndex]);
+                var img1 = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
                 int w = img1.Width;
                 int h = img1.Height;
 
@@ -1019,6 +1042,7 @@ namespace ImgApp_2_WinForms
                         average += Color.FromArgb(pix.R, pix.G, pix.B).GetBrightness();
                     }
                 }
+
                 average /= w * h;
 
                 for (int i = 0; i < h; ++i)
@@ -1027,12 +1051,18 @@ namespace ImgApp_2_WinForms
                     {
                         var pix = img1.GetPixel(j, i);
                         if (Color.FromArgb(pix.R, pix.G, pix.B).GetBrightness() > average)
+                        {
                             pix = Color.FromArgb(255, 255, 255);
+                        }
                         else
+                        {
                             pix = Color.FromArgb(0, 0, 0);
+                        }
+
                         img_out.SetPixel(j, i, pix);
                     }
                 }
+
                 ImageOutput.Image = img_out;
                 SavetoLayerList(img_out);
 
@@ -1041,22 +1071,26 @@ namespace ImgApp_2_WinForms
                 debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
+            }
         }
 
         private void sliderMethodToolStripMenuItem_Click(object sender, EventArgs e)//бинаризация с выбором порога
         {
             if (LayerList.SelectedIndices.Count > 0)
             {
-                image = new Bitmap(LoadedImages[LoadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
-                FormSliderBinarization SliderBinarization = new FormSliderBinarization(this);
-                SliderBinarization.img = image;
-                SliderBinarization.ShowDialog();
-                ImageOutput.Image = image;
-                SavetoLayerList(image);
+                Image = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
+                FormSliderBinarization sliderBinarization = new FormSliderBinarization(this);
+                sliderBinarization.img = Image;
+                sliderBinarization.ShowDialog();
+                ImageOutput.Image = Image;
+                SavetoLayerList(Image);
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
+            }
         }
 
         private void otsusMethodToolStripMenuItem_Click(object sender, EventArgs e)//бинаризация методом Отсу
@@ -1068,7 +1102,7 @@ namespace ImgApp_2_WinForms
                 this.Cursor = Cursors.WaitCursor;
 
                 var selectedIndex = LayerList.SelectedIndices[0];
-                var img = new Bitmap(LoadedImages[LoadedImages.Count - 1 - selectedIndex]);
+                var img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
 
                 int w = img.Width;
                 int h = img.Height;
@@ -1109,7 +1143,9 @@ namespace ImgApp_2_WinForms
                 debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
+            }
         }
 
         private void myMethodToolStripMenuItem_Click(object sender, EventArgs e)//бинаризация методом динамического среднего
@@ -1121,7 +1157,7 @@ namespace ImgApp_2_WinForms
                 this.Cursor = Cursors.WaitCursor;
 
                 var selectedIndex = LayerList.SelectedIndices[0];
-                var img = new Bitmap(LoadedImages[LoadedImages.Count - 1 - selectedIndex]);
+                var img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
 
                 int w = img.Width;
                 int h = img.Height;
@@ -1137,8 +1173,8 @@ namespace ImgApp_2_WinForms
                 for (int i = 0; i < imglength - 2; i += 4)
                 {
                     var brightness = Color.FromArgb(img_bytes[i + 2], img_bytes[i + 1], img_bytes[i]).GetBrightness();
-                    var devideBy = (float)i / 4 + 2;
-                    threshold = ((threshold * (devideBy - 1) + brightness) / devideBy);
+                    var devideBy = ((float)i / 4) + 2;
+                    threshold = ((threshold * (devideBy - 1)) + brightness) / devideBy;
                     if (brightness > threshold)
                     {
                         img_out_bytes[i + 2] = 255;
@@ -1164,24 +1200,30 @@ namespace ImgApp_2_WinForms
                 debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
+            }
         }
         #endregion
 
         #region curve
 
-        public int HighlightedPoint = 0;    //выделенная точка
+        private int _highlightedPoint = 0;    //выделенная точка
 
         private void curveEditBox_MouseUp(object sender, MouseEventArgs e)//добавление точек
         {
             //проверка что рядом нет точек
-            for (int i = 0; i < UserPoints.Count; ++i)
-                if ((UserPoints[i].X + 3 > e.Location.X) && (UserPoints[i].X - 3 < e.Location.X))
+            for (int i = 0; i < _userPoints.Count; ++i)
+            {
+                if ((_userPoints[i].X + 3 > e.Location.X) && (_userPoints[i].X - 3 < e.Location.X))
+                {
                     return;
+                }
+            }
 
-            HighlightedPoint = 0;
-            UserPoints.Add(new Point((int)Clamp(e.Location.X, 0, 199), (int)Clamp(e.Location.Y, 0, 199)));
-            UserPoints.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
+            _highlightedPoint = 0;
+            _userPoints.Add(new Point((int)Clamp(e.Location.X, 0, 199), (int)Clamp(e.Location.Y, 0, 199)));
+            _userPoints.Sort((p1, p2) => p1.X.CompareTo(p2.X));
             RenderCubicSpline();
             curveEditBox.Refresh();
         }
@@ -1189,33 +1231,43 @@ namespace ImgApp_2_WinForms
         private void curveEditBox_MouseMove(object sender, MouseEventArgs e)//движение точек
         {
             if (additionalCurveMarkersToolStripMenuItem.Checked == true)
+            {
                 label3.Text = $"{e.Location.X * 1.2814:N0} ; {(199 - e.Location.Y) * 1.2814:N0}";
+            }
+
             if (e.Button == MouseButtons.Left)
             {
-                if (UserPoints.Count <= 2) return;
-                bool found = false;
-                for (int i = 1; i < UserPoints.Count - 1; ++i)
+                if (_userPoints.Count <= 2)
                 {
-                    double dX = e.Location.X - UserPoints[i].X;
-                    double dY = e.Location.Y - UserPoints[i].Y;
-                    if (dX * dX + dY * dY < 49)
+                    return;
+                }
+
+                bool found = false;
+                for (int i = 1; i < _userPoints.Count - 1; ++i)
+                {
+                    double dX = e.Location.X - _userPoints[i].X;
+                    double dY = e.Location.Y - _userPoints[i].Y;
+                    if ((dX * dX) + (dY * dY) < 49)
                     {
-                        HighlightedPoint = i;
-                        UserPoints[i] = new Point((int)Clamp(e.Location.X, 0, 199), (int)Clamp(e.Location.Y, 0, 199));
+                        _highlightedPoint = i;
+                        _userPoints[i] = new Point((int)Clamp(e.Location.X, 0, 199), (int)Clamp(e.Location.Y, 0, 199));
                         found = true;
                         break;
                     }
                 }
+
                 if (found == false)
                 {
-                    HighlightedPoint = 0;
+                    _highlightedPoint = 0;
                     return;
                 }
-                UserPoints.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
+
+                _userPoints.Sort((p1, p2) => p1.X.CompareTo(p2.X));
                 RenderCubicSpline();
                 curveEditBox.Refresh();
                 return;
             }
+
             //else      //код для хайлайта точек
             //{
             //    if (UserPoints.Count <= 2) return;
@@ -1240,28 +1292,30 @@ namespace ImgApp_2_WinForms
 
         private void RenderCubicSpline()//поиск точек для кривой
         {
-            double[] x = new double[UserPoints.Count];
-            double[] y = new double[UserPoints.Count];
+            double[] x = new double[_userPoints.Count];
+            double[] y = new double[_userPoints.Count];
 
-            x[0] = UserPoints[0].X;
-            y[0] = UserPoints[0].Y;
+            x[0] = _userPoints[0].X;
+            y[0] = _userPoints[0].Y;
             int newcount = 1;
-            for (int j = 1; j < UserPoints.Count; ++j)
+            for (int j = 1; j < _userPoints.Count; ++j)
             {
-                if (UserPoints[j].X == UserPoints[j - 1].X)
+                if (_userPoints[j].X == _userPoints[j - 1].X)
                 {
-                    if (UserPoints[j].Y < UserPoints[j - 1].Y)
+                    if (_userPoints[j].Y < _userPoints[j - 1].Y)
                     {
-                        x[newcount - 1] = UserPoints[j].X;
-                        y[newcount - 1] = UserPoints[j].Y;     
+                        x[newcount - 1] = _userPoints[j].X;
+                        y[newcount - 1] = _userPoints[j].Y;
                     }
+
                     --newcount;
                 }
                 else
                 {
-                    x[newcount] = UserPoints[j].X;
-                    y[newcount] = UserPoints[j].Y;
+                    x[newcount] = _userPoints[j].X;
+                    y[newcount] = _userPoints[j].Y;
                 }
+
                 ++newcount;
             }
 
@@ -1270,46 +1324,61 @@ namespace ImgApp_2_WinForms
             int n = 201;
             double[] xStep = new double[n];
             double[] yStep = new double[n];
-            double stepSize = (UserPoints[UserPoints.Count - 1].X - UserPoints[0].X) / (n - 1);
+            double stepSize = (_userPoints[_userPoints.Count - 1].X - _userPoints[0].X) / (n - 1);
 
             for (int i = 0; i < n; ++i)
-                xStep[i] = UserPoints[0].X + i * stepSize;
+            {
+                xStep[i] = _userPoints[0].X + (i * stepSize);
+            }
 
-            PointList.Clear();
+            _pointList.Clear();
             for (int i = 0; i < n; ++i)
-                PointList.Add(new MyPoint(xStep[i], Interpolate(xStep[i])));
+            {
+                _pointList.Add(new MyPoint(xStep[i], Interpolate(xStep[i])));
+            }
         }
 
         private void curveEditBox_Paint(object sender, PaintEventArgs e)//рисование кривой
         {
-            if (UserPoints.Count < 2) return;
+            if (_userPoints.Count < 2)
+            {
+                return;
+            }
+
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            if (PointList.Count < 2)    //если меньше двух точек рисуем прямую
+            if (_pointList.Count < 2) //если меньше двух точек рисуем прямую
             {
-                if (theme == false)
-                    e.Graphics.DrawCurve(Pens.LightGray, UserPoints.ToArray());
+                if (_theme == false)
+                {
+                    e.Graphics.DrawCurve(Pens.LightGray, _userPoints.ToArray());
+                }
                 else
-                    e.Graphics.DrawCurve(Pens.Black, UserPoints.ToArray());
+                {
+                    e.Graphics.DrawCurve(Pens.Black, _userPoints.ToArray());
+                }
+
                 return;
             }
 
             SolidBrush brush1 = new SolidBrush(Color.FromArgb(200, 255, 13, 0));
             SolidBrush brush2 = new SolidBrush(Color.FromArgb(200, 255, 255, 0));
 
-            for (int i = 1; i < UserPoints.Count - 1; ++i)  //рисуем точки
+            for (int i = 1; i < _userPoints.Count - 1; ++i) //рисуем точки
             {
-                e.Graphics.FillRectangle(brush1, UserPoints[i].X - 4, UserPoints[i].Y - 4, 8, 8);
-                e.Graphics.FillRectangle(brush2, UserPoints[i].X - 3, UserPoints[i].Y - 3, 6, 6);         
+                e.Graphics.FillRectangle(brush1, _userPoints[i].X - 4, _userPoints[i].Y - 4, 8, 8);
+                e.Graphics.FillRectangle(brush2, _userPoints[i].X - 3, _userPoints[i].Y - 3, 6, 6);
             }
 
-            if (HighlightedPoint != 0)  //зелёная "активная" точка
-                e.Graphics.FillRectangle(Brushes.Green, UserPoints[HighlightedPoint].X - 3, UserPoints[HighlightedPoint].Y - 3, 6, 6);
+            if (_highlightedPoint != 0) //зелёная "активная" точка
+            {
+                e.Graphics.FillRectangle(Brushes.Green, _userPoints[_highlightedPoint].X - 3, _userPoints[_highlightedPoint].Y - 3, 6, 6);
+            }
 
             if (additionalCurveMarkersToolStripMenuItem.Checked == true)
             {
                 //рисуем оранжевые прямые
-                e.Graphics.DrawLines(Pens.DarkOrange, UserPoints.ToArray());
+                e.Graphics.DrawLines(Pens.DarkOrange, _userPoints.ToArray());
 
                 PointF point1 = new PointF(89.5F, 99.5F);
                 PointF point2 = new PointF(109.5F, 99.5F);
@@ -1320,15 +1389,21 @@ namespace ImgApp_2_WinForms
             }
 
             //рисуем кривую
-            Points4Spline.Clear();
+            _points4Spline.Clear();
 
-            for (int i = 0; i < PointList.Count; ++i)
-                Points4Spline.Add(new Point((int)Clamp(PointList[i].X, 0, 199), (int)Clamp(PointList[i].Y, 0, 199)));
+            for (int i = 0; i < _pointList.Count; ++i)
+            {
+                _points4Spline.Add(new Point((int)Clamp(_pointList[i].X, 0, 199), (int)Clamp(_pointList[i].Y, 0, 199)));
+            }
 
-            if (theme == false)
-                e.Graphics.DrawCurve(Pens.LightGray, Points4Spline.ToArray());
+            if (_theme == false)
+            {
+                e.Graphics.DrawCurve(Pens.LightGray, _points4Spline.ToArray());
+            }
             else
-                e.Graphics.DrawCurve(Pens.Black, Points4Spline.ToArray());
+            {
+                e.Graphics.DrawCurve(Pens.Black, _points4Spline.ToArray());
+            }
         }
 
         private void bApplyCurve2_Click(object sender, EventArgs e)//отрисовка изображения с кривыми
@@ -1339,29 +1414,30 @@ namespace ImgApp_2_WinForms
                 timer.Start();
                 this.Cursor = Cursors.WaitCursor;
 
-                int index = LoadedImages.Count - 1 - LayerList.SelectedIndices[0];
-                var img = new Bitmap(LoadedImages[index]);
+                int index = _loadedImages.Count - 1 - LayerList.SelectedIndices[0];
+                var img = new Bitmap(_loadedImages[index]);
 
                 byte[] imgBytes = GetRGBValues(img);
                 byte[] img_out_bytes = new byte[img.Width * img.Height * 4];
 
-                ReversePointList.Clear();
-                for (int i = 0; i < PointList.Count; ++i)
+                _reversePointList.Clear();
+                for (int i = 0; i < _pointList.Count; ++i)
                 {
-                    MyPoint NewPoint = new MyPoint(PointList[i].X, 200 - PointList[i].Y);
-                    ReversePointList.Add(NewPoint);
+                    MyPoint newPoint = new MyPoint(_pointList[i].X, 200 - _pointList[i].Y);
+                    _reversePointList.Add(newPoint);
                 }
-                ReversePointList.Sort((p1, p2) => (p1.X.CompareTo(p2.X)));
 
-                for (int i = 0; i < img.Width * img.Height * 4 - 3; i += 4)
+                _reversePointList.Sort((p1, p2) => p1.X.CompareTo(p2.X));
+
+                for (int i = 0; i < (img.Width * img.Height * 4) - 3; i += 4)
                 {
                     int newxR = Convert.ToInt32((double)imgBytes[i + 2] / 255 * 200);
                     int newxG = Convert.ToInt32((double)imgBytes[i + 1] / 255 * 200);
                     int newxB = Convert.ToInt32((double)imgBytes[i] / 255 * 200);
 
-                    img_out_bytes[i + 2] = Convert.ToByte(Clamp((double)ReversePointList[newxR].Y * 1.275, 0, 255));
-                    img_out_bytes[i + 1] = Convert.ToByte(Clamp((double)ReversePointList[newxG].Y * 1.275, 0, 255));
-                    img_out_bytes[i] = Convert.ToByte(Clamp((double)ReversePointList[newxB].Y * 1.275, 0, 255));
+                    img_out_bytes[i + 2] = Convert.ToByte(Clamp((double)_reversePointList[newxR].Y * 1.275, 0, 255));
+                    img_out_bytes[i + 1] = Convert.ToByte(Clamp((double)_reversePointList[newxG].Y * 1.275, 0, 255));
+                    img_out_bytes[i] = Convert.ToByte(Clamp((double)_reversePointList[newxB].Y * 1.275, 0, 255));
                 }
 
                 Bitmap img_out = new Bitmap(img.Width, img.Height, PixelFormat.Format32bppRgb);
@@ -1376,19 +1452,21 @@ namespace ImgApp_2_WinForms
                 debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
+            }
         }
 
         private void bCurve_Click(object sender, EventArgs e)//очистка кривой
         {
-            UserPoints.Clear();
-            Points4Spline.Clear();
-            PointList.Clear();
-            HighlightedPoint = 0;
+            _userPoints.Clear();
+            _points4Spline.Clear();
+            _pointList.Clear();
+            _highlightedPoint = 0;
             Point start = new Point(200, 0);
             Point end = new Point(0, 200);
-            UserPoints.Add(start);
-            UserPoints.Add(end);
+            _userPoints.Add(start);
+            _userPoints.Add(end);
 
             curveEditBox.Refresh();
         }
@@ -1416,7 +1494,7 @@ namespace ImgApp_2_WinForms
             if (additionalCurveMarkersToolStripMenuItem.Checked == true)
             {
                 additionalCurveMarkersToolStripMenuItem.Checked = false;
-                label3.Text = "";
+                label3.Text = string.Empty;
                 curveEditBox.Refresh();
             }
             else
@@ -1428,13 +1506,6 @@ namespace ImgApp_2_WinForms
 
         #region Cubic spline math
 
-        SplineTuple[] splines; // Сплайны
-
-        private struct SplineTuple
-        {
-            public double a, b, c, d, x;
-        }   // Структура, описывающая сплайн на каждом сегменте сетки
-
         public void BuildSpline(double[] x, double[] y, int n)
         {
             // x - узлы сетки, должны быть упорядочены по возрастанию, кратные узлы запрещены
@@ -1442,13 +1513,14 @@ namespace ImgApp_2_WinForms
             // n - количество узлов сетки
 
             // Инициализация массива сплайнов
-            splines = new SplineTuple[n];
+            _splines = new SplineTuple[n];
             for (int i = 0; i < n; ++i)
             {
-                splines[i].x = x[i];
-                splines[i].a = y[i];
+                _splines[i].x = x[i];
+                _splines[i].a = y[i];
             }
-            splines[0].c = splines[n - 1].c = 0.0;
+
+            _splines[0].c = _splines[n - 1].c = 0.0;
 
             // Решение СЛАУ относительно коэффициентов сплайнов c[i] методом прогонки для трехдиагональных матриц
             // Вычисление прогоночных коэффициентов - прямой ход метода прогонки
@@ -1462,44 +1534,44 @@ namespace ImgApp_2_WinForms
                 double A = hi;
                 double C = 2.0 * (hi + hi1);
                 double B = hi1;
-                double F = 6.0 * ((y[i + 1] - y[i]) / hi1 - (y[i] - y[i - 1]) / hi);
-                double z = (A * alpha[i - 1] + C);
+                double F = 6.0 * (((y[i + 1] - y[i]) / hi1) - ((y[i] - y[i - 1]) / hi));
+                double z = (A * alpha[i - 1]) + C;
                 alpha[i] = -B / z;
-                beta[i] = (F - A * beta[i - 1]) / z;
+                beta[i] = (F - (A * beta[i - 1])) / z;
             }
 
             // Нахождение решения - обратный ход метода прогонки
             for (int i = n - 2; i > 0; --i)
             {
-                splines[i].c = alpha[i] * splines[i + 1].c + beta[i];
+                _splines[i].c = (alpha[i] * _splines[i + 1].c) + beta[i];
             }
 
             // По известным коэффициентам c[i] находим значения b[i] и d[i]
             for (int i = n - 1; i > 0; --i)
             {
                 double hi = x[i] - x[i - 1];
-                splines[i].d = (splines[i].c - splines[i - 1].c) / hi;
-                splines[i].b = hi * (2.0 * splines[i].c + splines[i - 1].c) / 6.0 + (y[i] - y[i - 1]) / hi;
+                _splines[i].d = (_splines[i].c - _splines[i - 1].c) / hi;
+                _splines[i].b = (hi * ((2.0 * _splines[i].c) + _splines[i - 1].c) / 6.0) + ((y[i] - y[i - 1]) / hi);
             }
-        }    // Построение сплайна
+        } // Построение сплайна
 
         public double Interpolate(double x)
         {
-            if (splines == null)
+            if (_splines == null)
             {
                 return double.NaN; // Если сплайны ещё не построены - возвращаем NaN
             }
 
-            int n = splines.Length;
+            int n = _splines.Length;
             SplineTuple s;
 
-            if (x <= splines[0].x) // Если x меньше точки сетки x[0] - пользуемся первым эл-тов массива
+            if (x <= _splines[0].x) // Если x меньше точки сетки x[0] - пользуемся первым эл-тов массива
             {
-                s = splines[0];
+                s = _splines[0];
             }
-            else if (x >= splines[n - 1].x) // Если x больше точки сетки x[n - 1] - пользуемся последним эл-том массива
+            else if (x >= _splines[n - 1].x) // Если x больше точки сетки x[n - 1] - пользуемся последним эл-том массива
             {
-                s = splines[n - 1];
+                s = _splines[n - 1];
             }
             else // Иначе x лежит между граничными точками сетки - производим бинарный поиск нужного эл-та массива
             {
@@ -1507,8 +1579,8 @@ namespace ImgApp_2_WinForms
                 int j = n - 1;
                 while (i + 1 < j)
                 {
-                    int k = i + (j - i) / 2;
-                    if (x <= splines[k].x)
+                    int k = i + ((j - i) / 2);
+                    if (x <= _splines[k].x)
                     {
                         j = k;
                     }
@@ -1517,13 +1589,14 @@ namespace ImgApp_2_WinForms
                         i = k;
                     }
                 }
-                s = splines[j];
+
+                s = _splines[j];
             }
 
             double dx = x - s.x;
             // Вычисляем значение сплайна в заданной точке по схеме Горнера (в принципе, "умный" компилятор применил бы схему Горнера сам, но ведь не все так умны, как кажутся)
-            return s.a + (s.b + (s.c / 2.0 + s.d * dx / 6.0) * dx) * dx;
-        }   //нахождение f(x) после построения сплайна
+            return s.a + ((s.b + (((s.c / 2.0) + (s.d * dx / 6.0)) * dx)) * dx);
+        } //нахождение f(x) после построения сплайна
 
         #endregion
 
@@ -1532,18 +1605,27 @@ namespace ImgApp_2_WinForms
         #region helper functions
         public static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
         {
-            if (val.CompareTo(min) < 0) return min;
-            else if (val.CompareTo(max) > 0) return max;
-            else return val;
+            if (val.CompareTo(min) < 0)
+            {
+                return min;
+            }
+            else if (val.CompareTo(max) > 0)
+            {
+                return max;
+            }
+            else
+            {
+                return val;
+            }
         }//сжимает значения в выбранный промежуток
 
         private byte[] GetRGBValues(Bitmap bmp)//конвертирует Bitmap в byte[]
         {
 
-            // Lock the bitmap's bits. 
+            // Lock the bitmap's bits.
             Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-            System.Drawing.Imaging.BitmapData bmpData =
-             bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+            BitmapData bmpData =
+             bmp.LockBits(rect, ImageLockMode.ReadOnly,
              bmp.PixelFormat);
 
             // Get the address of the first line.
@@ -1554,7 +1636,8 @@ namespace ImgApp_2_WinForms
             byte[] rgbValues = new byte[bytes];
 
             // Copy the RGB values into the array.
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes); bmp.UnlockBits(bmpData);
+            Marshal.Copy(ptr, rgbValues, 0, bytes);
+            bmp.UnlockBits(bmpData);
 
             return rgbValues;
         }
@@ -1569,6 +1652,7 @@ namespace ImgApp_2_WinForms
                     return codec;
                 }
             }
+
             return null;
         }//настройки кодека Jpeg для фильтра
 
@@ -1580,7 +1664,8 @@ namespace ImgApp_2_WinForms
 
         static void writeImageBytes(Bitmap img, byte[] bytes)//конвертирует byte[] в Bitmap
         {
-            var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
+            var data = img.LockBits(
+                new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
                 ImageLockMode.WriteOnly,
                 img.PixelFormat);
             Marshal.Copy(bytes, 0, data.Scan0, bytes.Length); //копируем байты массива в изображение
@@ -1593,11 +1678,11 @@ namespace ImgApp_2_WinForms
         #region cosmetics
         private void themeBox1_Click(object sender, EventArgs e)//переключатель темы
         {
-            if (theme == false)
+            if (_theme == false)
             {
                 var light = new Bitmap("..\\..\\..\\darkThemeSmallest.png");
                 themeBox1.Image = light;
-                theme = true;
+                _theme = true;
 
                 this.BackColor = Color.FromArgb(240, 240, 240);
                 LayerList.BackColor = Color.FromArgb(219, 219, 219);
@@ -1615,7 +1700,7 @@ namespace ImgApp_2_WinForms
             {
                 var dark = new Bitmap("..\\..\\..\\lightThemeSmallest.png");
                 themeBox1.Image = dark;
-                theme = false;
+                _theme = false;
 
                 this.BackColor = Color.FromArgb(47, 47, 47);
                 LayerList.BackColor = Color.FromArgb(69, 69, 69);
@@ -1644,7 +1729,9 @@ namespace ImgApp_2_WinForms
         private void copyToClipboardToolStripMenuItem_Click(object sender, EventArgs e)//копирование изображения
         {
             if (ImageOutput.Image != null)
+            {
                 Clipboard.SetImage(ImageOutput.Image);
+            }
         }
         #endregion
 
@@ -1657,7 +1744,7 @@ namespace ImgApp_2_WinForms
                 this.Cursor = Cursors.WaitCursor;
 
                 var selectedIndex = LayerList.SelectedIndices[0];
-                var img = new Bitmap(LoadedImages[LoadedImages.Count - 1 - selectedIndex]);
+                var img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
                 Bitmap img_out = new Bitmap(img.Width, img.Height);
 
                 img_out = ASCII.Display(img);
@@ -1670,7 +1757,9 @@ namespace ImgApp_2_WinForms
                 debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
             }
             else
+            {
                 MessageBox.Show("Image is not selected", "Error");
+            }
         }
     }
 }

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ImgApp_2_WinForms
+﻿namespace ImgApp_2_WinForms
 {
+    using System;
+    using System.Drawing;
+    using System.Drawing.Imaging;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+
     class Binarization
     {
         public static int Otsu(Bitmap image)
@@ -36,7 +33,7 @@ namespace ImgApp_2_WinForms
             }
 
             //Normalize histogram
-            histogram = histogram.Select(x => (x / (w * h))).ToArray();
+            histogram = histogram.Select(x => x / (w * h)).ToArray();
 
             //Global mean
             double mg = 0;
@@ -64,7 +61,7 @@ namespace ImgApp_2_WinForms
                 }
 
                 double old_bcv = bcv;
-                bcv = Math.Max(bcv, Math.Pow(mg * cs - m, 2) / (cs * (1 - cs)));
+                bcv = Math.Max(bcv, Math.Pow((mg * cs) - m, 2) / (cs * (1 - cs)));
 
                 if (bcv > old_bcv)
                 {

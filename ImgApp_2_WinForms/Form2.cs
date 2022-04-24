@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace ImgApp_2_WinForms
+﻿namespace ImgApp_2_WinForms
 {
+    using System;
+    using System.Windows.Forms;
+
     public partial class Form2 : Form
     {
         //Form1 OwnerForm;
@@ -42,8 +35,8 @@ namespace ImgApp_2_WinForms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            int w = Form1.image.Width;
-            int h = Form1.image.Height;
+            int w = Form1.Image.Width;
+            int h = Form1.Image.Height;
 
             this.Close();
         }

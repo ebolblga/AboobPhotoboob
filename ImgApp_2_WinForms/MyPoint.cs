@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ImgApp_2_WinForms
+﻿namespace ImgApp_2_WinForms
 {
     public class MyPoint
     {

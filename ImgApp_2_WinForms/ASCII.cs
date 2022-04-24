@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-
-namespace ImgApp_2_WinForms
+﻿namespace ImgApp_2_WinForms
 {
+    using System;
+    using System.Drawing;
+
     class ASCII
     {
         public static Bitmap Display(Bitmap img)
         {
             int w = Convert.ToInt32((float)img.Width / 16);
-            int h = Convert.ToInt32((float)img.Height / 16);
+            int h = Convert.ToInt32((float)img.Height / 20);
             Bitmap img_sized = new Bitmap(w, h);
             using (Graphics g = Graphics.FromImage(img_sized))
             {
@@ -31,11 +27,17 @@ namespace ImgApp_2_WinForms
                     float brightness = Color.FromArgb(pix.R, pix.G, pix.B).GetBrightness();
 
                     if (brightness >= 0.666)
+                    {
                         ascii[i, j] = '▓';
+                    }
                     else if (brightness >= 0.333)
+                    {
                         ascii[i, j] = '▒';
+                    }
                     else
+                    {
                         ascii[i, j] = '░';
+                    }
                 }
             }
 
@@ -54,13 +56,14 @@ namespace ImgApp_2_WinForms
             //else
             //    ascii[i, j] = '-';
 
-            string shading = "";
+            string shading = "ASCII ART";
             for (int i = 0; i < h; ++i)
             {
                 for (int j = 0; j < w; ++j)
                 {
                     shading += ascii[i, j];
                 }
+
                 shading += '\t';
             }
 

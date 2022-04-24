@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace ImgApp_2_WinForms
+﻿namespace ImgApp_2_WinForms
 {
+    using System;
+    using System.Drawing;
+    using System.Drawing.Imaging;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
+
     public partial class FormSliderBinarization : Form
     {
         public Bitmap img { get; set; }
@@ -60,7 +54,7 @@ namespace ImgApp_2_WinForms
 
             //Form1 f = new Form1();
             //f.ImageOutput.Image = img_out;
-            Form1.image = img_out;
+            Form1.Image = img_out;
             this.Close();
         }
 
@@ -82,10 +76,10 @@ namespace ImgApp_2_WinForms
         private static byte[] GetRGBValues(Bitmap bmp)//конвертирует Bitmap в byte[]
         {
 
-            // Lock the bitmap's bits. 
+            // Lock the bitmap's bits.
             Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
             System.Drawing.Imaging.BitmapData bmpData =
-             bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+             bmp.LockBits(rect, ImageLockMode.ReadOnly,
              bmp.PixelFormat);
 
             // Get the address of the first line.
@@ -96,7 +90,8 @@ namespace ImgApp_2_WinForms
             byte[] rgbValues = new byte[bytes];
 
             // Copy the RGB values into the array.
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes); bmp.UnlockBits(bmpData);
+            Marshal.Copy(ptr, rgbValues, 0, bytes);
+            bmp.UnlockBits(bmpData);
 
             return rgbValues;
         }
