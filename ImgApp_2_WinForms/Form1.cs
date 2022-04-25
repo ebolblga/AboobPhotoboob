@@ -741,7 +741,7 @@
             }
         }
 
-        #region histogram
+        #region Histogram
         private void histogramRender2(object sender, EventArgs e)//СОВСЕМ улучшенная отрисовка гистограммы
         {
             if (LayerList.SelectedIndices.Count > 0)
@@ -1062,197 +1062,7 @@
         }
         #endregion
 
-        #region oldBinarization
-        private void fToolStripMenuItem_Click(object sender, EventArgs e)//банальная бинаризация
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                var selectedIndex = LayerList.SelectedIndices[0];
-                var img1 = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
-                int w = img1.Width;
-                int h = img1.Height;
-
-                var img_out = new Bitmap(w, h);
-                //переменная порога
-                float average = 0;
-                //первый проход для нахождения среднего значения порога
-                for (int i = 0; i < h; ++i)
-                {
-                    for (int j = 0; j < w; ++j)
-                    {
-                        var pix = img1.GetPixel(j, i);
-                        average += Color.FromArgb(pix.R, pix.G, pix.B).GetBrightness();
-                    }
-                }
-
-                average /= w * h;
-
-                for (int i = 0; i < h; ++i)
-                {
-                    for (int j = 0; j < w; ++j)
-                    {
-                        var pix = img1.GetPixel(j, i);
-                        if (Color.FromArgb(pix.R, pix.G, pix.B).GetBrightness() > average)
-                        {
-                            pix = Color.FromArgb(255, 255, 255);
-                        }
-                        else
-                        {
-                            pix = Color.FromArgb(0, 0, 0);
-                        }
-
-                        img_out.SetPixel(j, i, pix);
-                    }
-                }
-
-                ImageOutput.Image = img_out;
-                SavetoLayerList(img_out);
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-            }
-            else
-            {
-                MessageBox.Show("Image is not selected", "Error");
-            }
-        }
-
-        private void sliderMethodToolStripMenuItem_Click(object sender, EventArgs e)//бинаризация с выбором порога
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                Image = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
-                FormSliderBinarization sliderBinarization = new FormSliderBinarization(this);
-                sliderBinarization.img = Image;
-                sliderBinarization.ShowDialog();
-                ImageOutput.Image = Image;
-                SavetoLayerList(Image);
-            }
-            else
-            {
-                MessageBox.Show("Image is not selected", "Error");
-            }
-        }
-
-        private void otsusMethodToolStripMenuItem_Click(object sender, EventArgs e)//бинаризация методом Отсу
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                var selectedIndex = LayerList.SelectedIndices[0];
-                var img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
-
-                int w = img.Width;
-                int h = img.Height;
-
-                float threshold = (float)ImgApp_2_WinForms.Binarization.OtsuThreshold(img) / 255;
-
-                byte[] img_bytes = GetRGBValues(img);
-
-                int imglength = w * h * 4;
-
-                byte[] img_out_bytes = new byte[imglength];
-
-                for (int i = 0; i < imglength - 2; i += 4)
-                {
-                    var brightness = Color.FromArgb(img_bytes[i + 2], img_bytes[i + 1], img_bytes[i]).GetBrightness();
-                    if (brightness > threshold)
-                    {
-                        img_out_bytes[i + 2] = 255;
-                        img_out_bytes[i + 1] = 255;
-                        img_out_bytes[i] = 255;
-                    }
-                    else
-                    {
-                        img_out_bytes[i + 2] = 0;
-                        img_out_bytes[i + 1] = 0;
-                        img_out_bytes[i] = 0;
-                    }
-                }
-
-                Bitmap img_out = new Bitmap(w, h, PixelFormat.Format32bppRgb);
-                writeImageBytes(img_out, img_out_bytes);
-
-                ImageOutput.Image = img_out;
-                SavetoLayerList(img_out);
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-            }
-            else
-            {
-                MessageBox.Show("Image is not selected", "Error");
-            }
-        }
-
-        private void myMethodToolStripMenuItem_Click(object sender, EventArgs e)//бинаризация методом динамического среднего
-        {
-            if (LayerList.SelectedIndices.Count > 0)
-            {
-                Stopwatch timer = new Stopwatch();
-                timer.Start();
-                this.Cursor = Cursors.WaitCursor;
-
-                var selectedIndex = LayerList.SelectedIndices[0];
-                var img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - selectedIndex]);
-
-                int w = img.Width;
-                int h = img.Height;
-
-                float threshold = 0.5F;
-
-                byte[] img_bytes = GetRGBValues(img);
-
-                int imglength = w * h * 4;
-
-                byte[] img_out_bytes = new byte[imglength];
-
-                for (int i = 0; i < imglength - 2; i += 4)
-                {
-                    var brightness = Color.FromArgb(img_bytes[i + 2], img_bytes[i + 1], img_bytes[i]).GetBrightness();
-                    var devideBy = ((float)i / 4) + 2;
-                    threshold = ((threshold * (devideBy - 1)) + brightness) / devideBy;
-                    if (brightness > threshold)
-                    {
-                        img_out_bytes[i + 2] = 255;
-                        img_out_bytes[i + 1] = 255;
-                        img_out_bytes[i] = 255;
-                    }
-                    else
-                    {
-                        img_out_bytes[i + 2] = 0;
-                        img_out_bytes[i + 1] = 0;
-                        img_out_bytes[i] = 0;
-                    }
-                }
-
-                Bitmap img_out = new Bitmap(w, h, PixelFormat.Format32bppRgb);
-                writeImageBytes(img_out, img_out_bytes);
-
-                ImageOutput.Image = img_out;
-                SavetoLayerList(img_out);
-
-                this.Cursor = Cursors.Default;
-                timer.Stop();
-                debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-            }
-            else
-            {
-                MessageBox.Show("Image is not selected", "Error");
-            }
-        }
-        #endregion
-
-        #region curve
+        #region Curve
 
         private int _highlightedPoint = 0;    //выделенная точка
 
@@ -1648,175 +1458,6 @@
 
         #endregion
 
-        #region helper functions
-        public static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
-        {
-            if (val.CompareTo(min) < 0)
-            {
-                return min;
-            }
-            else if (val.CompareTo(max) > 0)
-            {
-                return max;
-            }
-            else
-            {
-                return val;
-            }
-        }//сжимает значения в выбранный промежуток
-
-        private byte[] GetRGBValues(Bitmap bmp)//конвертирует Bitmap в byte[]
-        {
-
-            // Lock the bitmap's bits.
-            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-            BitmapData bmpData =
-             bmp.LockBits(rect, ImageLockMode.ReadOnly,
-             bmp.PixelFormat);
-
-            // Get the address of the first line.
-            IntPtr ptr = bmpData.Scan0;
-
-            // Declare an array to hold the bytes of the bitmap.
-            int bytes = bmpData.Stride * bmp.Height;
-            byte[] rgbValues = new byte[bytes];
-
-            // Copy the RGB values into the array.
-            Marshal.Copy(ptr, rgbValues, 0, bytes);
-            bmp.UnlockBits(bmpData);
-
-            return rgbValues;
-        }
-
-        private static ImageCodecInfo GetEncoder(ImageFormat format)
-        {
-            var codecs = ImageCodecInfo.GetImageDecoders();
-            foreach (var codec in codecs)
-            {
-                if (codec.FormatID == format.Guid)
-                {
-                    return codec;
-                }
-            }
-
-            return null;
-        }//настройки кодека Jpeg для фильтра
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)//завершение программы
-        {
-            SaveSettings();
-            this.Close();
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)//завершение программы
-        {
-            SaveSettings();
-        }
-
-        static void writeImageBytes(Bitmap img, byte[] bytes)//конвертирует byte[] в Bitmap
-        {
-            var data = img.LockBits(
-                new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
-                ImageLockMode.WriteOnly,
-                img.PixelFormat);
-            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length); //копируем байты массива в изображение
-
-            img.UnlockBits(data);  //разблокируем изображение
-        }
-
-        #endregion
-
-        #region cosmetics
-        private void themeBox1_Click(object sender, EventArgs e)//переключатель темы
-        {
-            if (_theme == false)
-            {
-                var light = new Bitmap(@"..\..\..\Icons\darkThemeSmallest.png");
-                themeBox1.Image = light;
-                _theme = true;
-
-                this.BackColor = Color.FromArgb(240, 240, 240);
-                LayerList.BackColor = Color.FromArgb(219, 219, 219);
-                LayerList.ForeColor = Color.FromArgb(47, 47, 47);
-                histogram.BackColor = Color.FromArgb(219, 219, 219);
-                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(219, 219, 219);
-                credits.ForeColor = Color.FromArgb(47, 47, 47);
-                debug.ForeColor = Color.FromArgb(47, 47, 47);
-                opacity.ForeColor = Color.FromArgb(47, 47, 47);
-                label1.ForeColor = Color.FromArgb(47, 47, 47);
-                label2.ForeColor = Color.FromArgb(47, 47, 47);
-                curveEditBox.BackColor = Color.FromArgb(219, 219, 219);
-
-                OCRText.BackColor = Color.FromArgb(219, 219, 219);
-                OCRText.ForeColor = Color.FromArgb(47, 47, 47);
-                BinarizationPanel.BackColor = Color.FromArgb(219, 219, 219);
-                label4.ForeColor = Color.FromArgb(47, 47, 47);
-                label5.ForeColor = Color.FromArgb(47, 47, 47);
-                label6.ForeColor = Color.FromArgb(47, 47, 47);
-                label7.ForeColor = Color.FromArgb(47, 47, 47);
-                label8.ForeColor = Color.FromArgb(47, 47, 47);
-            }
-            else
-            {
-                var dark = new Bitmap(@"..\..\..\Icons\lightThemeSmallest.png");
-                themeBox1.Image = dark;
-                _theme = false;
-
-                this.BackColor = Color.FromArgb(47, 47, 47);
-                LayerList.BackColor = Color.FromArgb(69, 69, 69);
-                LayerList.ForeColor = Color.FromArgb(224, 224, 224);
-                histogram.BackColor = Color.FromArgb(69, 69, 69);
-                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(69, 69, 69);
-                credits.ForeColor = Color.FromArgb(224, 224, 224);
-                debug.ForeColor = Color.FromArgb(224, 224, 224);
-                opacity.ForeColor = Color.FromArgb(224, 224, 224);
-                label1.ForeColor = Color.FromArgb(224, 224, 224);
-                label2.ForeColor = Color.FromArgb(224, 224, 224);
-                curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
-
-                OCRText.BackColor = Color.FromArgb(69, 69, 69);
-                OCRText.ForeColor = Color.FromArgb(224, 224, 224);
-                BinarizationPanel.BackColor = Color.FromArgb(69, 69, 69);
-                label4.ForeColor = Color.FromArgb(224, 224, 224);
-                label5.ForeColor = Color.FromArgb(224, 224, 224);
-                label6.ForeColor = Color.FromArgb(224, 224, 224);
-                label7.ForeColor = Color.FromArgb(224, 224, 224);
-                label8.ForeColor = Color.FromArgb(224, 224, 224);
-
-                //photoshop theme
-                //this.BackColor = Color.FromArgb(38, 38, 38);
-                //LayerList.BackColor = Color.FromArgb(83, 83, 83);
-                //LayerList.ForeColor = Color.FromArgb(221, 221, 221);
-                //histogram.BackColor = Color.FromArgb(83, 83, 83);
-                //histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(83, 83, 83);
-                //credits.ForeColor = Color.FromArgb(221, 221, 221);
-                //debug.ForeColor = Color.FromArgb(221, 221, 221);
-                //opacity.ForeColor = Color.FromArgb(221, 221, 221);
-
-                // moder flat UI
-                //this.BackColor = Color.FromArgb(21, 23, 39);
-                //LayerList.BackColor = Color.FromArgb(23, 27, 44);
-                //LayerList.ForeColor = Color.FromArgb(123, 128, 142);
-                //histogram.BackColor = Color.FromArgb(23, 27, 44);
-                //histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(23, 27, 44);
-                //credits.ForeColor = Color.FromArgb(123, 128, 142);
-                //debug.ForeColor = Color.FromArgb(123, 128, 142);
-                //opacity.ForeColor = Color.FromArgb(123, 128, 142);
-                //label1.ForeColor = Color.FromArgb(123, 128, 142);
-                //label2.ForeColor = Color.FromArgb(123, 128, 142);
-                //curveEditBox.BackColor = Color.FromArgb(23, 27, 44);
-            }
-        }
-
-        private void copyToClipboardToolStripMenuItem_Click(object sender, EventArgs e)//копирование изображения
-        {
-            if (ImageOutput.Image != null)
-            {
-                Clipboard.SetImage(ImageOutput.Image);
-            }
-        }
-        #endregion
-
         #region Binarization
         private void Binarization1_Click(object sender, EventArgs e)
         {
@@ -1998,6 +1639,7 @@
         }
         #endregion
 
+        #region Text regonition
         private void GetText_Click(object sender, EventArgs e)//читает текст
         {
             if (ImageOutput.Image == null)
@@ -2054,6 +1696,175 @@
             OCRText.Visible = false;
             OCRText.Text = string.Empty;
         }
+        #endregion
 
+        #region Helper functions
+        public static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
+        {
+            if (val.CompareTo(min) < 0)
+            {
+                return min;
+            }
+            else if (val.CompareTo(max) > 0)
+            {
+                return max;
+            }
+            else
+            {
+                return val;
+            }
+        }//сжимает значения в выбранный промежуток
+
+        private byte[] GetRGBValues(Bitmap bmp)//конвертирует Bitmap в byte[]
+        {
+
+            // Lock the bitmap's bits.
+            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            BitmapData bmpData =
+             bmp.LockBits(rect, ImageLockMode.ReadOnly,
+             bmp.PixelFormat);
+
+            // Get the address of the first line.
+            IntPtr ptr = bmpData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap.
+            int bytes = bmpData.Stride * bmp.Height;
+            byte[] rgbValues = new byte[bytes];
+
+            // Copy the RGB values into the array.
+            Marshal.Copy(ptr, rgbValues, 0, bytes);
+            bmp.UnlockBits(bmpData);
+
+            return rgbValues;
+        }
+
+        private static ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            var codecs = ImageCodecInfo.GetImageDecoders();
+            foreach (var codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+
+            return null;
+        }//настройки кодека Jpeg для фильтра
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)//завершение программы
+        {
+            SaveSettings();
+            this.Close();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)//завершение программы
+        {
+            SaveSettings();
+        }
+
+        static void writeImageBytes(Bitmap img, byte[] bytes)//конвертирует byte[] в Bitmap
+        {
+            var data = img.LockBits(
+                new Rectangle(0, 0, img.Width, img.Height),  //блокируем участок памати, занимаемый изображением
+                ImageLockMode.WriteOnly,
+                img.PixelFormat);
+            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length); //копируем байты массива в изображение
+
+            img.UnlockBits(data);  //разблокируем изображение
+        }
+
+        #endregion
+
+        #region Cosmetics
+        private void themeBox1_Click(object sender, EventArgs e)//переключатель темы
+        {
+            if (_theme == false)
+            {
+                var light = new Bitmap(@"..\..\..\Icons\darkThemeSmallest.png");
+                themeBox1.Image = light;
+                _theme = true;
+
+                this.BackColor = Color.FromArgb(240, 240, 240);
+                LayerList.BackColor = Color.FromArgb(219, 219, 219);
+                LayerList.ForeColor = Color.FromArgb(47, 47, 47);
+                histogram.BackColor = Color.FromArgb(219, 219, 219);
+                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(219, 219, 219);
+                credits.ForeColor = Color.FromArgb(47, 47, 47);
+                debug.ForeColor = Color.FromArgb(47, 47, 47);
+                opacity.ForeColor = Color.FromArgb(47, 47, 47);
+                label1.ForeColor = Color.FromArgb(47, 47, 47);
+                label2.ForeColor = Color.FromArgb(47, 47, 47);
+                curveEditBox.BackColor = Color.FromArgb(219, 219, 219);
+
+                OCRText.BackColor = Color.FromArgb(219, 219, 219);
+                OCRText.ForeColor = Color.FromArgb(47, 47, 47);
+                BinarizationPanel.BackColor = Color.FromArgb(219, 219, 219);
+                label4.ForeColor = Color.FromArgb(47, 47, 47);
+                label5.ForeColor = Color.FromArgb(47, 47, 47);
+                label6.ForeColor = Color.FromArgb(47, 47, 47);
+                label7.ForeColor = Color.FromArgb(47, 47, 47);
+                label8.ForeColor = Color.FromArgb(47, 47, 47);
+            }
+            else
+            {
+                var dark = new Bitmap(@"..\..\..\Icons\lightThemeSmallest.png");
+                themeBox1.Image = dark;
+                _theme = false;
+
+                this.BackColor = Color.FromArgb(47, 47, 47);
+                LayerList.BackColor = Color.FromArgb(69, 69, 69);
+                LayerList.ForeColor = Color.FromArgb(224, 224, 224);
+                histogram.BackColor = Color.FromArgb(69, 69, 69);
+                histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(69, 69, 69);
+                credits.ForeColor = Color.FromArgb(224, 224, 224);
+                debug.ForeColor = Color.FromArgb(224, 224, 224);
+                opacity.ForeColor = Color.FromArgb(224, 224, 224);
+                label1.ForeColor = Color.FromArgb(224, 224, 224);
+                label2.ForeColor = Color.FromArgb(224, 224, 224);
+                curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
+
+                OCRText.BackColor = Color.FromArgb(69, 69, 69);
+                OCRText.ForeColor = Color.FromArgb(224, 224, 224);
+                BinarizationPanel.BackColor = Color.FromArgb(69, 69, 69);
+                label4.ForeColor = Color.FromArgb(224, 224, 224);
+                label5.ForeColor = Color.FromArgb(224, 224, 224);
+                label6.ForeColor = Color.FromArgb(224, 224, 224);
+                label7.ForeColor = Color.FromArgb(224, 224, 224);
+                label8.ForeColor = Color.FromArgb(224, 224, 224);
+
+                //photoshop theme
+                //this.BackColor = Color.FromArgb(38, 38, 38);
+                //LayerList.BackColor = Color.FromArgb(83, 83, 83);
+                //LayerList.ForeColor = Color.FromArgb(221, 221, 221);
+                //histogram.BackColor = Color.FromArgb(83, 83, 83);
+                //histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(83, 83, 83);
+                //credits.ForeColor = Color.FromArgb(221, 221, 221);
+                //debug.ForeColor = Color.FromArgb(221, 221, 221);
+                //opacity.ForeColor = Color.FromArgb(221, 221, 221);
+
+                // moder flat UI
+                //this.BackColor = Color.FromArgb(21, 23, 39);
+                //LayerList.BackColor = Color.FromArgb(23, 27, 44);
+                //LayerList.ForeColor = Color.FromArgb(123, 128, 142);
+                //histogram.BackColor = Color.FromArgb(23, 27, 44);
+                //histogram.ChartAreas["ChartArea1"].BackColor = Color.FromArgb(23, 27, 44);
+                //credits.ForeColor = Color.FromArgb(123, 128, 142);
+                //debug.ForeColor = Color.FromArgb(123, 128, 142);
+                //opacity.ForeColor = Color.FromArgb(123, 128, 142);
+                //label1.ForeColor = Color.FromArgb(123, 128, 142);
+                //label2.ForeColor = Color.FromArgb(123, 128, 142);
+                //curveEditBox.BackColor = Color.FromArgb(23, 27, 44);
+            }
+        }
+
+        private void copyToClipboardToolStripMenuItem_Click(object sender, EventArgs e)//копирование изображения
+        {
+            if (ImageOutput.Image != null)
+            {
+                Clipboard.SetImage(ImageOutput.Image);
+            }
+        }
+        #endregion
     }
 }

@@ -48,15 +48,6 @@ namespace ImgApp_2_WinForms
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.binarizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.otsusMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.niblacksMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sauvolasMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.wulffsMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.bradleysMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sliderMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.myMethodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aSCIIFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.джепегированиеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.brightnessContrastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -220,35 +211,34 @@ namespace ImgApp_2_WinForms
             // openImageToolStripMenuItem
             // 
             this.openImageToolStripMenuItem.Name = "openImageToolStripMenuItem";
-            this.openImageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openImageToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.openImageToolStripMenuItem.Text = "Open...";
             this.openImageToolStripMenuItem.Click += new System.EventHandler(this.openImageToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.openToolStripMenuItem.Text = "Open Folder...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.saveToolStripMenuItem.Text = "Save As...";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.binarizationToolStripMenuItem,
             this.aSCIIFilterToolStripMenuItem,
             this.джепегированиеToolStripMenuItem,
             this.brightnessContrastToolStripMenuItem,
@@ -258,73 +248,6 @@ namespace ImgApp_2_WinForms
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(86, 20);
             this.editToolStripMenuItem.Text = "Adjustments";
-            // 
-            // binarizationToolStripMenuItem
-            // 
-            this.binarizationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fToolStripMenuItem,
-            this.otsusMethodToolStripMenuItem,
-            this.niblacksMethodToolStripMenuItem,
-            this.sauvolasMethodToolStripMenuItem,
-            this.wulffsMethodToolStripMenuItem,
-            this.bradleysMethodToolStripMenuItem,
-            this.sliderMethodToolStripMenuItem,
-            this.myMethodToolStripMenuItem});
-            this.binarizationToolStripMenuItem.Name = "binarizationToolStripMenuItem";
-            this.binarizationToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.binarizationToolStripMenuItem.Text = "Binarization";
-            // 
-            // fToolStripMenuItem
-            // 
-            this.fToolStripMenuItem.Name = "fToolStripMenuItem";
-            this.fToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.fToolStripMenuItem.Text = "Gavrilov\'s method";
-            this.fToolStripMenuItem.Click += new System.EventHandler(this.fToolStripMenuItem_Click);
-            // 
-            // otsusMethodToolStripMenuItem
-            // 
-            this.otsusMethodToolStripMenuItem.Name = "otsusMethodToolStripMenuItem";
-            this.otsusMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.otsusMethodToolStripMenuItem.Text = "Otsu\'s method";
-            this.otsusMethodToolStripMenuItem.Click += new System.EventHandler(this.otsusMethodToolStripMenuItem_Click);
-            // 
-            // niblacksMethodToolStripMenuItem
-            // 
-            this.niblacksMethodToolStripMenuItem.Name = "niblacksMethodToolStripMenuItem";
-            this.niblacksMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.niblacksMethodToolStripMenuItem.Text = "Niblack\'s method";
-            // 
-            // sauvolasMethodToolStripMenuItem
-            // 
-            this.sauvolasMethodToolStripMenuItem.Name = "sauvolasMethodToolStripMenuItem";
-            this.sauvolasMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.sauvolasMethodToolStripMenuItem.Text = "Sauvola\'s method";
-            // 
-            // wulffsMethodToolStripMenuItem
-            // 
-            this.wulffsMethodToolStripMenuItem.Name = "wulffsMethodToolStripMenuItem";
-            this.wulffsMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.wulffsMethodToolStripMenuItem.Text = "Wulff\'s method";
-            // 
-            // bradleysMethodToolStripMenuItem
-            // 
-            this.bradleysMethodToolStripMenuItem.Name = "bradleysMethodToolStripMenuItem";
-            this.bradleysMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.bradleysMethodToolStripMenuItem.Text = "Bradley\'s method";
-            // 
-            // sliderMethodToolStripMenuItem
-            // 
-            this.sliderMethodToolStripMenuItem.Name = "sliderMethodToolStripMenuItem";
-            this.sliderMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.sliderMethodToolStripMenuItem.Text = "Slider method";
-            this.sliderMethodToolStripMenuItem.Click += new System.EventHandler(this.sliderMethodToolStripMenuItem_Click);
-            // 
-            // myMethodToolStripMenuItem
-            // 
-            this.myMethodToolStripMenuItem.Name = "myMethodToolStripMenuItem";
-            this.myMethodToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.myMethodToolStripMenuItem.Text = "My method";
-            this.myMethodToolStripMenuItem.Click += new System.EventHandler(this.myMethodToolStripMenuItem_Click);
             // 
             // aSCIIFilterToolStripMenuItem
             // 
@@ -951,7 +874,6 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem binarizationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem brightnessContrastToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colorBalanceToolStripMenuItem;
@@ -982,13 +904,6 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoHistogramToolStripMenuItem;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.ToolStripMenuItem fToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem otsusMethodToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem niblacksMethodToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sauvolasMethodToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem wulffsMethodToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem bradleysMethodToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sliderMethodToolStripMenuItem;
         private System.Windows.Forms.Panel curveEditBox;
         private System.Windows.Forms.Button bCurve;
         private System.Windows.Forms.ToolStripMenuItem curveToolStripMenuItem;
@@ -997,7 +912,6 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.ToolStripMenuItem additionalCurveMarkersToolStripMenuItem;
         public System.Windows.Forms.PictureBox ImageOutput;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ToolStripMenuItem myMethodToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aSCIIFilterToolStripMenuItem;
         private System.Windows.Forms.Panel BinarizationPanel;
         private System.Windows.Forms.Button GetText;

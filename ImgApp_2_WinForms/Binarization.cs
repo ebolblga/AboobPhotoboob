@@ -22,9 +22,9 @@
 
             double threshold = 0;
 
-            //Parallel.ForEach(Enumerable.Range(0, imglength / 4).Select(i => i * 4), i =>
+            //Parallel.For(0, imglength / 4, i =>
             //{
-            //    threshold += (double)(0.2125 * img_bytes[i + 2]) + (double)(0.7154 * img_bytes[i + 1]) + (double)(0.0721 * img_bytes[i]);
+            //    threshold += (double)(0.2125 * img_bytes[(i * 4) + 2]) + (double)(0.7154 * img_bytes[(i * 4) + 1]) + (double)(0.0721 * img_bytes[i * 4]);
             //});
 
             for (int i = 0; i < imglength - 3; i += 4)
