@@ -60,7 +60,7 @@
 
             byte[] img_out_bytes = new byte[imglength];
 
-            double threshold = (double)OtsuOld(img);
+            double threshold = (double)OtsuThreshold(img);
 
             for (int i = 0; i < imglength - 3; i += 4)
             {
@@ -77,7 +77,7 @@
             return img_out;
         }
 
-        public static int OtsuOld(Bitmap image)
+        public static int OtsuThreshold(Bitmap image)
         {
             int w = image.Width;
             int h = image.Height;
@@ -232,7 +232,7 @@
 
         public static Bitmap Niblack(Bitmap img)
         {
-            int[,] integralIMG = IntegralImage(img);
+            int[,] integralIMG = IntegralByteImage(img);
 
             int window = 16; // Размер окна
             double k = -0.2; // коэффицент Ниблака
@@ -269,7 +269,7 @@
 
         public static Bitmap Sauvola(Bitmap img)
         {
-            int[,] integralIMG = IntegralImage(img);
+            int[,] integralIMG = IntegralByteImage(img);
 
             int window = 16; // Размер окна
             double k = 0.35; // коэффицент Сауволы
@@ -307,7 +307,7 @@
 
         public static Bitmap Wulff(Bitmap img)
         {
-            int[,] integralIMG = IntegralImage(img);
+            int[,] integralIMG = IntegralByteImage(img);
 
             int window = 16; // Размер окна
             double r = 0; //максимальное стандартное отклонение
@@ -365,7 +365,7 @@
 
         public static Bitmap Bradley(Bitmap img)
         {
-            int[,] integralIMG = IntegralImage(img);
+            int[,] integralIMG = IntegralByteImage(img);
 
             int window = 16; // Размер окна
             double k = 0.15; // коэффицент Бредли-Рота
@@ -407,8 +407,30 @@
             {
                 for (int j = 1; j < w; ++j)
                 {
-                    Color pix = img.GetPixel(j, i);
+                    Color pix = img.GetPixel(j - 1, i - 1);
                     int brightness = Convert.ToInt32((0.2125 * pix.R) + (0.7154 * pix.G) + (0.0721 * pix.B));
+                    integralIMG[j, i] = (int)brightness + integralIMG[j - 1, i] + integralIMG[j, i - 1] - integralIMG[j - 1, i - 1];
+                }
+            }
+
+            return integralIMG;
+        }
+
+        public static int[,] IntegralByteImage(Bitmap img)
+        {
+            int w = img.Width;
+            int h = img.Height;
+
+            int[,] integralIMG = new int[w + 1, h + 1];
+
+            byte[] img_bytes = GetRGBValues(img);
+
+            for (int i = 1; i < h; ++i)
+            {
+                for (int j = 1; j < w; ++j) 
+                {
+                    //double brightness = (double)(0.2125 * img_bytes[((((i - 1) * w) + j - 1) * 4) + 2]) + (double)(0.7154 * img_bytes[((((i - 1) * w) + j - 1) * 4) + 1]) + (double)(0.0721 * img_bytes[(((i - 1) * w) + j - 1) * 4]);
+                    double brightness = (double)(0.2125 * img_bytes[(((i * w) + j) * 4) + 2]) + (double)(0.7154 * img_bytes[(((i * w) + j) * 4) + 1]) + (double)(0.0721 * img_bytes[((i * w) + j) * 4]);
                     integralIMG[j, i] = (int)brightness + integralIMG[j - 1, i] + integralIMG[j, i - 1] - integralIMG[j - 1, i - 1];
                 }
             }

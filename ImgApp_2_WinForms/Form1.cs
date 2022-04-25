@@ -1,7 +1,5 @@
 ﻿namespace ImgApp_2_WinForms
 {
-    using Patagames.Ocr;
-    using Patagames.Ocr.Enums;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -13,6 +11,8 @@
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
     using System.Windows.Forms.DataVisualization.Charting;
+    using Patagames.Ocr;
+    using Patagames.Ocr.Enums;
 
     public partial class Form1 : Form
     {
@@ -68,7 +68,7 @@
             _theme = Properties.Settings.Default.Theme;
             if (_theme == false)
             {
-                var dark = new Bitmap("..\\..\\..\\lightThemeSmallest.png");
+                var dark = new Bitmap(@"..\..\..\Icons\lightThemeSmallest.png");
                 themeBox1.Image = dark;
 
                 this.BackColor = Color.FromArgb(47, 47, 47);
@@ -82,10 +82,19 @@
                 label1.ForeColor = Color.FromArgb(224, 224, 224);
                 label2.ForeColor = Color.FromArgb(224, 224, 224);
                 curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
+
+                OCRText.BackColor = Color.FromArgb(69, 69, 69);
+                OCRText.ForeColor = Color.FromArgb(224, 224, 224);
+                BinarizationPanel.BackColor = Color.FromArgb(69, 69, 69);
+                label4.ForeColor = Color.FromArgb(224, 224, 224);
+                label5.ForeColor = Color.FromArgb(224, 224, 224);
+                label6.ForeColor = Color.FromArgb(224, 224, 224);
+                label7.ForeColor = Color.FromArgb(224, 224, 224);
+                label8.ForeColor = Color.FromArgb(224, 224, 224);
             }
             else
             {
-                var light = new Bitmap("..\\..\\..\\darkThemeSmallest.png");
+                var light = new Bitmap(@"..\..\..\Icons\darkThemeSmallest.png");
                 themeBox1.Image = light;
 
                 this.BackColor = Color.FromArgb(240, 240, 240);
@@ -99,6 +108,15 @@
                 label1.ForeColor = Color.FromArgb(47, 47, 47);
                 label2.ForeColor = Color.FromArgb(47, 47, 47);
                 curveEditBox.BackColor = Color.FromArgb(219, 219, 219);
+
+                OCRText.BackColor = Color.FromArgb(219, 219, 219);
+                OCRText.ForeColor = Color.FromArgb(47, 47, 47);
+                BinarizationPanel.BackColor = Color.FromArgb(219, 219, 219);
+                label4.ForeColor = Color.FromArgb(47, 47, 47);
+                label5.ForeColor = Color.FromArgb(47, 47, 47);
+                label6.ForeColor = Color.FromArgb(47, 47, 47);
+                label7.ForeColor = Color.FromArgb(47, 47, 47);
+                label8.ForeColor = Color.FromArgb(47, 47, 47);
             }
 
             histogrammToolStripMenuItem.Checked = Properties.Settings.Default.Histogram;
@@ -118,7 +136,6 @@
                 histogram.Visible = true;
                 comboBox2.Visible = true;
                 button3.Visible = true;
-                ImageOutput.Size = new Size(ImageOutput.Width, Convert.ToInt32(ImageOutput.Height * 0.8));
             }
 
             if (curveToolStripMenuItem.Checked == false)
@@ -1136,7 +1153,7 @@
                 int w = img.Width;
                 int h = img.Height;
 
-                float threshold = (float)ImgApp_2_WinForms.Binarization.OtsuOld(img) / 255;
+                float threshold = (float)ImgApp_2_WinForms.Binarization.OtsuThreshold(img) / 255;
 
                 byte[] img_bytes = GetRGBValues(img);
 
@@ -1691,6 +1708,11 @@
             this.Close();
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)//завершение программы
+        {
+            SaveSettings();
+        }
+
         static void writeImageBytes(Bitmap img, byte[] bytes)//конвертирует byte[] в Bitmap
         {
             var data = img.LockBits(
@@ -1709,7 +1731,7 @@
         {
             if (_theme == false)
             {
-                var light = new Bitmap("..\\..\\..\\darkThemeSmallest.png");
+                var light = new Bitmap(@"..\..\..\Icons\darkThemeSmallest.png");
                 themeBox1.Image = light;
                 _theme = true;
 
@@ -1724,10 +1746,19 @@
                 label1.ForeColor = Color.FromArgb(47, 47, 47);
                 label2.ForeColor = Color.FromArgb(47, 47, 47);
                 curveEditBox.BackColor = Color.FromArgb(219, 219, 219);
+
+                OCRText.BackColor = Color.FromArgb(219, 219, 219);
+                OCRText.ForeColor = Color.FromArgb(47, 47, 47);
+                BinarizationPanel.BackColor = Color.FromArgb(219, 219, 219);
+                label4.ForeColor = Color.FromArgb(47, 47, 47);
+                label5.ForeColor = Color.FromArgb(47, 47, 47);
+                label6.ForeColor = Color.FromArgb(47, 47, 47);
+                label7.ForeColor = Color.FromArgb(47, 47, 47);
+                label8.ForeColor = Color.FromArgb(47, 47, 47);
             }
             else
             {
-                var dark = new Bitmap("..\\..\\..\\lightThemeSmallest.png");
+                var dark = new Bitmap(@"..\..\..\Icons\lightThemeSmallest.png");
                 themeBox1.Image = dark;
                 _theme = false;
 
@@ -1742,6 +1773,15 @@
                 label1.ForeColor = Color.FromArgb(224, 224, 224);
                 label2.ForeColor = Color.FromArgb(224, 224, 224);
                 curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
+
+                OCRText.BackColor = Color.FromArgb(69, 69, 69);
+                OCRText.ForeColor = Color.FromArgb(224, 224, 224);
+                BinarizationPanel.BackColor = Color.FromArgb(69, 69, 69);
+                label4.ForeColor = Color.FromArgb(224, 224, 224);
+                label5.ForeColor = Color.FromArgb(224, 224, 224);
+                label6.ForeColor = Color.FromArgb(224, 224, 224);
+                label7.ForeColor = Color.FromArgb(224, 224, 224);
+                label8.ForeColor = Color.FromArgb(224, 224, 224);
 
                 //photoshop theme
                 //this.BackColor = Color.FromArgb(38, 38, 38);
@@ -1958,7 +1998,7 @@
         }
         #endregion
 
-        private void GetText_Click(object sender, EventArgs e)
+        private void GetText_Click(object sender, EventArgs e)//читает текст
         {
             if (ImageOutput.Image == null)
             {
@@ -1983,7 +2023,7 @@
 
                 //objOcr.Init(@"..\..\tessdata", "eng", OcrEngineMode.OEM_DEFAULT);
                 //objOcr.SetVariable("tessedit_char_whitelist", "0123456789,/ -");
-                string returnText = "Tesseract.Net optical character recognition output: ";
+                string returnText = "Output:\n";
                 try
                 {
                     returnText += objOcr.GetTextFromImage(imgCropped);
@@ -2009,10 +2049,11 @@
 
         }
 
-        private void OCRText_Click(object sender, EventArgs e)
+        private void OCRText_Click(object sender, EventArgs e)//прячет текстовое поля прочитанного текста
         {
             OCRText.Visible = false;
             OCRText.Text = string.Empty;
         }
+
     }
 }
