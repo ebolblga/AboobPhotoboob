@@ -33,6 +33,9 @@ namespace ImgApp_2_WinForms
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.LayerList = new System.Windows.Forms.ListView();
             this.ImageListMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -98,6 +101,18 @@ namespace ImgApp_2_WinForms
             this.Binarization2 = new System.Windows.Forms.Button();
             this.Binarization1 = new System.Windows.Forms.Button();
             this.OCRText = new System.Windows.Forms.RichTextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.labelDimentions = new System.Windows.Forms.Label();
+            this.MatrixX = new System.Windows.Forms.TextBox();
+            this.MatrixY = new System.Windows.Forms.TextBox();
+            this.apply = new System.Windows.Forms.Button();
+            this.MedianValue = new System.Windows.Forms.TextBox();
+            this.labelMedian = new System.Windows.Forms.Label();
+            this.bEmpty = new System.Windows.Forms.Button();
+            this.filterMode = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.ImageListMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.histogram)).BeginInit();
@@ -107,6 +122,8 @@ namespace ImgApp_2_WinForms
             ((System.ComponentModel.ISupportInitialize)(this.opacityBar)).BeginInit();
             this.BinarizationPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BinarizationSlider)).BeginInit();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // LayerList
@@ -433,7 +450,7 @@ namespace ImgApp_2_WinForms
             this.ImageOutput.ContextMenuStrip = this.PictureBoxMenuStrip1;
             this.ImageOutput.Location = new System.Drawing.Point(138, 36);
             this.ImageOutput.Name = "ImageOutput";
-            this.ImageOutput.Size = new System.Drawing.Size(893, 422);
+            this.ImageOutput.Size = new System.Drawing.Size(609, 422);
             this.ImageOutput.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.ImageOutput.TabIndex = 0;
             this.ImageOutput.TabStop = false;
@@ -552,8 +569,8 @@ namespace ImgApp_2_WinForms
             // curveEditBox
             // 
             this.curveEditBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.curveEditBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(69)))), ((int)(((byte)(69)))));
-            this.curveEditBox.Location = new System.Drawing.Point(831, 36);
+            this.curveEditBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.curveEditBox.Location = new System.Drawing.Point(85, 4);
             this.curveEditBox.Name = "curveEditBox";
             this.curveEditBox.Size = new System.Drawing.Size(200, 200);
             this.curveEditBox.TabIndex = 22;
@@ -564,7 +581,7 @@ namespace ImgApp_2_WinForms
             // bCurve
             // 
             this.bCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bCurve.Location = new System.Drawing.Point(963, 242);
+            this.bCurve.Location = new System.Drawing.Point(11, 33);
             this.bCurve.Name = "bCurve";
             this.bCurve.Size = new System.Drawing.Size(68, 23);
             this.bCurve.TabIndex = 23;
@@ -575,7 +592,7 @@ namespace ImgApp_2_WinForms
             // bApplyCurve
             // 
             this.bApplyCurve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bApplyCurve.Location = new System.Drawing.Point(889, 242);
+            this.bApplyCurve.Location = new System.Drawing.Point(10, 4);
             this.bApplyCurve.Name = "bApplyCurve";
             this.bApplyCurve.Size = new System.Drawing.Size(68, 23);
             this.bApplyCurve.TabIndex = 24;
@@ -813,19 +830,189 @@ namespace ImgApp_2_WinForms
             this.OCRText.Visible = false;
             this.OCRText.Click += new System.EventHandler(this.OCRText_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(69)))), ((int)(((byte)(69)))));
+            this.panel1.Controls.Add(this.button1);
+            this.panel1.Controls.Add(this.label9);
+            this.panel1.Controls.Add(this.filterMode);
+            this.panel1.Controls.Add(this.bEmpty);
+            this.panel1.Controls.Add(this.labelMedian);
+            this.panel1.Controls.Add(this.MedianValue);
+            this.panel1.Controls.Add(this.apply);
+            this.panel1.Controls.Add(this.MatrixY);
+            this.panel1.Controls.Add(this.MatrixX);
+            this.panel1.Controls.Add(this.labelDimentions);
+            this.panel1.Controls.Add(this.dataGridView1);
+            this.panel1.Controls.Add(this.curveEditBox);
+            this.panel1.Controls.Add(this.bCurve);
+            this.panel1.Controls.Add(this.bApplyCurve);
+            this.panel1.Location = new System.Drawing.Point(743, 37);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(287, 422);
+            this.panel1.TabIndex = 42;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToOrderColumns = true;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.ColumnHeadersVisible = false;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(56)))), ((int)(((byte)(56)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Montserrat", 8.249999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridView1.Location = new System.Drawing.Point(88, 222);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersVisible = false;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridView1.Size = new System.Drawing.Size(197, 197);
+            this.dataGridView1.TabIndex = 25;
+            // 
+            // labelDimentions
+            // 
+            this.labelDimentions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelDimentions.AutoSize = true;
+            this.labelDimentions.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelDimentions.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelDimentions.Location = new System.Drawing.Point(8, 221);
+            this.labelDimentions.Name = "labelDimentions";
+            this.labelDimentions.Size = new System.Drawing.Size(73, 11);
+            this.labelDimentions.TabIndex = 26;
+            this.labelDimentions.Text = "Dimentions r1 : r2";
+            // 
+            // MatrixX
+            // 
+            this.MatrixX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.MatrixX.Location = new System.Drawing.Point(11, 236);
+            this.MatrixX.Name = "MatrixX";
+            this.MatrixX.Size = new System.Drawing.Size(28, 21);
+            this.MatrixX.TabIndex = 27;
+            this.MatrixX.Text = "1";
+            // 
+            // MatrixY
+            // 
+            this.MatrixY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.MatrixY.Location = new System.Drawing.Point(51, 236);
+            this.MatrixY.Name = "MatrixY";
+            this.MatrixY.Size = new System.Drawing.Size(28, 21);
+            this.MatrixY.TabIndex = 28;
+            this.MatrixY.Text = "1";
+            // 
+            // apply
+            // 
+            this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.apply.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.apply.Location = new System.Drawing.Point(10, 292);
+            this.apply.Name = "apply";
+            this.apply.Size = new System.Drawing.Size(35, 23);
+            this.apply.TabIndex = 29;
+            this.apply.Text = "Gen";
+            this.apply.UseVisualStyleBackColor = true;
+            this.apply.Click += new System.EventHandler(this.apply_Click);
+            // 
+            // MedianValue
+            // 
+            this.MedianValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.MedianValue.Location = new System.Drawing.Point(10, 386);
+            this.MedianValue.Name = "MedianValue";
+            this.MedianValue.Size = new System.Drawing.Size(68, 21);
+            this.MedianValue.TabIndex = 31;
+            this.MedianValue.Text = "1";
+            // 
+            // labelMedian
+            // 
+            this.labelMedian.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelMedian.AutoSize = true;
+            this.labelMedian.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelMedian.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelMedian.Location = new System.Drawing.Point(8, 372);
+            this.labelMedian.Name = "labelMedian";
+            this.labelMedian.Size = new System.Drawing.Size(63, 11);
+            this.labelMedian.TabIndex = 32;
+            this.labelMedian.Text = "Median sigma:";
+            // 
+            // bEmpty
+            // 
+            this.bEmpty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.bEmpty.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bEmpty.Location = new System.Drawing.Point(44, 292);
+            this.bEmpty.Name = "bEmpty";
+            this.bEmpty.Size = new System.Drawing.Size(35, 23);
+            this.bEmpty.TabIndex = 33;
+            this.bEmpty.Text = "Clear";
+            this.bEmpty.UseVisualStyleBackColor = true;
+            this.bEmpty.Click += new System.EventHandler(this.bEmpty_Click);
+            // 
+            // filterMode
+            // 
+            this.filterMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.filterMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.filterMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.filterMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.filterMode.FormattingEnabled = true;
+            this.filterMode.Items.AddRange(new object[] {
+            "Linear",
+            "Gauss"});
+            this.filterMode.Location = new System.Drawing.Point(11, 263);
+            this.filterMode.Name = "filterMode";
+            this.filterMode.Size = new System.Drawing.Size(68, 23);
+            this.filterMode.TabIndex = 44;
+            // 
+            // label9
+            // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label9.Location = new System.Drawing.Point(8, 410);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(27, 11);
+            this.label9.TabIndex = 45;
+            this.label9.Text = "Sum: ";
+            this.label9.Visible = false;
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button1.Location = new System.Drawing.Point(9, 321);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(69, 23);
+            this.button1.TabIndex = 46;
+            this.button1.Text = "Apply";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
             this.ClientSize = new System.Drawing.Size(1190, 568);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.OCRText);
             this.Controls.Add(this.BinarizationPanel);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.bRender3);
-            this.Controls.Add(this.bApplyCurve);
-            this.Controls.Add(this.bCurve);
-            this.Controls.Add(this.curveEditBox);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -860,6 +1047,9 @@ namespace ImgApp_2_WinForms
             this.BinarizationPanel.ResumeLayout(false);
             this.BinarizationPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BinarizationSlider)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -930,6 +1120,18 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.RichTextBox OCRText;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Label labelMedian;
+        private System.Windows.Forms.TextBox MedianValue;
+        private System.Windows.Forms.Button apply;
+        private System.Windows.Forms.TextBox MatrixY;
+        private System.Windows.Forms.TextBox MatrixX;
+        private System.Windows.Forms.Label labelDimentions;
+        private System.Windows.Forms.Button bEmpty;
+        private System.Windows.Forms.ComboBox filterMode;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button button1;
     }
 }
 

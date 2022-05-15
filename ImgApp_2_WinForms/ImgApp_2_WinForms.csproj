@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="ASCII.cs" />
     <Compile Include="Binarization.cs" />
+    <Compile Include="Filtration.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

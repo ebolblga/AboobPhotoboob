@@ -53,6 +53,7 @@
             _loadedImages = new List<Image>();
             comboBox2.SelectedIndex = 0;
             channelBox.SelectedIndex = 0;
+            filterMode.SelectedIndex = 1;
             //this.TopMost = true;
             //this.WindowState = FormWindowState.Maximized;
 
@@ -81,7 +82,7 @@
                 opacity.ForeColor = Color.FromArgb(224, 224, 224);
                 label1.ForeColor = Color.FromArgb(224, 224, 224);
                 label2.ForeColor = Color.FromArgb(224, 224, 224);
-                curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
+                curveEditBox.BackColor = Color.FromArgb(47, 47, 47);
 
                 OCRText.BackColor = Color.FromArgb(69, 69, 69);
                 OCRText.ForeColor = Color.FromArgb(224, 224, 224);
@@ -1822,7 +1823,7 @@
                 opacity.ForeColor = Color.FromArgb(224, 224, 224);
                 label1.ForeColor = Color.FromArgb(224, 224, 224);
                 label2.ForeColor = Color.FromArgb(224, 224, 224);
-                curveEditBox.BackColor = Color.FromArgb(69, 69, 69);
+                curveEditBox.BackColor = Color.FromArgb(47, 47, 47);
 
                 OCRText.BackColor = Color.FromArgb(69, 69, 69);
                 OCRText.ForeColor = Color.FromArgb(224, 224, 224);
@@ -1864,6 +1865,113 @@
             {
                 Clipboard.SetImage(ImageOutput.Image);
             }
+        }
+        #endregion
+
+        #region Filter
+        private void apply_Click(object sender, EventArgs e)
+        {
+            int i = 1;
+            int j = 1;
+
+            try
+            {
+                i += Convert.ToInt32(MatrixX.Text) * 2;
+                j += Convert.ToInt32(MatrixY.Text) * 2;
+            }
+            catch
+            {
+                MessageBox.Show("R1 or R2 is not an int", "Error");
+                return;
+            }
+
+            dataGridView1.ColumnCount = i;
+            dataGridView1.RowCount = j;
+
+            if (filterMode.SelectedIndex == 0)
+            {
+                int s = i * j;
+
+                for (int a = 0; a < i; a++)
+                {
+                    for (int b = 0; b < j; b++)
+                    {
+                        dataGridView1.Rows[b].Cells[a].Value = Math.Round(1D / s, 3);
+                    }
+                }
+
+                label9.Text = $"Sum: {1}";
+                label9.Visible = true;
+            }
+            else if (filterMode.SelectedIndex == 1)
+            {
+                double sig = 3; // сигма
+                double s = 0;
+                double g;
+
+                try
+                {
+                    sig = Convert.ToDouble(MedianValue.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("Sigma is not a value type double, will be calculated with value 3", "Error");
+                }
+
+                double sig_sqr = 2 * sig * sig;
+                double k = 1D / (sig_sqr * Math.PI);
+
+                int r1 = Convert.ToInt32((double)(i - 1) / 2);
+                int r2 = Convert.ToInt32((double)(j - 1) / 2);
+
+                for (int a = -r1; a <= r1; a++)
+                {
+                    for (int b = -r2; b <= r2; b++)
+                    {
+                        double ij_sqr = (a * a) + (b * b);
+                        g = k * Math.Exp(-(ij_sqr / sig_sqr));
+                        s += g;
+                        dataGridView1.Rows[b + r2].Cells[a + r1].Value = Math.Round(g, 4);
+                    }
+                }
+
+                label9.Text = $"Sum: {Math.Round(s, 3)}";
+                label9.Visible = true;
+            }
+        }
+
+        private void bEmpty_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Rows.Clear();
+            dataGridView1.DataSource = null;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (LayerList.SelectedIndices.Count < 1)
+            {
+                MessageBox.Show("No image is selected", "Error");
+                return;
+            }
+
+            if (dataGridView1.RowCount < 1)
+            {
+                MessageBox.Show("Matrix is not generated", "Error");
+                return;
+            }
+
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            this.Cursor = Cursors.WaitCursor;
+
+            Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
+            Bitmap img_out = Filtration.Process(img);
+            img.Dispose();
+            ImageOutput.Image = img_out;
+
+            this.Cursor = Cursors.Default;
+            timer.Stop();
+            debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
         }
         #endregion
     }
