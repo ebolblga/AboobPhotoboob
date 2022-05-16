@@ -972,7 +972,10 @@ namespace ImgApp_2_WinForms
             this.filterMode.FormattingEnabled = true;
             this.filterMode.Items.AddRange(new object[] {
             "Linear",
-            "Gauss"});
+            "Gauss",
+            "Prewitt operator",
+            "Sobel operator",
+            "Laplace operator"});
             this.filterMode.Location = new System.Drawing.Point(11, 263);
             this.filterMode.Name = "filterMode";
             this.filterMode.Size = new System.Drawing.Size(68, 23);

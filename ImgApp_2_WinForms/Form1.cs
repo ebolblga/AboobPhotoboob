@@ -1888,55 +1888,149 @@
             dataGridView1.ColumnCount = i;
             dataGridView1.RowCount = j;
 
-            if (filterMode.SelectedIndex == 0)
+            switch (filterMode.SelectedIndex)
             {
-                int s = i * j;
-
-                for (int a = 0; a < i; a++)
-                {
-                    for (int b = 0; b < j; b++)
+                case 0:
                     {
-                        dataGridView1.Rows[b].Cells[a].Value = Math.Round(1D / s, 3);
+                        int s = i * j;
+
+                        for (int a = 0; a < i; a++)
+                        {
+                            for (int b = 0; b < j; b++)
+                            {
+                                dataGridView1.Rows[b].Cells[a].Value = Math.Round(1D / s, 3);
+                            }
+                        }
+
+                        label9.Text = $"Sum: 1";
+                        label9.Visible = true;
+                        return;
                     }
-                }
 
-                label9.Text = $"Sum: {1}";
-                label9.Visible = true;
-            }
-            else if (filterMode.SelectedIndex == 1)
-            {
-                double sig = 3; // сигма
-                double s = 0;
-                double g;
-
-                try
-                {
-                    sig = Convert.ToDouble(MedianValue.Text);
-                }
-                catch
-                {
-                    MessageBox.Show("Sigma is not a value type double, will be calculated with value 3", "Error");
-                }
-
-                double sig_sqr = 2 * sig * sig;
-                double k = 1D / (sig_sqr * Math.PI);
-
-                int r1 = Convert.ToInt32((double)(i - 1) / 2);
-                int r2 = Convert.ToInt32((double)(j - 1) / 2);
-
-                for (int a = -r1; a <= r1; a++)
-                {
-                    for (int b = -r2; b <= r2; b++)
+                case 1:
                     {
-                        double ij_sqr = (a * a) + (b * b);
-                        g = k * Math.Exp(-(ij_sqr / sig_sqr));
-                        s += g;
-                        dataGridView1.Rows[b + r2].Cells[a + r1].Value = Math.Round(g, 4);
-                    }
-                }
+                        double sig = 3; // сигма
+                        double s = 0;
+                        double g;
 
-                label9.Text = $"Sum: {Math.Round(s, 3)}";
-                label9.Visible = true;
+                        try
+                        {
+                            sig = Convert.ToDouble(MedianValue.Text);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Sigma is not a value type double, will be calculated with value 3", "Error");
+                        }
+
+                        double sig_sqr = 2 * sig * sig;
+                        double k = 1D / (sig_sqr * Math.PI);
+
+                        int r1 = Convert.ToInt32((double)(i - 1) / 2);
+                        int r2 = Convert.ToInt32((double)(j - 1) / 2);
+
+                        for (int a = -r1; a <= r1; a++)
+                        {
+                            for (int b = -r2; b <= r2; b++)
+                            {
+                                double ij_sqr = (a * a) + (b * b);
+                                g = k * Math.Exp(-(ij_sqr / sig_sqr));
+                                s += g;
+                                dataGridView1.Rows[b + r2].Cells[a + r1].Value = Math.Round(g, 4);
+                            }
+                        }
+
+                        label9.Text = $"Sum: {Math.Round(s, 3)}";
+                        label9.Visible = true;
+                        return;
+                    }
+
+                case 2:
+                    {
+                        dataGridView1.Rows.Clear();
+                        dataGridView1.DataSource = null;
+
+                        dataGridView1.ColumnCount = 3;
+                        dataGridView1.RowCount = 3;
+
+                        for (int i2 = 0; i2 < dataGridView1.ColumnCount; i2++)
+                        {
+                            for (int j2 = 0; j2 < dataGridView1.RowCount; j2++)
+                            {
+                                dataGridView1.Rows[j2].Cells[i2].Value = 0;
+                            }
+                        }
+
+                        dataGridView1.Rows[0].Cells[0].Value = -1;
+                        dataGridView1.Rows[1].Cells[0].Value = -1;
+                        dataGridView1.Rows[2].Cells[0].Value = -1;
+
+                        dataGridView1.Rows[0].Cells[2].Value = 1;
+                        dataGridView1.Rows[1].Cells[2].Value = 1;
+                        dataGridView1.Rows[2].Cells[2].Value = 1;
+
+                        label9.Text = $"Sum: 0";
+                        label9.Visible = true;
+                        return;
+                    }
+
+                case 3:
+                    {
+                        dataGridView1.Rows.Clear();
+                        dataGridView1.DataSource = null;
+
+                        dataGridView1.ColumnCount = 3;
+                        dataGridView1.RowCount = 3;
+
+                        for (int i2 = 0; i2 < dataGridView1.ColumnCount; i2++)
+                        {
+                            for (int j2 = 0; j2 < dataGridView1.RowCount; j2++)
+                            {
+                                dataGridView1.Rows[j2].Cells[i2].Value = 0;
+                            }
+                        }
+
+                        dataGridView1.Rows[0].Cells[0].Value = -1;
+                        dataGridView1.Rows[1].Cells[0].Value = -2;
+                        dataGridView1.Rows[2].Cells[0].Value = -1;
+
+                        dataGridView1.Rows[0].Cells[2].Value = 1;
+                        dataGridView1.Rows[1].Cells[2].Value = 2;
+                        dataGridView1.Rows[2].Cells[2].Value = 1;
+
+                        label9.Text = $"Sum: 0";
+                        label9.Visible = true;
+                        return;
+                    }
+
+                case 4:
+                    {
+                        dataGridView1.Rows.Clear();
+                        dataGridView1.DataSource = null;
+
+                        dataGridView1.ColumnCount = 3;
+                        dataGridView1.RowCount = 3;
+
+                        for (int i2 = 0; i2 < dataGridView1.ColumnCount; i2++)
+                        {
+                            for (int j2 = 0; j2 < dataGridView1.RowCount; j2++)
+                            {
+                                dataGridView1.Rows[j2].Cells[i2].Value = 0;
+                            }
+                        }
+
+                        dataGridView1.Rows[0].Cells[1].Value = 1;
+                        dataGridView1.Rows[1].Cells[0].Value = 1;
+                        dataGridView1.Rows[1].Cells[1].Value = -4;
+                        dataGridView1.Rows[1].Cells[2].Value = 1;
+                        dataGridView1.Rows[2].Cells[1].Value = 1;
+
+                        label9.Text = $"Sum: 0";
+                        label9.Visible = true;
+                        return;
+                    }
+
+                default:
+                    return;
             }
         }
 
@@ -1960,12 +2054,25 @@
                 return;
             }
 
+            int r1;
+            int r2;
+            try
+            {
+                r1 = Convert.ToInt32(MatrixX.Text);
+                r2 = Convert.ToInt32(MatrixY.Text);
+            }
+            catch
+            {
+                MessageBox.Show("R1 or R2 is not an int", "Error");
+                return;
+            }
+
             Stopwatch timer = new Stopwatch();
             timer.Start();
             this.Cursor = Cursors.WaitCursor;
 
             Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
-            Bitmap img_out = Filtration.Process(img);
+            Bitmap img_out = Filtration.Linear(img, r1, r2);
             img.Dispose();
             ImageOutput.Image = img_out;
 
