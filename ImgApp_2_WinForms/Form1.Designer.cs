@@ -102,17 +102,17 @@ namespace ImgApp_2_WinForms
             this.Binarization1 = new System.Windows.Forms.Button();
             this.OCRText = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.labelDimentions = new System.Windows.Forms.Label();
-            this.MatrixX = new System.Windows.Forms.TextBox();
-            this.MatrixY = new System.Windows.Forms.TextBox();
-            this.apply = new System.Windows.Forms.Button();
-            this.MedianValue = new System.Windows.Forms.TextBox();
-            this.labelMedian = new System.Windows.Forms.Label();
-            this.bEmpty = new System.Windows.Forms.Button();
-            this.filterMode = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
+            this.filterMode = new System.Windows.Forms.ComboBox();
+            this.bEmpty = new System.Windows.Forms.Button();
+            this.labelMedian = new System.Windows.Forms.Label();
+            this.MedianValue = new System.Windows.Forms.TextBox();
+            this.apply = new System.Windows.Forms.Button();
+            this.MatrixY = new System.Windows.Forms.TextBox();
+            this.MatrixX = new System.Windows.Forms.TextBox();
+            this.labelDimentions = new System.Windows.Forms.Label();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.ImageListMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.histogram)).BeginInit();
@@ -854,6 +854,125 @@ namespace ImgApp_2_WinForms
             this.panel1.Size = new System.Drawing.Size(287, 422);
             this.panel1.TabIndex = 42;
             // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button1.Location = new System.Drawing.Point(9, 321);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(69, 23);
+            this.button1.TabIndex = 46;
+            this.button1.Text = "Apply";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // label9
+            // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label9.Location = new System.Drawing.Point(8, 410);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(27, 11);
+            this.label9.TabIndex = 45;
+            this.label9.Text = "Sum: ";
+            this.label9.Visible = false;
+            // 
+            // filterMode
+            // 
+            this.filterMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.filterMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.filterMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.filterMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.filterMode.FormattingEnabled = true;
+            this.filterMode.Items.AddRange(new object[] {
+            "Linear",
+            "Gauss",
+            "Sharpen",
+            "Prewitt operator",
+            "Sobel operator",
+            "Laplace operator",
+            "Median"});
+            this.filterMode.Location = new System.Drawing.Point(11, 263);
+            this.filterMode.Name = "filterMode";
+            this.filterMode.Size = new System.Drawing.Size(68, 23);
+            this.filterMode.TabIndex = 44;
+            // 
+            // bEmpty
+            // 
+            this.bEmpty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.bEmpty.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bEmpty.Location = new System.Drawing.Point(44, 292);
+            this.bEmpty.Name = "bEmpty";
+            this.bEmpty.Size = new System.Drawing.Size(35, 23);
+            this.bEmpty.TabIndex = 33;
+            this.bEmpty.Text = "Clear";
+            this.bEmpty.UseVisualStyleBackColor = true;
+            this.bEmpty.Click += new System.EventHandler(this.bEmpty_Click);
+            // 
+            // labelMedian
+            // 
+            this.labelMedian.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelMedian.AutoSize = true;
+            this.labelMedian.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelMedian.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelMedian.Location = new System.Drawing.Point(8, 372);
+            this.labelMedian.Name = "labelMedian";
+            this.labelMedian.Size = new System.Drawing.Size(63, 11);
+            this.labelMedian.TabIndex = 32;
+            this.labelMedian.Text = "Median sigma:";
+            // 
+            // MedianValue
+            // 
+            this.MedianValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.MedianValue.Location = new System.Drawing.Point(10, 386);
+            this.MedianValue.Name = "MedianValue";
+            this.MedianValue.Size = new System.Drawing.Size(68, 21);
+            this.MedianValue.TabIndex = 31;
+            this.MedianValue.Text = "1";
+            // 
+            // apply
+            // 
+            this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.apply.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.apply.Location = new System.Drawing.Point(10, 292);
+            this.apply.Name = "apply";
+            this.apply.Size = new System.Drawing.Size(35, 23);
+            this.apply.TabIndex = 29;
+            this.apply.Text = "Gen";
+            this.apply.UseVisualStyleBackColor = true;
+            this.apply.Click += new System.EventHandler(this.apply_Click);
+            // 
+            // MatrixY
+            // 
+            this.MatrixY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.MatrixY.Location = new System.Drawing.Point(51, 236);
+            this.MatrixY.Name = "MatrixY";
+            this.MatrixY.Size = new System.Drawing.Size(28, 21);
+            this.MatrixY.TabIndex = 28;
+            this.MatrixY.Text = "1";
+            // 
+            // MatrixX
+            // 
+            this.MatrixX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.MatrixX.Location = new System.Drawing.Point(11, 236);
+            this.MatrixX.Name = "MatrixX";
+            this.MatrixX.Size = new System.Drawing.Size(28, 21);
+            this.MatrixX.TabIndex = 27;
+            this.MatrixX.Text = "1";
+            // 
+            // labelDimentions
+            // 
+            this.labelDimentions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelDimentions.AutoSize = true;
+            this.labelDimentions.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelDimentions.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelDimentions.Location = new System.Drawing.Point(8, 221);
+            this.labelDimentions.Name = "labelDimentions";
+            this.labelDimentions.Size = new System.Drawing.Size(73, 11);
+            this.labelDimentions.TabIndex = 26;
+            this.labelDimentions.Text = "Dimentions r1 : r2";
+            // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
@@ -887,123 +1006,6 @@ namespace ImgApp_2_WinForms
             this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridView1.Size = new System.Drawing.Size(197, 197);
             this.dataGridView1.TabIndex = 25;
-            // 
-            // labelDimentions
-            // 
-            this.labelDimentions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.labelDimentions.AutoSize = true;
-            this.labelDimentions.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelDimentions.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.labelDimentions.Location = new System.Drawing.Point(8, 221);
-            this.labelDimentions.Name = "labelDimentions";
-            this.labelDimentions.Size = new System.Drawing.Size(73, 11);
-            this.labelDimentions.TabIndex = 26;
-            this.labelDimentions.Text = "Dimentions r1 : r2";
-            // 
-            // MatrixX
-            // 
-            this.MatrixX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.MatrixX.Location = new System.Drawing.Point(11, 236);
-            this.MatrixX.Name = "MatrixX";
-            this.MatrixX.Size = new System.Drawing.Size(28, 21);
-            this.MatrixX.TabIndex = 27;
-            this.MatrixX.Text = "1";
-            // 
-            // MatrixY
-            // 
-            this.MatrixY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.MatrixY.Location = new System.Drawing.Point(51, 236);
-            this.MatrixY.Name = "MatrixY";
-            this.MatrixY.Size = new System.Drawing.Size(28, 21);
-            this.MatrixY.TabIndex = 28;
-            this.MatrixY.Text = "1";
-            // 
-            // apply
-            // 
-            this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.apply.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.apply.Location = new System.Drawing.Point(10, 292);
-            this.apply.Name = "apply";
-            this.apply.Size = new System.Drawing.Size(35, 23);
-            this.apply.TabIndex = 29;
-            this.apply.Text = "Gen";
-            this.apply.UseVisualStyleBackColor = true;
-            this.apply.Click += new System.EventHandler(this.apply_Click);
-            // 
-            // MedianValue
-            // 
-            this.MedianValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.MedianValue.Location = new System.Drawing.Point(10, 386);
-            this.MedianValue.Name = "MedianValue";
-            this.MedianValue.Size = new System.Drawing.Size(68, 21);
-            this.MedianValue.TabIndex = 31;
-            this.MedianValue.Text = "1";
-            // 
-            // labelMedian
-            // 
-            this.labelMedian.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.labelMedian.AutoSize = true;
-            this.labelMedian.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelMedian.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.labelMedian.Location = new System.Drawing.Point(8, 372);
-            this.labelMedian.Name = "labelMedian";
-            this.labelMedian.Size = new System.Drawing.Size(63, 11);
-            this.labelMedian.TabIndex = 32;
-            this.labelMedian.Text = "Median sigma:";
-            // 
-            // bEmpty
-            // 
-            this.bEmpty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bEmpty.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bEmpty.Location = new System.Drawing.Point(44, 292);
-            this.bEmpty.Name = "bEmpty";
-            this.bEmpty.Size = new System.Drawing.Size(35, 23);
-            this.bEmpty.TabIndex = 33;
-            this.bEmpty.Text = "Clear";
-            this.bEmpty.UseVisualStyleBackColor = true;
-            this.bEmpty.Click += new System.EventHandler(this.bEmpty_Click);
-            // 
-            // filterMode
-            // 
-            this.filterMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.filterMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
-            this.filterMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.filterMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.filterMode.FormattingEnabled = true;
-            this.filterMode.Items.AddRange(new object[] {
-            "Linear",
-            "Gauss",
-            "Prewitt operator",
-            "Sobel operator",
-            "Laplace operator"});
-            this.filterMode.Location = new System.Drawing.Point(11, 263);
-            this.filterMode.Name = "filterMode";
-            this.filterMode.Size = new System.Drawing.Size(68, 23);
-            this.filterMode.TabIndex = 44;
-            // 
-            // label9
-            // 
-            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label9.Location = new System.Drawing.Point(8, 410);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(27, 11);
-            this.label9.TabIndex = 45;
-            this.label9.Text = "Sum: ";
-            this.label9.Visible = false;
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button1.Location = new System.Drawing.Point(9, 321);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(69, 23);
-            this.button1.TabIndex = 46;
-            this.button1.Text = "Apply";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 

@@ -1956,6 +1956,32 @@
                         {
                             for (int j2 = 0; j2 < dataGridView1.RowCount; j2++)
                             {
+                                dataGridView1.Rows[j2].Cells[i2].Value = -1;
+                            }
+                        }
+
+                        dataGridView1.Rows[1].Cells[1].Value = 9;
+
+                        MatrixX.Text = "1";
+                        MatrixY.Text = "1";
+
+                        label9.Text = $"Sum: 1";
+                        label9.Visible = true;
+                        return;
+                    }
+
+                case 3:
+                    {
+                        dataGridView1.Rows.Clear();
+                        dataGridView1.DataSource = null;
+
+                        dataGridView1.ColumnCount = 3;
+                        dataGridView1.RowCount = 3;
+
+                        for (int i2 = 0; i2 < dataGridView1.ColumnCount; i2++)
+                        {
+                            for (int j2 = 0; j2 < dataGridView1.RowCount; j2++)
+                            {
                                 dataGridView1.Rows[j2].Cells[i2].Value = 0;
                             }
                         }
@@ -1968,12 +1994,15 @@
                         dataGridView1.Rows[1].Cells[2].Value = 1;
                         dataGridView1.Rows[2].Cells[2].Value = 1;
 
+                        MatrixX.Text = "1";
+                        MatrixY.Text = "1";
+
                         label9.Text = $"Sum: 0";
                         label9.Visible = true;
                         return;
                     }
 
-                case 3:
+                case 4:
                     {
                         dataGridView1.Rows.Clear();
                         dataGridView1.DataSource = null;
@@ -1997,12 +2026,15 @@
                         dataGridView1.Rows[1].Cells[2].Value = 2;
                         dataGridView1.Rows[2].Cells[2].Value = 1;
 
+                        MatrixX.Text = "1";
+                        MatrixY.Text = "1";
+
                         label9.Text = $"Sum: 0";
                         label9.Visible = true;
                         return;
                     }
 
-                case 4:
+                case 5:
                     {
                         dataGridView1.Rows.Clear();
                         dataGridView1.DataSource = null;
@@ -2023,6 +2055,9 @@
                         dataGridView1.Rows[1].Cells[1].Value = -4;
                         dataGridView1.Rows[1].Cells[2].Value = 1;
                         dataGridView1.Rows[2].Cells[1].Value = 1;
+
+                        MatrixX.Text = "1";
+                        MatrixY.Text = "1";
 
                         label9.Text = $"Sum: 0";
                         label9.Visible = true;
@@ -2071,8 +2106,17 @@
             timer.Start();
             this.Cursor = Cursors.WaitCursor;
 
+            double[,] matrix = new double[(r1 * 2) + 1, (r2 * 2) + 1];
+            for (int a = 0; a < (r1 * 2) + 1; a++)
+            {
+                for (int b = 0; b < (r2 * 2) + 1; b++)
+                {
+                    matrix[a, b] = Convert.ToDouble(dataGridView1.Rows[b].Cells[a].Value);
+                }
+            }
+
             Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
-            Bitmap img_out = Filtration.Linear(img, r1, r2);
+            Bitmap img_out = Filtration.Linear(img, r1, r2, matrix);
             img.Dispose();
             ImageOutput.Image = img_out;
 
