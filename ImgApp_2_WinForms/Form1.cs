@@ -1869,7 +1869,7 @@
         #endregion
 
         #region Filter
-        private void apply_Click(object sender, EventArgs e)
+        private void CalcMatrix()
         {
             int i = 1;
             int j = 1;
@@ -2071,8 +2071,13 @@
 
         private void bEmpty_Click(object sender, EventArgs e)
         {
-            dataGridView1.Rows.Clear();
-            dataGridView1.DataSource = null;
+            for (int i2 = 0; i2 < dataGridView1.ColumnCount; i2++)
+            {
+                for (int j2 = 0; j2 < dataGridView1.RowCount; j2++)
+                {
+                    dataGridView1.Rows[j2].Cells[i2].Value = 0;
+                }
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -2116,13 +2121,42 @@
             }
 
             Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
-            Bitmap img_out = Filtration.Linear(img, r1, r2, matrix);
+            Bitmap img_out;
+            if (filterMode.SelectedIndex == 6)
+            {
+                img_out = Filtration.Median(img, r1, r2, matrix);
+            }
+            else
+            {
+                img_out = Filtration.Linear(img, r1, r2, matrix);
+            }
+
             img.Dispose();
             ImageOutput.Image = img_out;
 
             this.Cursor = Cursors.Default;
             timer.Stop();
             debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+        }
+
+        private void filterMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CalcMatrix();
+        }
+
+        private void MatrixX_TextChanged(object sender, EventArgs e)
+        {
+            CalcMatrix();
+        }
+
+        private void MatrixY_TextChanged(object sender, EventArgs e)
+        {
+            CalcMatrix();
+        }
+
+        private void MedianValue_TextChanged(object sender, EventArgs e)
+        {
+            CalcMatrix();
         }
         #endregion
     }

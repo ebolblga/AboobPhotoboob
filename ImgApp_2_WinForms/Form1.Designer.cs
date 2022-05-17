@@ -108,7 +108,6 @@ namespace ImgApp_2_WinForms
             this.bEmpty = new System.Windows.Forms.Button();
             this.labelMedian = new System.Windows.Forms.Label();
             this.MedianValue = new System.Windows.Forms.TextBox();
-            this.apply = new System.Windows.Forms.Button();
             this.MatrixY = new System.Windows.Forms.TextBox();
             this.MatrixX = new System.Windows.Forms.TextBox();
             this.labelDimentions = new System.Windows.Forms.Label();
@@ -841,7 +840,6 @@ namespace ImgApp_2_WinForms
             this.panel1.Controls.Add(this.bEmpty);
             this.panel1.Controls.Add(this.labelMedian);
             this.panel1.Controls.Add(this.MedianValue);
-            this.panel1.Controls.Add(this.apply);
             this.panel1.Controls.Add(this.MatrixY);
             this.panel1.Controls.Add(this.MatrixX);
             this.panel1.Controls.Add(this.labelDimentions);
@@ -857,9 +855,10 @@ namespace ImgApp_2_WinForms
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button1.Location = new System.Drawing.Point(9, 321);
+            this.button1.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(10, 292);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(69, 23);
+            this.button1.Size = new System.Drawing.Size(35, 23);
             this.button1.TabIndex = 46;
             this.button1.Text = "Apply";
             this.button1.UseVisualStyleBackColor = true;
@@ -897,6 +896,7 @@ namespace ImgApp_2_WinForms
             this.filterMode.Name = "filterMode";
             this.filterMode.Size = new System.Drawing.Size(68, 23);
             this.filterMode.TabIndex = 44;
+            this.filterMode.SelectedIndexChanged += new System.EventHandler(this.filterMode_SelectedIndexChanged);
             // 
             // bEmpty
             // 
@@ -918,9 +918,9 @@ namespace ImgApp_2_WinForms
             this.labelMedian.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.labelMedian.Location = new System.Drawing.Point(8, 372);
             this.labelMedian.Name = "labelMedian";
-            this.labelMedian.Size = new System.Drawing.Size(63, 11);
+            this.labelMedian.Size = new System.Drawing.Size(32, 11);
             this.labelMedian.TabIndex = 32;
-            this.labelMedian.Text = "Median sigma:";
+            this.labelMedian.Text = "Sigma:";
             // 
             // MedianValue
             // 
@@ -930,18 +930,7 @@ namespace ImgApp_2_WinForms
             this.MedianValue.Size = new System.Drawing.Size(68, 21);
             this.MedianValue.TabIndex = 31;
             this.MedianValue.Text = "1";
-            // 
-            // apply
-            // 
-            this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.apply.Font = new System.Drawing.Font("Montserrat", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.apply.Location = new System.Drawing.Point(10, 292);
-            this.apply.Name = "apply";
-            this.apply.Size = new System.Drawing.Size(35, 23);
-            this.apply.TabIndex = 29;
-            this.apply.Text = "Gen";
-            this.apply.UseVisualStyleBackColor = true;
-            this.apply.Click += new System.EventHandler(this.apply_Click);
+            this.MedianValue.TextChanged += new System.EventHandler(this.MedianValue_TextChanged);
             // 
             // MatrixY
             // 
@@ -951,6 +940,7 @@ namespace ImgApp_2_WinForms
             this.MatrixY.Size = new System.Drawing.Size(28, 21);
             this.MatrixY.TabIndex = 28;
             this.MatrixY.Text = "1";
+            this.MatrixY.TextChanged += new System.EventHandler(this.MatrixY_TextChanged);
             // 
             // MatrixX
             // 
@@ -960,6 +950,7 @@ namespace ImgApp_2_WinForms
             this.MatrixX.Size = new System.Drawing.Size(28, 21);
             this.MatrixX.TabIndex = 27;
             this.MatrixX.Text = "1";
+            this.MatrixX.TextChanged += new System.EventHandler(this.MatrixX_TextChanged);
             // 
             // labelDimentions
             // 
@@ -1129,7 +1120,6 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label labelMedian;
         private System.Windows.Forms.TextBox MedianValue;
-        private System.Windows.Forms.Button apply;
         private System.Windows.Forms.TextBox MatrixY;
         private System.Windows.Forms.TextBox MatrixX;
         private System.Windows.Forms.Label labelDimentions;
