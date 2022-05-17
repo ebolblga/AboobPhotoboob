@@ -2064,6 +2064,21 @@
                         return;
                     }
 
+                case 6:
+                    {
+                        for (int i2 = 0; i2 < dataGridView1.ColumnCount; i2++)
+                        {
+                            for (int j2 = 0; j2 < dataGridView1.RowCount; j2++)
+                            {
+                                dataGridView1.Rows[j2].Cells[i2].Value = 0;
+                            }
+                        }
+
+                        label9.Text = $"Sum: 0";
+                        label9.Visible = true;
+                        return;
+                    }
+
                 default:
                     return;
             }
@@ -2078,6 +2093,8 @@
                     dataGridView1.Rows[j2].Cells[i2].Value = 0;
                 }
             }
+            label9.Text = $"Sum: 0";
+            label9.Visible = true;
         }
 
         private void button1_Click(object sender, EventArgs e)
