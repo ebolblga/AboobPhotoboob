@@ -427,7 +427,7 @@
 
             for (int i = 1; i < h; ++i)
             {
-                for (int j = 1; j < w; ++j) 
+                for (int j = 1; j < w; ++j)
                 {
                     //double brightness = (double)(0.2125 * img_bytes[((((i - 1) * w) + j - 1) * 4) + 2]) + (double)(0.7154 * img_bytes[((((i - 1) * w) + j - 1) * 4) + 1]) + (double)(0.0721 * img_bytes[(((i - 1) * w) + j - 1) * 4]);
                     double brightness = (double)(0.2125 * img_bytes[(((i * w) + j) * 4) + 2]) + (double)(0.7154 * img_bytes[(((i * w) + j) * 4) + 1]) + (double)(0.0721 * img_bytes[((i * w) + j) * 4]);

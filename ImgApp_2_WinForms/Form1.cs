@@ -2176,5 +2176,65 @@
             CalcMatrix();
         }
         #endregion
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (LayerList.SelectedIndices.Count < 1)
+            {
+                MessageBox.Show("No image is selected", "Error");
+                return;
+            }
+
+            if (dataGridView1.RowCount < 1)
+            {
+                MessageBox.Show("Matrix is not generated", "Error");
+                return;
+            }
+
+            int r1;
+            int r2;
+            try
+            {
+                r1 = Convert.ToInt32(MatrixX.Text);
+                r2 = Convert.ToInt32(MatrixY.Text);
+            }
+            catch
+            {
+                MessageBox.Show("R1 or R2 is not an int", "Error");
+                return;
+            }
+
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            this.Cursor = Cursors.WaitCursor;
+
+            double[,] matrix = new double[(r1 * 2) + 1, (r2 * 2) + 1];
+            for (int a = 0; a < (r1 * 2) + 1; a++)
+            {
+                for (int b = 0; b < (r2 * 2) + 1; b++)
+                {
+                    matrix[a, b] = Convert.ToDouble(dataGridView1.Rows[b].Cells[a].Value);
+                }
+            }
+
+            Bitmap img = new Bitmap(_loadedImages[_loadedImages.Count - 1 - LayerList.SelectedIndices[0]]);
+            Bitmap img_out;
+            if (filterMode.SelectedIndex == 6)
+            {
+                img_out = Filtration.MedianFast(img, r1, r2, matrix);
+            }
+            else
+            {
+                img_out = Filtration.LinearFast(img, r1, r2, matrix);
+            }
+
+            img.Dispose();
+            ImageOutput.Image = img_out;
+
+            this.Cursor = Cursors.Default;
+            timer.Stop();
+            debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+
+        }
     }
 }
