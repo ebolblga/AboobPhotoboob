@@ -101,6 +101,12 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrequencyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrequencyForm.Designer.cs">
+      <DependentUpon>FrequencyForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MyPoint.cs" />
     <Compile Include="Program.cs" />
@@ -111,6 +117,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrequencyForm.resx">
+      <DependentUpon>FrequencyForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

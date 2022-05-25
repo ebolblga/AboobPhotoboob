@@ -2175,7 +2175,6 @@
         {
             CalcMatrix();
         }
-        #endregion
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -2235,6 +2234,19 @@
             timer.Stop();
             debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
 
+        }
+        #endregion
+
+        private void frequencyFilterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (ImageOutput.Image == null)
+            {
+                MessageBox.Show("Image is not selected", "Error");
+                return;
+            }
+
+            FrequencyForm frequencyForm = new FrequencyForm(ImageOutput.Image);
+            frequencyForm.ShowDialog();
         }
     }
 }
