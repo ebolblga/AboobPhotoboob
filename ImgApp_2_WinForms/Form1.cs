@@ -1010,7 +1010,6 @@
                     this.Cursor = Cursors.Default;
                     timer.Stop();
                     debug.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
-
                 }
             }
             else
@@ -1775,6 +1774,11 @@
             img.UnlockBits(data);  //разблокируем изображение
         }
 
+        private bool IsPowerOfTwo(int x)
+        {
+            return (x & (x - 1)) == 0;
+        }
+
         #endregion
 
         #region Cosmetics
@@ -2245,8 +2249,20 @@
                 return;
             }
 
-            FrequencyForm frequencyForm = new FrequencyForm(ImageOutput.Image);
-            frequencyForm.ShowDialog();
+            int w = ImageOutput.Image.Width;
+            int h = ImageOutput.Image.Height;
+
+            // Checks if image sides are power of 2
+            if (IsPowerOfTwo(w) == true & IsPowerOfTwo(h) == true)
+            {
+                FrequencyForm frequencyForm = new FrequencyForm(ImageOutput.Image);
+                frequencyForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Image sides are not power of 2", "Error");
+                return;
+            }
         }
     }
 }

@@ -35,13 +35,14 @@ namespace ImgApp_2_WinForms
             this.pBMask = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.filterMode = new System.Windows.Forms.ComboBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.filterMode = new System.Windows.Forms.ComboBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pBInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pBFourier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pBMask)).BeginInit();
@@ -117,6 +118,7 @@ namespace ImgApp_2_WinForms
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.comboBox1);
             this.panel1.Controls.Add(this.filterMode);
             this.panel1.Controls.Add(this.checkBox2);
@@ -128,6 +130,49 @@ namespace ImgApp_2_WinForms
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(577, 266);
             this.panel1.TabIndex = 3;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Circle",
+            "Square"});
+            this.comboBox1.Location = new System.Drawing.Point(461, 49);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(68, 23);
+            this.comboBox1.TabIndex = 46;
+            // 
+            // filterMode
+            // 
+            this.filterMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.filterMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.filterMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.filterMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.filterMode.FormattingEnabled = true;
+            this.filterMode.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "4",
+            "8"});
+            this.filterMode.Location = new System.Drawing.Point(461, 78);
+            this.filterMode.Name = "filterMode";
+            this.filterMode.Size = new System.Drawing.Size(68, 23);
+            this.filterMode.TabIndex = 45;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(461, 132);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(56, 19);
+            this.checkBox2.TabIndex = 29;
+            this.checkBox2.Text = "Filled";
+            this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -175,48 +220,14 @@ namespace ImgApp_2_WinForms
             this.checkBox1.Text = "Inverted";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // checkBox2
+            // label3
             // 
-            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(461, 132);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(56, 19);
-            this.checkBox2.TabIndex = 29;
-            this.checkBox2.Text = "Filled";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // filterMode
-            // 
-            this.filterMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.filterMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
-            this.filterMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.filterMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.filterMode.FormattingEnabled = true;
-            this.filterMode.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "4",
-            "8"});
-            this.filterMode.Location = new System.Drawing.Point(461, 78);
-            this.filterMode.Name = "filterMode";
-            this.filterMode.Size = new System.Drawing.Size(68, 23);
-            this.filterMode.TabIndex = 45;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Circle",
-            "Square"});
-            this.comboBox1.Location = new System.Drawing.Point(461, 49);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(68, 23);
-            this.comboBox1.TabIndex = 46;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 250);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(123, 15);
+            this.label3.TabIndex = 47;
+            this.label3.Text = "Last calculation time: ";
             // 
             // FrequencyForm
             // 
@@ -257,5 +268,6 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.ComboBox filterMode;
+        private System.Windows.Forms.Label label3;
     }
 }
