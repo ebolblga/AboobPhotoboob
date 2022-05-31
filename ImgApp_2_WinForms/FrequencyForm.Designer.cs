@@ -35,11 +35,13 @@ namespace ImgApp_2_WinForms
             this.pBMask = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.bGenerate = new System.Windows.Forms.Button();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.filterMode = new System.Windows.Forms.ComboBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pBInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pBFourier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pBMask)).BeginInit();
@@ -115,73 +117,106 @@ namespace ImgApp_2_WinForms
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.comboBox1);
+            this.panel1.Controls.Add(this.filterMode);
+            this.panel1.Controls.Add(this.checkBox2);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.trackBar2);
-            this.panel1.Controls.Add(this.bGenerate);
             this.panel1.Controls.Add(this.checkBox1);
             this.panel1.Location = new System.Drawing.Point(586, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(577, 266);
             this.panel1.TabIndex = 3;
             // 
-            // checkBox1
+            // label2
             // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(458, 32);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(57, 19);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Invert";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(458, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(116, 15);
+            this.label2.TabIndex = 28;
+            this.label2.Text = "Boost brightness by:";
             // 
-            // bGenerate
+            // label1
             // 
-            this.bGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bGenerate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.bGenerate.Location = new System.Drawing.Point(458, 3);
-            this.bGenerate.Name = "bGenerate";
-            this.bGenerate.Size = new System.Drawing.Size(116, 23);
-            this.bGenerate.TabIndex = 25;
-            this.bGenerate.Text = "Generate";
-            this.bGenerate.UseVisualStyleBackColor = true;
-            this.bGenerate.Click += new System.EventHandler(this.bGenerate_Click);
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(551, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(11, 15);
+            this.label1.TabIndex = 27;
+            this.label1.Text = "1";
             // 
             // trackBar2
             // 
             this.trackBar2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBar2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
             this.trackBar2.LargeChange = 1;
-            this.trackBar2.Location = new System.Drawing.Point(450, 83);
+            this.trackBar2.Location = new System.Drawing.Point(453, 18);
             this.trackBar2.Maximum = 255;
             this.trackBar2.Minimum = 1;
             this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(121, 45);
+            this.trackBar2.Size = new System.Drawing.Size(107, 45);
             this.trackBar2.TabIndex = 26;
             this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar2.Value = 1;
             this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
             // 
-            // label1
+            // checkBox1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(563, 85);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(11, 15);
-            this.label1.TabIndex = 27;
-            this.label1.Text = "1";
+            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(461, 107);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(71, 19);
+            this.checkBox1.TabIndex = 0;
+            this.checkBox1.Text = "Inverted";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // checkBox2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(455, 65);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(116, 15);
-            this.label2.TabIndex = 28;
-            this.label2.Text = "Boost brightness by:";
+            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(461, 132);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(56, 19);
+            this.checkBox2.TabIndex = 29;
+            this.checkBox2.Text = "Filled";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // filterMode
+            // 
+            this.filterMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.filterMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.filterMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.filterMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.filterMode.FormattingEnabled = true;
+            this.filterMode.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "4",
+            "8"});
+            this.filterMode.Location = new System.Drawing.Point(461, 78);
+            this.filterMode.Name = "filterMode";
+            this.filterMode.Size = new System.Drawing.Size(68, 23);
+            this.filterMode.TabIndex = 45;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Circle",
+            "Square"});
+            this.comboBox1.Location = new System.Drawing.Point(461, 49);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(68, 23);
+            this.comboBox1.TabIndex = 46;
             // 
             // FrequencyForm
             // 
@@ -215,10 +250,12 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.PictureBox pBMask;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button bGenerate;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox filterMode;
     }
 }

@@ -19,6 +19,7 @@
         private void FrequencyForm_Load(object sender, EventArgs e)
         {
             pBInput.Image = _inputImg;
+            GetFourier();
         }
 
         private void trackBar2_Scroll(object sender, EventArgs e)
@@ -27,6 +28,11 @@
         }
 
         private void bGenerate_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void GetFourier()
         {
             img_fourier = new Bitmap(_inputImg.Width, _inputImg.Height);
             using (Graphics g = Graphics.FromImage(img_fourier))
