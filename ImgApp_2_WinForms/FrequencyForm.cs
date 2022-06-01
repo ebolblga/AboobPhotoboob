@@ -16,6 +16,7 @@
         private Bitmap _brightFourierImg;//Fourier brightened up
         private Bitmap _maskImg;        // Mask
         private Bitmap _maskDrawing;    //Mask + Bright fourier
+        private Bitmap _fourierTransformed;
 
         Complex[,] redMatrix;
         Complex[,] greenMatrix;
@@ -403,6 +404,8 @@
                 }
             }
 
+            mask.Dispose();
+
             Complex[] rRow = new Complex[inputImg.Width];
             Complex[] gRow = new Complex[inputImg.Width];
             Complex[] bRow = new Complex[inputImg.Width];
@@ -420,9 +423,9 @@
                     bRow[j] = blueMatrix[j, i];
                 }
 
-                rRow = DFT(rRow);
-                gRow = DFT(gRow);
-                bRow = DFT(bRow);
+                rRow = FFT(rRow);
+                gRow = FFT(gRow);
+                bRow = FFT(bRow);
 
                 for (int j = 0; j < inputImg.Width; ++j)
                 {
@@ -441,9 +444,9 @@
                     bCol[i] = blueMatrix[j, i];
                 }
 
-                rCol = DFT(rCol);
-                gCol = DFT(gCol);
-                bCol = DFT(bCol);
+                rCol = FFT(rCol);
+                gCol = FFT(gCol);
+                bCol = FFT(bCol);
 
                 for (int i = 0; i < inputImg.Height; ++i)
                 {
@@ -465,7 +468,10 @@
                 }
             }
 
-            pBInput.Image = inputImg.Bitmap;
+            _fourierTransformed = new Bitmap(inputImg.Bitmap);
+            inputImg.Dispose();
+
+            pBInput.Image = _fourierTransformed;
 
             this.Cursor = Cursors.Default;
             timer.Stop();
@@ -575,7 +581,7 @@
 
             label1.Text = trackBar2.Value.ToString();
 
-            int value = Convert.ToInt32(label1.Text);
+            int value = trackBar2.Value;
 
             //Locks future image bits
             DirectBitmap img = new DirectBitmap(_inputImg.Width, _inputImg.Height);
@@ -603,6 +609,44 @@
             _brightFourierImg = new Bitmap(img.Bitmap);
             img.Dispose();
             pBFourierDrawing.Image = _brightFourierImg;
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            if (_fourierTransformed == null)
+            {
+                trackBar1.Value = 1;
+                return;
+            }
+
+            label7.Text = trackBar1.Value.ToString();
+
+            int value = trackBar1.Value;
+
+            //Locks future image bits
+            DirectBitmap img = new DirectBitmap(_fourierTransformed.Width, _fourierTransformed.Height);
+
+            //Draws img to those bits
+            using (var g = Graphics.FromImage(img.Bitmap))
+            {
+                g.DrawImage(_fourierTransformed, 0, 0, img.Width, img.Height);
+            }
+
+            for (int j = 0; j < img.Width; ++j)
+            {
+                for (int i = 0; i < img.Height; ++i)
+                {
+                    var pix = img.GetPixel(j, i);
+
+                    int r = Clamp(pix.R * value, 0, 255);
+                    int g = Clamp(pix.G * value, 0, 255);
+                    int b = Clamp(pix.B * value, 0, 255);
+
+                    img.SetPixel(j, i, Color.FromArgb(r, g, b));
+                }
+            }
+
+            pBInput.Image = img.Bitmap;
         }
 
         public static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
