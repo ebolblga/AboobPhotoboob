@@ -31,21 +31,27 @@ namespace ImgApp_2_WinForms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrequencyForm));
             this.pBInput = new System.Windows.Forms.PictureBox();
-            this.pBFourier = new System.Windows.Forms.PictureBox();
             this.pBMask = new System.Windows.Forms.PictureBox();
+            this.pBFourierDrawing = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.filterMode = new System.Windows.Forms.ComboBox();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pBInput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pBFourier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pBMask)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pBFourierDrawing)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
@@ -64,32 +70,32 @@ namespace ImgApp_2_WinForms
             this.pBInput.TabIndex = 0;
             this.pBInput.TabStop = false;
             // 
-            // pBFourier
-            // 
-            this.pBFourier.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pBFourier.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.pBFourier.Location = new System.Drawing.Point(3, 275);
-            this.pBFourier.Name = "pBFourier";
-            this.pBFourier.Size = new System.Drawing.Size(577, 266);
-            this.pBFourier.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pBFourier.TabIndex = 1;
-            this.pBFourier.TabStop = false;
-            // 
             // pBMask
             // 
             this.pBMask.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pBMask.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.pBMask.Location = new System.Drawing.Point(586, 275);
+            this.pBMask.Location = new System.Drawing.Point(3, 275);
             this.pBMask.Name = "pBMask";
             this.pBMask.Size = new System.Drawing.Size(577, 266);
             this.pBMask.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pBMask.TabIndex = 2;
+            this.pBMask.TabIndex = 1;
             this.pBMask.TabStop = false;
-            this.pBMask.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pBMask_MouseMove);
+            // 
+            // pBFourierDrawing
+            // 
+            this.pBFourierDrawing.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pBFourierDrawing.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.pBFourierDrawing.Location = new System.Drawing.Point(586, 275);
+            this.pBFourierDrawing.Name = "pBFourierDrawing";
+            this.pBFourierDrawing.Size = new System.Drawing.Size(577, 266);
+            this.pBFourierDrawing.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pBFourierDrawing.TabIndex = 2;
+            this.pBFourierDrawing.TabStop = false;
+            this.pBFourierDrawing.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pBMask_MouseMove);
             // 
             // tableLayoutPanel1
             // 
@@ -101,8 +107,8 @@ namespace ImgApp_2_WinForms
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.pBInput, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.pBMask, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.pBFourier, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.pBFourierDrawing, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.pBMask, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -118,9 +124,15 @@ namespace ImgApp_2_WinForms
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.button2);
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.textBox2);
+            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.comboBox1);
-            this.panel1.Controls.Add(this.filterMode);
+            this.panel1.Controls.Add(this.comboBox2);
             this.panel1.Controls.Add(this.checkBox2);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
@@ -133,7 +145,7 @@ namespace ImgApp_2_WinForms
             // 
             // comboBox1
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -146,22 +158,22 @@ namespace ImgApp_2_WinForms
             this.comboBox1.Size = new System.Drawing.Size(68, 23);
             this.comboBox1.TabIndex = 46;
             // 
-            // filterMode
+            // comboBox2
             // 
-            this.filterMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.filterMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
-            this.filterMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.filterMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.filterMode.FormattingEnabled = true;
-            this.filterMode.Items.AddRange(new object[] {
+            this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
             "1",
             "2",
             "4",
             "8"});
-            this.filterMode.Location = new System.Drawing.Point(461, 78);
-            this.filterMode.Name = "filterMode";
-            this.filterMode.Size = new System.Drawing.Size(68, 23);
-            this.filterMode.TabIndex = 45;
+            this.comboBox2.Location = new System.Drawing.Point(461, 78);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(68, 23);
+            this.comboBox2.TabIndex = 45;
             // 
             // checkBox2
             // 
@@ -222,12 +234,74 @@ namespace ImgApp_2_WinForms
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(4, 250);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(123, 15);
             this.label3.TabIndex = 47;
             this.label3.Text = "Last calculation time: ";
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.button1.Location = new System.Drawing.Point(458, 241);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(119, 23);
+            this.button1.TabIndex = 48;
+            this.button1.Text = "Draw mask";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.Location = new System.Drawing.Point(460, 172);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 21);
+            this.textBox1.TabIndex = 49;
+            this.textBox1.Text = "8";
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(458, 154);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(79, 15);
+            this.label4.TabIndex = 50;
+            this.label4.Text = "Stroke width:";
+            // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(458, 196);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(66, 15);
+            this.label5.TabIndex = 52;
+            this.label5.Text = "Blur radius:";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox2.Location = new System.Drawing.Point(460, 214);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(100, 21);
+            this.textBox2.TabIndex = 51;
+            this.textBox2.Text = "0";
+            // 
+            // button2
+            // 
+            this.button2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.button2.Location = new System.Drawing.Point(0, 0);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(119, 23);
+            this.button2.TabIndex = 53;
+            this.button2.Text = "Apply filter";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // FrequencyForm
             // 
@@ -244,8 +318,8 @@ namespace ImgApp_2_WinForms
             this.Text = "Frequency Filtration";
             this.Load += new System.EventHandler(this.FrequencyForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pBInput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pBFourier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pBMask)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pBFourierDrawing)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -257,8 +331,8 @@ namespace ImgApp_2_WinForms
         #endregion
 
         private System.Windows.Forms.PictureBox pBInput;
-        private System.Windows.Forms.PictureBox pBFourier;
         private System.Windows.Forms.PictureBox pBMask;
+        private System.Windows.Forms.PictureBox pBFourierDrawing;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox checkBox1;
@@ -267,7 +341,13 @@ namespace ImgApp_2_WinForms
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox filterMode;
+        private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button button2;
     }
 }

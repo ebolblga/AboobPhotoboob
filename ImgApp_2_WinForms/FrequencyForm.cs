@@ -1,6 +1,7 @@
 ﻿namespace ImgApp_2_WinForms
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Drawing;
     using System.Drawing.Imaging;
@@ -10,10 +11,17 @@
 
     public partial class FrequencyForm : Form
     {
-        private Bitmap _inputImg;
-        private Bitmap _fourierImg;
-        private Bitmap _brightFourierImg;
-        private Bitmap _maskImg;
+        private Bitmap _inputImg;       // Input image
+        private Bitmap _fourierImg;     // Fourier original
+        private Bitmap _brightFourierImg;//Fourier brightened up
+        private Bitmap _maskImg;        // Mask
+        private Bitmap _maskDrawing;    //Mask + Bright fourier
+
+        Complex[,] redMatrix;
+        Complex[,] greenMatrix;
+        Complex[,] blueMatrix;
+
+        private List<Shape> ShapeList = new List<Shape>();
 
         public FrequencyForm(Image img)
         {
@@ -24,9 +32,30 @@
         private void FrequencyForm_Load(object sender, EventArgs e)
         {
             pBInput.Image = _inputImg;
+
+            comboBox1.SelectedIndex = 0;
+            comboBox2.SelectedIndex = 0;
+
+            _maskImg = new Bitmap(_inputImg.Width, _inputImg.Height);
+            using (Graphics g = Graphics.FromImage(_maskImg))
+            {
+                g.FillRectangle(Brushes.Black, 0, 0, _inputImg.Width, _inputImg.Height);
+            }
+
+            pBMask.Image = _maskImg;
+
+            redMatrix = new Complex[_inputImg.Width, _inputImg.Height];
+            greenMatrix = new Complex[_inputImg.Width, _inputImg.Height];
+            blueMatrix = new Complex[_inputImg.Width, _inputImg.Height];
+
             GetFourier();
+
+            _brightFourierImg = new Bitmap(_fourierImg);
+            _maskDrawing = new Bitmap(_fourierImg);
+            pBFourierDrawing.Image = _maskDrawing;
         }
 
+        #region Fourier rendering
         public class DirectBitmap : IDisposable
         {
             public Bitmap Bitmap { get; private set; }
@@ -106,9 +135,9 @@
             Complex[] bCol = new Complex[img.Height];
 
             //Fourier transforms of a two-dimensional signals for each color channel
-            Complex[,] redMatrix = new Complex[img.Width, img.Height];
-            Complex[,] greenMatrix = new Complex[img.Width, img.Height];
-            Complex[,] blueMatrix = new Complex[img.Width, img.Height];
+            //Complex[,] redMatrix = new Complex[img.Width, img.Height];
+            //Complex[,] greenMatrix = new Complex[img.Width, img.Height];
+            //Complex[,] blueMatrix = new Complex[img.Width, img.Height];
 
             double rMax, gMax, bMax;
             rMax = gMax = bMax = -50;
@@ -193,10 +222,6 @@
             _fourierImg = new Bitmap(img.Bitmap);
             img.Dispose();
 
-            pBFourier.Image = _fourierImg;
-            _maskImg = new Bitmap(_fourierImg);
-            pBMask.Image = _maskImg;
-
             this.Cursor = Cursors.Default;
             timer.Stop();
             label3.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
@@ -239,7 +264,7 @@
                 for (int i = 0; i < len / 2; i++)
                 {
                     evenArr[i] = array[2 * i];
-                    oddArr[i] = array[2 * i + 1];
+                    oddArr[i] = array[(2 * i) + 1];
                 }
 
                 Complex[] evenModArr = FFT(evenArr);
@@ -251,6 +276,7 @@
                     modArray[i + (len / 2)] = evenModArr[i] - (m(i, len) * oddModArr[i]);
                 }
             }
+
             return modArray;
         }
 
@@ -258,6 +284,27 @@
         {
             double arg = -2 * Math.PI * k / N;
             return new Complex(Math.Cos(arg), Math.Sin(arg));
+        }
+        #endregion
+
+        #region Mask Drawing
+        public class Shape
+        {
+            public bool shape { get; set; }
+
+            public float diameter { get; set; }
+
+            public float X { get; set; }
+
+            public float Y { get; set; }
+
+            public Shape(bool shape, float d, float x, float y)
+            {
+                this.shape = shape;
+                this.diameter = d;
+                this.X = x;
+                this.Y = y;
+            }
         }
 
         private void pBMask_MouseMove(object sender, MouseEventArgs e)// mask UI drawing
@@ -267,44 +314,148 @@
                 return;
             }
 
-            _maskImg.Dispose();
+            _maskDrawing.Dispose();
+            _maskDrawing = new Bitmap(_brightFourierImg);
 
-            if (_brightFourierImg != null)
-            {
-                _maskImg = new Bitmap(_brightFourierImg);
-            }
-            else
-            {
-                _maskImg = new Bitmap(_fourierImg);
-            }
 
-            float centerX = (float)pBMask.ClientSize.Width / 2;
-            float centerY = (float)pBMask.ClientSize.Height / 2;
+            float centerX = (float)pBFourierDrawing.ClientSize.Width / 2;
+            float centerY = (float)pBFourierDrawing.ClientSize.Height / 2;
 
             float diameter = (float)(Math.Sqrt(Math.Pow(centerX - e.Location.X, 2) + Math.Pow(centerY - e.Location.Y, 2)) * 4);
-            if (diameter > pBMask.ClientSize.Width)
-            {
-                diameter = pBMask.ClientSize.Width;
-            }
 
-            if (diameter > pBMask.ClientSize.Height)
+            int lineWidth;
+            try
             {
-                diameter = pBMask.ClientSize.Height;
+                lineWidth = Convert.ToInt32(textBox1.Text);
             }
-
-            int lineWidth = 8;
+            catch
+            {
+                lineWidth = 8;
+            }
 
             float x = (float)(_inputImg.Width / 2) - (diameter / 2) + ((float)lineWidth / 2);
             float y = (float)(_inputImg.Height / 2) - (diameter / 2) + ((float)lineWidth / 2);
 
-            using (Graphics g = Graphics.FromImage(_maskImg))
+            using (Graphics g = Graphics.FromImage(_maskDrawing))
             {
                 Pen blackPen = new Pen(Color.Yellow, lineWidth);
-                g.DrawEllipse(blackPen, x, y, diameter - lineWidth, diameter - lineWidth);
+                if (comboBox1.SelectedIndex == 0)
+                {
+                    g.DrawEllipse(blackPen, x, y, diameter - lineWidth, diameter - lineWidth);
+                }
+                else
+                {
+                    g.DrawRectangle(blackPen, x, y, diameter - lineWidth, diameter - lineWidth);
+                }
+            }
+
+            pBFourierDrawing.Image = _maskDrawing;
+
+            ShapeList.Clear();
+            if (comboBox1.SelectedIndex == 0)
+            {
+                ShapeList.Add(new Shape(true, diameter, x, y));
+            }
+            else
+            {
+                ShapeList.Add(new Shape(false, diameter, x, y));
+            }
+
+            DrawMask();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (ShapeList.Count < 1)
+            {
+                MessageBox.Show("No mask shape", "Error");
+                return;
+            }
+
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            this.Cursor = Cursors.WaitCursor;
+
+            DrawMask();
+
+            this.Cursor = Cursors.Default;
+            timer.Stop();
+            label3.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+        }
+
+        private void DrawMask()
+        {
+            int lineWidth;
+            try
+            {
+                lineWidth = Convert.ToInt32(textBox1.Text);
+            }
+            catch
+            {
+                lineWidth = 8;
+            }
+
+            using (Graphics g = Graphics.FromImage(_maskImg))
+            {
+                if (checkBox1.Checked)
+                {
+                    g.FillRectangle(Brushes.White, 0, 0, _maskImg.Width, _maskImg.Height);
+                }
+                else
+                {
+                    g.FillRectangle(Brushes.Black, 0, 0, _maskImg.Width, _maskImg.Height);
+                }
+
+                for (int i = 0; i < ShapeList.Count; i++)
+                {
+                    Pen pen = new Pen(Color.White, lineWidth);
+                    if (ShapeList[i].shape)//circle
+                    {
+                        if (checkBox1.Checked)
+                        {
+                            pen = new Pen(Color.Black, lineWidth);
+                        }
+
+                        g.DrawEllipse(pen, ShapeList[i].X, ShapeList[i].Y, ShapeList[i].diameter - lineWidth, ShapeList[i].diameter - lineWidth);
+                    }
+                    else//square
+                    {
+                        if (checkBox1.Checked)
+                        {
+                            pen = new Pen(Color.Black, lineWidth);
+                        }
+
+                        g.DrawRectangle(pen, ShapeList[i].X, ShapeList[i].Y, ShapeList[i].diameter - lineWidth, ShapeList[i].diameter - lineWidth);
+                    }
+
+                    if (checkBox2.Checked)
+                    {
+                        SolidBrush brush = new SolidBrush(Color.White);
+                        if (ShapeList[i].shape)//circle
+                        {
+                            if (checkBox1.Checked)
+                            {
+                                brush = new SolidBrush(Color.Black);
+                            }
+
+                            g.FillEllipse(brush, ShapeList[i].X, ShapeList[i].Y, ShapeList[i].diameter - lineWidth, ShapeList[i].diameter - lineWidth);
+                        }
+                        else//square
+                        {
+                            if (checkBox1.Checked)
+                            {
+                                brush = new SolidBrush(Color.Black);
+                            }
+
+                            g.FillRectangle(brush, ShapeList[i].X, ShapeList[i].Y, ShapeList[i].diameter - lineWidth, ShapeList[i].diameter - lineWidth);
+                        }
+                    }
+                }
             }
 
             pBMask.Image = _maskImg;
-        }     
+        }
+        #endregion
 
         #region trash
         private void trackBar2_Scroll(object sender, EventArgs e)
@@ -343,7 +494,7 @@
 
             _brightFourierImg = new Bitmap(img.Bitmap);
             img.Dispose();
-            pBMask.Image = _brightFourierImg;
+            pBFourierDrawing.Image = _brightFourierImg;
         }
 
         public static T Clamp<T>(T val, T min, T max) where T : IComparable<T>
@@ -353,5 +504,131 @@
             else return val;
         }//clamps all values
         #endregion
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            this.Cursor = Cursors.WaitCursor;
+
+            DirectBitmap inputImg = new DirectBitmap(_fourierImg.Width, _fourierImg.Height);
+            using (var g = Graphics.FromImage(inputImg.Bitmap))
+            {
+                g.DrawImage(_fourierImg, 0, 0, inputImg.Width, inputImg.Height);
+            }
+
+            DirectBitmap mask = new DirectBitmap(_inputImg.Width, _inputImg.Height);
+            using (var g = Graphics.FromImage(mask.Bitmap))
+            {
+                g.DrawImage(_maskImg, 0, 0, mask.Width, mask.Height);
+            }
+
+            for (int j = 0; j < inputImg.Width; ++j)
+            {
+                for (int i = 0; i < inputImg.Height; ++i)
+                {
+                    var pix2 = mask.GetPixel(j, i);
+                    var brightness = Color.FromArgb(pix2.R, pix2.G, pix2.B).GetBrightness();
+
+                    redMatrix[j, i] = new Complex(redMatrix[j, i].Real * brightness, -redMatrix[j, i].Imaginary * brightness);
+                    greenMatrix[j, i] = new Complex(greenMatrix[j, i].Real * brightness, -greenMatrix[j, i].Imaginary * brightness);
+                    blueMatrix[j, i] = new Complex(blueMatrix[j, i].Real * brightness, -blueMatrix[j, i].Imaginary * brightness);
+                }
+            }
+
+            Complex[] rRow = new Complex[inputImg.Width];
+            Complex[] gRow = new Complex[inputImg.Width];
+            Complex[] bRow = new Complex[inputImg.Width];
+
+            Complex[] rCol = new Complex[inputImg.Height];
+            Complex[] gCol = new Complex[inputImg.Height];
+            Complex[] bCol = new Complex[inputImg.Height];
+
+            double rMax, gMax, bMax;
+            rMax = gMax = bMax = -50;
+
+            for (int i = 0; i < inputImg.Height; ++i)
+            {
+                for (int j = 0; j < inputImg.Width; ++j)
+                {
+                    rRow[j] = redMatrix[j, i];
+                    gRow[j] = greenMatrix[j, i];
+                    bRow[j] = blueMatrix[j, i];
+                }
+
+                rRow = DFT(rRow);
+                gRow = DFT(gRow);
+                bRow = DFT(bRow);
+
+                for (int j = 0; j < inputImg.Width; ++j)
+                {
+                    redMatrix[j, i] = rRow[j];
+                    greenMatrix[j, i] = gRow[j];
+                    blueMatrix[j, i] = bRow[j];
+                }
+            }
+
+            for (int j = 0; j < inputImg.Width; ++j)
+            {
+                for (int i = 0; i < inputImg.Height; ++i)
+                {
+                    rCol[i] = redMatrix[j, i];
+                    gCol[i] = greenMatrix[j, i];
+                    bCol[i] = blueMatrix[j, i];
+                }
+
+                rCol = DFT(rCol);
+                gCol = DFT(gCol);
+                bCol = DFT(bCol);
+
+                for (int i = 0; i < inputImg.Height; ++i)
+                {
+                    redMatrix[j, i] = rCol[i];
+                    greenMatrix[j, i] = gCol[i];
+                    blueMatrix[j, i] = bCol[i];
+
+                    if (Math.Log(Math.Abs(rCol[i].Magnitude) + 1) > rMax)
+                    {
+                        rMax = Math.Log(Math.Abs(rCol[i].Magnitude) + 1);
+                    }
+
+                    if (Math.Log(Math.Abs(gCol[i].Magnitude) + 1) > gMax)
+                    {
+                        gMax = Math.Log(Math.Abs(gCol[i].Magnitude) + 1);
+                    }
+
+                    if (Math.Log(Math.Abs(bCol[i].Magnitude) + 1) > bMax)
+                    {
+                        bMax = Math.Log(Math.Abs(bCol[i].Magnitude) + 1);
+                    }
+                }
+            }
+
+            for (int j = 0; j < inputImg.Width; ++j)
+            {
+                for (int i = 0; i < inputImg.Height; ++i)
+                {
+                    //int r = Clamp(Convert.ToInt32(Math.Log(Math.Abs(redMatrix[j, i].Magnitude) + 1) * 255 / rMax * 8), 0, 255);
+                    //int g = Clamp(Convert.ToInt32(Math.Log(Math.Abs(greenMatrix[j, i].Magnitude) + 1) * 255 / gMax * 8), 0, 255);
+                    //int b = Clamp(Convert.ToInt32(Math.Log(Math.Abs(blueMatrix[j, i].Magnitude) + 1) * 255 / bMax * 8), 0, 255);
+
+                    //int r = Clamp(Convert.ToInt32((Math.Abs(redMatrix[j, i].Magnitude) + 1) * 255 / rMax), 0, 255);
+                    //int g = Clamp(Convert.ToInt32((Math.Abs(greenMatrix[j, i].Magnitude) + 1) * 255 / gMax), 0, 255);
+                    //int b = Clamp(Convert.ToInt32((Math.Abs(blueMatrix[j, i].Magnitude) + 1) * 255 / bMax), 0, 255);
+
+                    int r = Clamp(Convert.ToInt32(redMatrix[j, i].Real), 0, 255);
+                    int g = Clamp(Convert.ToInt32(greenMatrix[j, i].Real), 0, 255);
+                    int b = Clamp(Convert.ToInt32(blueMatrix[j, i].Real), 0, 255);
+
+                    inputImg.SetPixel(j, i, Color.FromArgb(r, g, b));
+                }
+            }
+
+            pBInput.Image = inputImg.Bitmap;
+
+            this.Cursor = Cursors.Default;
+            timer.Stop();
+            label3.Text = "Last calculation time: " + timer.ElapsedMilliseconds + " ms. or " + Math.Round(timer.Elapsed.TotalSeconds, 3) + " s.";
+        }
     }
 }
